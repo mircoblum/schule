@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Atlas-Check">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f3f6f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f151a" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font-family:system-ui,-apple-system,sans-serif;font-size:14px;-webkit-text-size-adjust:100%}
+img{max-width:100%}[hidden]{display:none!important}
+</style>
+<title>Atlas-Check Klasse 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Kalam:wght@400;700&family=Lexend:wght@400;500;600&display=swap">
+<style>
+/* Layout: eine Spalte wie ein Arbeitsblatt im Hefter. Karten im Stil einer politischen Atlaskarte: Länder in Pastellfarben, kräftige Grenzen, Namen. Füller-Blau als Akzent, Textmarker-Gelb für Markierungen. */
+:root{
+  --paper:#f3f6f6; --card:#ffffff; --ink:#15202b; --muted:#56636e; --line:#d5dde0;
+  --pen:#2a3cb4; --pen-ink:#ffffff; --pen-soft:#e5e9fb;
+  --ok:#1b7548; --ok-soft:#dcf0e4; --bad:#b0261d; --bad-soft:#fae3df;
+  --marker:#ffd60a; --marker-op:.7;
+  --water:#c9e0ee; --grat:#a9c8da; --border:#4b5560; --coast:#5d7d93;
+  --c0:#f2e3b8; --c1:#d6e9c4; --c2:#f4d3c6; --c3:#d3e0f1; --c4:#e6d9ef; --c5:#e9e6bf;
+  --nb:#e6e8e1; --de:#fff6d9; --state:#8f8a72;
+  --river:#1f6fc2; --mt:#c79c74; --mt-edge:#7b5535; --city:#1a1d21; --halo:#ffffff; --clbl:#4c5a66;
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --f-hand:"Kalam", "Comic Sans MS", "Bradley Hand", cursive;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0f151a; --card:#161e25; --ink:#e6edf1; --muted:#9aa9b4; --line:#2a353e;
+  --pen:#93a3ff; --pen-ink:#0f151a; --pen-soft:#1f2650;
+  --ok:#62d39c; --ok-soft:#12301f; --bad:#ff8b7c; --bad-soft:#3a1814;
+  --marker:#f0cc00; --marker-op:.55;
+  --water:#142a3b; --grat:#23435a; --border:#c3ccd3; --coast:#7fa3bd;
+  --c0:#4a4330; --c1:#33452f; --c2:#4b3531; --c3:#2f3d52; --c4:#40354b; --c5:#45432c;
+  --nb:#262d2d; --de:#4a4630; --state:#b5ac8c;
+  --river:#6cb2f5; --mt:#9b7656; --mt-edge:#e0b68e; --city:#f2f4f5; --halo:#161e25; --clbl:#b8c4cc;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0f151a; --card:#161e25; --ink:#e6edf1; --muted:#9aa9b4; --line:#2a353e;
+  --pen:#93a3ff; --pen-ink:#0f151a; --pen-soft:#1f2650;
+  --ok:#62d39c; --ok-soft:#12301f; --bad:#ff8b7c; --bad-soft:#3a1814;
+  --marker:#f0cc00; --marker-op:.55;
+  --water:#142a3b; --grat:#23435a; --border:#c3ccd3; --coast:#7fa3bd;
+  --c0:#4a4330; --c1:#33452f; --c2:#4b3531; --c3:#2f3d52; --c4:#40354b; --c5:#45432c;
+  --nb:#262d2d; --de:#4a4630; --state:#b5ac8c;
+  --river:#6cb2f5; --mt:#9b7656; --mt-edge:#e0b68e; --city:#f2f4f5; --halo:#161e25; --clbl:#b8c4cc;
+  color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.head{display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.head h1{font-size:clamp(30px,7vw,44px);font-weight:800;letter-spacing:-.01em}
+.head h1 span{color:var(--pen)}
+.head p{margin:0;color:var(--muted);max-width:60ch}
+.status{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--muted);display:inline-block;flex:none}
+.status.ok i{background:var(--ok)} .status.warn i{background:var(--bad)}
+.hero{background:var(--pen);color:var(--pen-ink);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.hero h2{font-size:24px}
+.hero p{margin:0;opacity:.92;max-width:54ch}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:600;background:var(--pen);color:var(--pen-ink);min-height:46px}
+.btn.inv{background:var(--pen-ink);color:var(--pen)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost.oninv{color:var(--pen-ink);border-color:color-mix(in srgb,var(--pen-ink) 50%,transparent)}
+.btn.small{min-height:36px;padding:7px 12px;font-size:14px;font-weight:500}
+.btn:disabled{opacity:.45;cursor:default}
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec h3{font-size:18px}
+.tiles{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tiles{grid-template-columns:1fr 1fr}}
+.tile{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.tile:hover{border-color:var(--pen)}
+.tile b{font-weight:600;font-size:16px}
+.tile small{color:var(--muted);font-size:13px}
+.tile .q{font-family:var(--f-hand);color:var(--pen);font-size:15px;line-height:1.2}
+.meter{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ok);width:0}
+.tile .best{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.qbar{display:flex;align-items:center;gap:12px}
+.qbar .prog{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+.qbar .prog span{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.qbar .x{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;font-size:14px}
+.pbar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--pen);transition:width .3s}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (max-width:480px){.card{padding:14px}}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--pen-soft);color:var(--pen);font-weight:500}
+.prompt{font-size:20px;font-weight:500;line-height:1.35;margin:0}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:520px){.opts{grid-template-columns:1fr 1fr}}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);min-height:50px}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:600;background:var(--pen-soft);color:var(--pen)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.inrow{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.inrow input,.inrow textarea{flex:1 1 220px;min-width:0;font:inherit;font-size:17px;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+.inrow textarea{flex-basis:100%;min-height:110px;resize:vertical;line-height:1.45}
+.inrow .right{border-color:var(--ok);background:var(--ok-soft)}
+.inrow .wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fb{border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb .verdict{font-family:var(--f-hand);font-size:24px;font-weight:700;line-height:1.1}
+.fb.ok .verdict{color:var(--ok)} .fb.bad .verdict{color:var(--bad)}
+.fb p{margin:0;max-width:62ch}
+.keys{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.keys li{display:flex;gap:8px;align-items:baseline;font-size:15px}
+.keys li b{flex:none;width:18px;font-family:var(--f-hand);font-size:18px}
+.keys li.hit b{color:var(--ok)} .keys li.miss b{color:var(--bad)}
+.model{border-left:3px solid var(--pen);padding:6px 12px;background:var(--card);border-radius:0 8px 8px 0}
+.model span{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hint{font-size:14px;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:0;color:var(--pen);text-decoration:underline;font-size:14px}
+.mapbox{display:flex;flex-direction:column;gap:6px;min-width:0}
+.mapwrap{overflow:auto;border-radius:10px;border:1.5px solid var(--line);background:var(--water);-webkit-overflow-scrolling:touch}
+.mapwrap svg.map{display:block;width:100%;height:auto;touch-action:manipulation}
+.mapwrap.zoom svg.map{width:230%}
+.maptools{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.maptools button{border:1.5px solid var(--line);background:var(--card);border-radius:8px;padding:6px 10px;font-size:13px}
+.clickable{cursor:crosshair}
+.mapload{padding:60px 16px;text-align:center;color:var(--muted);font-size:14px;background:var(--card)}
+svg .sea{fill:var(--water)}
+svg .grat{fill:none;stroke:var(--grat);stroke-width:.6px;vector-effect:non-scaling-stroke}
+svg .land{stroke:var(--border);stroke-width:.9px;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+svg .c0{fill:var(--c0)} svg .c1{fill:var(--c1)} svg .c2{fill:var(--c2)} svg .c3{fill:var(--c3)} svg .c4{fill:var(--c4)} svg .c5{fill:var(--c5)}
+svg .nb{fill:var(--nb)}
+svg .de{fill:var(--de);stroke-width:1.8px}
+svg .state{fill:none;stroke:var(--state);stroke-width:.8px;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+svg .clbl{font-family:var(--f-body);font-weight:500;fill:var(--clbl);letter-spacing:.08em;text-transform:uppercase;paint-order:stroke;stroke:var(--halo);stroke-width:2.5px;stroke-opacity:.6;pointer-events:none}
+svg .wlbl{font-family:var(--f-body);font-style:italic;fill:var(--river);paint-order:stroke;stroke:var(--halo);stroke-width:2.5px;stroke-opacity:.5;pointer-events:none}
+svg .riv{fill:none;stroke:var(--river);stroke-width:1.5px;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+svg .riv.hl{stroke-width:3px}
+svg .mk{fill:none;stroke:var(--marker);stroke-opacity:var(--marker-op);stroke-linecap:round;stroke-linejoin:round}
+svg .mte{fill:none;stroke:var(--mt-edge);stroke-dasharray:4 3;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+svg .mtf{fill:none;stroke:var(--mt);stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+svg .cty{fill:var(--city)}
+svg .cty-sq{fill:var(--card);stroke:var(--city);stroke-width:1.3}
+svg .ring{fill:var(--marker);fill-opacity:var(--marker-op);stroke:var(--city);stroke-width:1.3}
+svg .lbl{font-family:var(--f-body);font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--halo);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+svg .lbl.good{fill:var(--ok)}
+svg .gridl{stroke:var(--pen);stroke-width:1px;stroke-opacity:.55;fill:none;vector-effect:non-scaling-stroke}
+svg .gridt{font-family:var(--f-body);font-weight:600;fill:var(--pen)}
+svg .dist{stroke:var(--pen);stroke-width:2.5px;vector-effect:non-scaling-stroke}
+svg .tick{stroke:var(--pen);stroke-width:2px;vector-effect:non-scaling-stroke}
+svg .bar-a{fill:var(--city)} svg .bar-b{fill:var(--card);stroke:var(--city);stroke-width:1}
+svg .barbg{fill:var(--card);fill-opacity:.92;stroke:var(--line)}
+svg .bart{font-family:var(--f-body);fill:var(--ink);font-variant-numeric:tabular-nums}
+svg .star{fill:var(--marker);stroke:var(--city);stroke-width:1.3}
+svg .pin{fill:var(--pen);stroke:var(--halo);stroke-width:1.5}
+svg .pin.bad{fill:var(--bad)}
+svg .goodring{fill:none;stroke:var(--ok);stroke-width:3px;vector-effect:non-scaling-stroke}
+svg .gline{fill:none;stroke:var(--marker);stroke-opacity:.9;stroke-width:8px;vector-effect:non-scaling-stroke}
+svg .gline-c{fill:none;stroke:var(--city);stroke-width:1.3px;stroke-dasharray:6 4;vector-effect:non-scaling-stroke}
+svg .narrow{fill:var(--ink)}
+svg .vis-bg{fill:var(--card)}
+svg .vis-t{font-family:var(--f-body);fill:var(--ink)}
+svg .sky{fill:#121a33} svg .st{fill:#f2f4ff} svg .stl{font-family:var(--f-body);font-weight:600;fill:#ffd60a;font-size:20px}
+svg .cline{fill:none;stroke:#8fa3ff;stroke-width:1.2;opacity:.75}
+svg .hline{fill:none;stroke:#ffd60a;stroke-width:2;stroke-dasharray:6 5}
+svg .cont{fill:none;stroke:var(--mt-edge);stroke-width:1.6}
+@media (prefers-reduced-motion:no-preference){ svg .pulse{animation:pulse 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center} @keyframes pulse{50%{transform:scale(1.35);opacity:.55}} }
+.big{font-family:var(--f-display);font-size:64px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:22px;color:var(--muted);font-weight:600}
+.rlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.rlist li{display:grid;grid-template-columns:28px 1fr;gap:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+.rlist li .m{font-family:var(--f-hand);font-size:22px;font-weight:700;line-height:1}
+.rlist li.r .m{color:var(--ok)} .rlist li.w .m{color:var(--bad)}
+.rlist li div{min-width:0}
+.rlist li p{margin:0;font-size:14px;overflow-wrap:anywhere}
+.foot{font-size:12px;color:var(--muted);max-width:70ch}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+"use strict";
+/* ---------- Hilfen ---------- */
+const $=(s,el=document)=>el.querySelector(s);
+const rnd=n=>Math.floor(Math.random()*n);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=(a,n)=>shuffle(a).slice(0,n);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=n=>Math.round(n).toLocaleString("de-DE");
+function canon(s){return String(s).toLowerCase().replace(/ß/g,"ss").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/ae/g,"a").replace(/oe/g,"o").replace(/ue/g,"u").replace(/[^a-z0-9]/g,"");}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,i)=>i);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];}
+function haversine(a,b){const R=6371,t=Math.PI/180,dLa=(b.la-a.la)*t,dLo=(b.lo-a.lo)*t;const h=Math.sin(dLa/2)**2+Math.cos(a.la*t)*Math.cos(b.la*t)*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+const store={get(){try{return JSON.parse(localStorage.getItem("atlascheck5"))||{}}catch(e){return{}}},set(v){try{localStorage.setItem("atlascheck5",JSON.stringify(v))}catch(e){}}};
+/* ---------- Kartendaten: Städte (Breite, Länge) ---------- */
+const C=(n,la,lo,alt,c)=>({n,la,lo,alt:alt||[],c:c||0});
+const WORLD_CITIES=[
+ C("Mexiko-Stadt",19.43,-99.13,["mexicostadt","mexicocity","mexiko","mexico","ciudaddemexico"]),C("Los Angeles",34.05,-118.24),C("San Francisco",37.77,-122.42),
+ C("Chicago",41.88,-87.63),C("New York",40.71,-74.01,["newyorkcity","nyc"]),C("Boston",42.36,-71.06),C("Philadelphia",39.95,-75.17,["philadelphia","philadelfia"]),
+ C("Washington",38.91,-77.04,["washingtondc"]),C("Atlanta",33.75,-84.39),C("Miami",25.76,-80.19),C("Houston",29.76,-95.37),C("Toronto",43.65,-79.38),
+ C("Caracas",10.48,-66.90),C("Bogotá",4.71,-74.07),C("Lima",-12.05,-77.04),C("Santiago de Chile",-33.45,-70.67,["santiago"]),C("Buenos Aires",-34.60,-58.38),
+ C("São Paulo",-23.55,-46.63),C("Rio de Janeiro",-22.91,-43.17,["rio"]),C("London",51.51,-0.13),C("Paris",48.86,2.35),C("Madrid",40.42,-3.70),
+ C("Moskau",55.76,37.62,["moskva","moscow"]),C("Istanbul",41.01,28.98),C("Athen",37.98,23.73),C("Kairo",30.04,31.24,["cairo"]),C("Lagos",6.52,3.38),C("Kinshasa",-4.44,15.27),
+ C("Johannesburg",-26.20,28.05),C("Kapstadt",-33.92,18.42,["capetown"]),C("Teheran",35.69,51.39,["tehran"]),C("Karatschi",24.86,67.01,["karachi","karatchi"]),
+ C("Delhi",28.61,77.21,["neudelhi","newdelhi"]),C("Mumbai",19.08,72.88,["bombay"]),C("Kolkata",22.57,88.36,["kalkutta","calcutta"]),C("Dhaka",23.81,90.41,["dakka"]),
+ C("Bangkok",13.76,100.50),C("Peking",39.90,116.41,["beijing"]),C("Shanghai",31.23,121.47,["schanghai"]),C("Hongkong",22.32,114.17),C("Tokio",35.68,139.69,["tokyo"]),
+ C("Seoul",37.57,126.98),C("Manila",14.60,120.98),C("Jakarta",-6.21,106.85),C("Singapur",1.35,103.82,["singapore"]),C("Sydney",-33.87,151.21),C("Melbourne",-37.81,144.96)
+];
+const EUROPE_CITIES=[
+ C("London",51.51,-0.13,[],3),C("Paris",48.86,2.35,[],3),C("Moskau",55.76,37.62,["moskva","moscow"],3),C("Istanbul",41.01,28.98,[],3),
+ C("Madrid",40.42,-3.70,[],2),C("Barcelona",41.39,2.17,[],2),C("Rom",41.90,12.50,["roma"],2),C("Mailand",45.46,9.19,["milano"],2),C("Berlin",52.52,13.40,[],2),
+ C("Athen",37.98,23.73,[],2),C("Kiew",50.45,30.52,["kyjiw","kiev","kyiv"],2),C("Sankt Petersburg",59.94,30.31,["stpetersburg","petersburg","saintpetersburg"],2),
+ C("Ankara",39.93,32.86,[],2),C("Ruhrgebiet",51.46,7.01,["essen","dortmund","duisburg","rheinruhr"],2),
+ C("Dublin",53.35,-6.26,[],1),C("Birmingham",52.49,-1.89,[],1),C("Manchester",53.48,-2.24,[],1),C("Amsterdam",52.37,4.90,[],1),C("Brüssel",50.85,4.35,["brussel"],1),
+ C("Hamburg",53.55,10.00,[],1),C("München",48.14,11.58,[],1),C("Frankfurt",50.11,8.68,["frankfurtammain"],1),C("Stuttgart",48.78,9.18,[],1),
+ C("Wien",48.21,16.37,[],1),C("Budapest",47.50,19.04,[],1),C("Warschau",52.23,21.01,["warszawa"],1),C("Kattowitz",50.26,19.02,["katowice"],1),C("Prag",50.08,14.44,["praha"],1),
+ C("Kopenhagen",55.68,12.57,[],1),C("Stockholm",59.33,18.07,[],1),C("Helsinki",60.17,24.94,[],1),C("Oslo",59.91,10.75,[],1),C("Lissabon",38.72,-9.14,["lisboa"],1),
+ C("Valencia",39.47,-0.38,[],1),C("Sevilla",37.39,-5.98,[],1),C("Lyon",45.76,4.84,[],1),C("Marseille",43.30,5.37,[],1),C("Neapel",40.85,14.27,["napoli"],1),
+ C("Turin",45.07,7.69,["torino"],1),C("Belgrad",44.79,20.45,[],1),C("Bukarest",44.43,26.10,[],1),C("Sofia",42.70,23.32,[],1),C("Minsk",53.90,27.56,[],1),
+ C("Charkiw",49.99,36.23,["charkow","kharkiv"],1),C("Rostow am Don",47.24,39.71,["rostow","rostov"],1),C("Wolgograd",48.71,44.51,[],1),C("Samara",53.20,50.15,[],1),
+ C("Kasan",55.79,49.12,[],1),C("Nischni Nowgorod",56.30,43.94,["nishninowgorod"],1),C("Jekaterinburg",56.84,60.61,[],1),C("Perm",58.01,56.25,[],1),C("Ufa",54.74,55.97,[],1),
+ C("Izmir",38.42,27.14,[],1)
+];
+const GERMANY_CITIES=[
+ C("Berlin",52.52,13.40),C("Hamburg",53.55,9.99),C("München",48.14,11.58),C("Köln",50.94,6.96),C("Frankfurt am Main",50.11,8.68,["frankfurt"]),
+ C("Stuttgart",48.78,9.18),C("Düsseldorf",51.23,6.77),C("Dortmund",51.51,7.47),C("Essen",51.46,7.01),C("Leipzig",51.34,12.37),C("Bremen",53.08,8.80),
+ C("Dresden",51.05,13.74),C("Hannover",52.37,9.73),C("Nürnberg",49.45,11.08),C("Oldenburg",53.14,8.21),C("Kiel",54.32,10.13),C("Rostock",54.09,12.10),
+ C("Magdeburg",52.12,11.63),C("Erfurt",50.98,11.03),C("Mainz",49.99,8.25),C("Saarbrücken",49.24,6.99),C("Schwerin",53.63,11.41),C("Potsdam",52.39,13.07),
+ C("Freiburg",47.99,7.85),C("Münster",51.96,7.63),C("Osnabrück",52.28,8.05)
+];
+
+/* ---------- Flüsse (vereinfacht, [Breite, Länge]) ---------- */
+const RIVERS={
+"Rhein":[[46.63,8.67],[46.85,9.53],[47.24,9.60],[47.50,9.62],[47.66,9.18],[47.69,8.63],[47.59,8.20],[47.56,7.59],[48.00,7.57],[48.58,7.80],[49.00,8.31],[49.49,8.46],[49.63,8.37],[50.00,8.27],[49.97,7.92],[50.16,7.71],[50.36,7.60],[50.73,7.10],[50.94,6.97],[51.23,6.77],[51.43,6.73],[51.67,6.62],[51.84,6.24],[51.87,5.90],[51.82,5.20],[51.90,4.48],[51.98,4.12]],
+"Elbe":[[50.77,15.54],[50.21,15.83],[50.04,15.78],[50.03,15.20],[50.35,14.47],[50.66,14.04],[50.92,14.15],[51.05,13.74],[51.16,13.47],[51.56,13.00],[51.86,12.65],[51.85,12.24],[51.97,11.88],[52.13,11.63],[52.54,11.97],[53.00,11.75],[53.14,11.25],[53.37,10.56],[53.54,9.99],[53.79,9.42],[53.87,8.70]],
+"Donau":[[47.95,8.50],[48.09,9.22],[48.40,9.99],[48.71,10.78],[48.76,11.42],[49.02,12.10],[48.88,12.57],[48.57,13.47],[48.31,14.29],[48.21,16.37],[48.14,17.11],[47.76,18.13],[47.79,18.74],[47.79,18.97],[47.50,19.06],[45.99,18.68],[45.25,19.85],[44.82,20.46],[44.62,22.66],[43.75,23.80],[43.70,24.80],[43.85,25.95],[44.12,27.26],[45.27,27.97],[45.44,28.05],[45.18,28.80],[45.16,29.65]],
+"Weser":[[51.42,9.65],[51.77,9.38],[52.10,9.36],[52.29,8.92],[52.64,9.21],[53.08,8.80],[53.17,8.62],[53.24,8.47],[53.33,8.48],[53.49,8.48],[53.54,8.58],[53.70,8.30]],
+"Ems":[[51.83,8.66],[51.95,7.99],[52.28,7.44],[52.69,7.29],[53.08,7.39],[53.23,7.45],[53.37,7.21],[53.33,7.05]],
+"Main":[[49.95,11.58],[50.10,11.45],[49.89,10.89],[50.05,10.23],[49.79,9.93],[50.05,9.70],[49.76,9.52],[49.70,9.26],[49.97,9.15],[50.11,8.68],[50.00,8.27]],
+"Mosel":[[47.88,6.90],[48.69,6.18],[49.12,6.18],[49.36,6.17],[49.47,6.36],[49.75,6.64],[49.92,7.07],[50.15,7.17],[50.36,7.60]],
+"Oder":[[49.83,18.29],[50.67,17.93],[51.11,17.03],[51.66,16.08],[51.80,15.71],[52.05,15.10],[52.07,14.76],[52.35,14.55],[52.80,14.25],[53.43,14.55],[53.80,14.30]],
+"Neiße":[[50.77,15.06],[51.15,14.99],[51.50,14.75],[52.07,14.76]],
+"Saale":[[50.29,11.85],[50.65,11.36],[50.93,11.59],[51.16,11.80],[51.48,11.97],[51.97,11.88]],
+"Spree":[[51.05,14.60],[51.18,14.42],[51.76,14.33],[51.94,13.89],[52.36,14.06],[52.52,13.40],[52.53,13.20]],
+"Havel":[[53.36,12.95],[53.18,13.14],[52.75,13.24],[52.53,13.20],[52.39,13.07],[52.41,12.55],[52.60,12.33],[52.88,11.92]],
+"Neckar":[[48.06,8.53],[48.47,8.94],[48.52,9.06],[48.63,9.33],[48.78,9.21],[49.14,9.22],[49.41,8.69],[49.49,8.46]],
+"Isar":[[47.39,11.26],[47.76,11.56],[48.14,11.58],[48.40,11.75],[48.54,12.15],[48.77,12.87]],
+"Inn":[[46.43,9.75],[46.80,10.30],[47.27,11.39],[47.58,12.17],[47.86,12.12],[48.06,12.23],[48.25,12.52],[48.26,13.03],[48.57,13.47]],
+"Hunte":[[52.20,8.40],[52.51,8.32],[52.89,8.43],[53.14,8.22],[53.24,8.47]],
+"Wolga":[[57.25,32.48],[56.86,35.91],[58.05,38.83],[57.63,39.87],[56.33,44.00],[55.79,49.12],[54.31,48.40],[53.20,50.15],[51.53,46.03],[48.71,44.51],[46.35,48.04],[45.95,48.60]],
+"Dnepr":[[55.98,33.20],[54.78,32.05],[54.51,30.41],[53.90,30.33],[52.36,30.39],[50.45,30.52],[49.07,33.42],[48.46,35.04],[47.84,35.14],[47.57,34.40],[46.64,32.62],[46.55,32.10]],
+"Don":[[54.00,38.30],[51.67,39.20],[50.45,40.10],[49.60,42.30],[48.69,43.53],[47.65,42.10],[47.24,39.71],[47.11,39.42]],
+"Loire":[[44.84,4.22],[45.43,4.39],[46.04,4.07],[46.99,3.16],[47.90,1.90],[47.39,0.69],[47.47,-0.55],[47.22,-1.55],[47.27,-2.20]],
+"Seine":[[47.48,4.72],[48.30,4.08],[48.86,2.35],[49.44,1.10],[49.43,0.20]],
+"Rhône":[[46.58,8.38],[46.23,7.36],[46.40,6.90],[46.20,6.14],[45.76,4.84],[44.93,4.89],[43.95,4.81],[43.68,4.63],[43.35,4.80]],
+"Po":[[44.70,7.09],[45.07,7.69],[45.13,8.45],[45.05,9.70],[45.13,10.02],[45.07,11.14],[44.88,11.60],[44.95,12.45]],
+"Ebro":[[43.00,-4.20],[42.47,-2.45],[41.65,-0.88],[40.82,0.52],[40.72,0.87]],
+"Tajo":[[40.30,-1.70],[39.86,-4.02],[39.72,-6.88],[39.46,-8.20],[38.70,-9.15]],
+"Themse":[[51.69,-2.03],[51.75,-1.26],[51.46,-0.97],[51.51,-0.13],[51.50,0.60]],
+"Weichsel":[[49.60,18.95],[50.06,19.94],[50.68,21.75],[51.42,21.97],[52.23,21.01],[52.55,19.70],[53.01,18.60],[53.48,18.75],[54.36,18.95]],
+"Nil":[[0.42,33.20],[2.30,31.40],[4.85,31.60],[9.53,31.66],[15.60,32.53],[17.70,34.00],[19.54,33.32],[19.17,30.47],[21.80,31.35],[24.09,32.90],[25.69,32.64],[27.18,31.18],[30.04,31.24],[31.50,31.00]],
+"Amazonas":[[-12.50,-73.50],[-8.40,-74.50],[-4.50,-73.60],[-3.75,-73.25],[-4.20,-69.90],[-3.10,-60.00],[-2.44,-54.70],[-1.50,-52.00],[-0.20,-50.00]],
+"Mississippi":[[47.24,-95.20],[44.95,-93.10],[41.50,-90.60],[38.63,-90.20],[36.97,-89.13],[35.15,-90.05],[32.30,-90.90],[30.45,-91.15],[29.95,-90.07],[29.15,-89.25]],
+"Missouri":[[45.90,-111.50],[47.50,-111.30],[47.80,-106.00],[46.80,-100.78],[44.37,-100.35],[42.50,-96.40],[41.26,-95.94],[39.10,-94.60],[38.82,-90.12]],
+"Kongo":[[-11.00,26.80],[-9.20,25.85],[-5.38,27.00],[-2.95,25.90],[0.52,25.20],[2.19,22.47],[2.15,21.50],[0.05,18.26],[-4.32,15.31],[-5.82,13.45],[-6.07,12.30]],
+"Niger":[[9.08,-10.73],[10.65,-9.88],[12.65,-8.00],[14.50,-4.20],[16.77,-3.00],[16.27,-0.05],[13.51,2.11],[11.86,3.40],[9.15,4.83],[7.80,6.74],[6.10,6.78],[4.30,6.10]],
+"Jangtsekiang":[[33.40,91.20],[32.80,96.00],[29.50,99.00],[26.90,100.20],[28.77,104.64],[29.56,106.55],[30.82,111.00],[30.59,114.30],[29.70,116.00],[32.06,118.78],[31.40,121.60]],
+"Huang He":[[34.50,96.00],[36.06,103.83],[38.47,106.27],[40.75,107.40],[40.65,109.84],[39.50,111.20],[36.60,110.60],[34.60,110.30],[34.75,113.65],[36.65,117.00],[37.75,119.20]],
+"Mekong":[[33.50,94.70],[31.10,97.20],[27.50,99.00],[22.00,100.80],[20.30,100.10],[19.90,102.10],[17.97,102.60],[15.12,105.80],[11.56,104.92],[9.60,106.50]],
+"Ganges":[[30.99,78.94],[29.95,78.16],[26.45,80.33],[25.45,81.84],[25.32,83.00],[25.60,85.14],[24.80,87.90],[23.50,89.50],[22.50,90.70]],
+"Indus":[[31.10,81.30],[34.16,77.58],[35.50,74.60],[33.90,72.24],[30.40,71.00],[27.70,68.86],[25.40,68.37],[24.00,67.50]],
+"Ob":[[52.54,85.21],[53.35,83.77],[55.00,82.93],[58.30,82.90],[60.94,76.55],[61.00,69.00],[66.53,66.60],[67.20,71.00],[70.50,73.50]],
+"Jenissei":[[51.70,94.40],[53.70,91.40],[56.00,92.87],[58.50,92.20],[61.60,90.10],[65.80,87.95],[69.40,86.18],[71.80,83.00]],
+"Lena":[[53.90,105.80],[56.80,105.80],[60.37,120.42],[62.03,129.73],[66.77,123.37],[72.40,126.80]],
+"Amur":[[53.33,121.50],[50.27,127.53],[48.48,135.08],[50.55,137.00],[53.14,140.73]],
+"Paraná":[[-20.10,-51.00],[-22.00,-52.50],[-25.40,-54.60],[-27.30,-55.90],[-27.47,-58.83],[-31.60,-60.70],[-33.00,-60.60],[-34.00,-58.60]],
+"Madeira":[[-10.80,-65.30],[-8.76,-63.90],[-5.80,-61.30],[-3.40,-58.80]]
+};
+const RIVER_ALT={"Neiße":["neisse"],"Dnepr":["dnipro","dnjepr"],"Rhône":["rhone"],"Tajo":["tejo"],"Themse":["thames"],"Weichsel":["wisla","vistula"],"Jangtsekiang":["jangtse","yangtze","changjiang","jangtsekiang"],"Huang He":["huanghe","gelberfluss","huangho"],"Jenissei":["jenisei","yenisei"],"Paraná":["parana"],"Amazonas":["amazon"],"Kongo":["congo"],"Nil":["nile"],"Mississippi":["misisippi","missisippi"]};
+
+/* ---------- Gebirge (Achse vereinfacht) ---------- */
+const MOUNTS={
+"Rocky Mountains":[[60,-135],[55,-123],[50,-116],[45,-111],[40,-106],[35,-106]],
+"Appalachen":[[34,-85],[37,-81],[40.5,-77],[44,-72],[47,-68]],
+"Anden":[[10,-72],[5,-75.5],[0,-78],[-6,-78],[-12,-75.5],[-18,-69],[-25,-68.5],[-33,-70],[-41,-71.5],[-50,-73]],
+"Alpen":[[44.2,7.0],[45.5,6.9],[46.3,7.8],[46.5,9.5],[47.1,11.5],[47.3,13.5],[47.7,15.5]],
+"Atlas":[[30.5,-9],[31.5,-6],[33.5,-3],[35,1],[36.3,5],[36.5,9]],
+"Ural":[[67.5,64],[63,59.5],[59,59],[55,59],[52,58.5]],
+"Kaukasus":[[44.5,38.5],[43.3,42.5],[42,46],[41,49]],
+"Himalaya":[[35,74],[32,77.5],[29.5,82.5],[28,86.5],[27.8,90],[28.5,95]],
+"Skandinavisches Gebirge":[[58.5,7],[61,8.5],[63.5,12.5],[66.5,15.5],[69,19.5]],
+"Drakensberge":[[-25,30.5],[-28.5,29.5],[-31,27.5]],
+"Äthiopisches Hochland":[[14,38],[11,38.5],[8,38.5]],
+"Great Dividing Range":[[-16,145],[-21,147.5],[-27,151.5],[-33,150],[-37,147]],
+"Pyrenäen":[[43.0,-1.5],[42.7,0.5],[42.5,2.5]],
+"Karpaten":[[48.8,18.8],[49.4,20.5],[49.0,22.5],[48.0,24.5],[46.5,25.8],[45.5,25.5],[45.4,23.0],[44.8,22.2]],
+"Apennin":[[44.3,8.8],[44.1,11.0],[43.0,12.8],[42.0,13.8],[40.8,15.3],[39.5,16.2],[38.5,16.0]],
+"Dinarisches Gebirge":[[46.0,14.5],[44.8,16.0],[43.5,17.8],[42.5,19.5],[41.5,20.3]],
+"Balkangebirge":[[43.5,22.5],[42.8,24.5],[42.7,26.8]],
+"Zentralmassiv":[[46.0,2.8],[45.0,3.0],[44.0,3.3]],
+"Bayerische Alpen":[[47.55,10.2],[47.45,11.0],[47.6,12.3],[47.6,13.0]],
+"Harz":[[51.85,10.4],[51.65,11.0]],
+"Schwarzwald":[[48.85,8.35],[48.3,8.15],[47.75,8.0]],
+"Schwäbische Alb":[[48.0,8.8],[48.4,9.4],[48.75,10.2]],
+"Fränkische Alb":[[48.9,10.9],[49.4,11.4],[49.95,11.15]],
+"Bayerischer Wald":[[49.3,12.7],[48.95,13.3],[48.7,13.75]],
+"Erzgebirge":[[50.35,12.3],[50.55,13.0],[50.75,13.75]],
+"Fichtelgebirge":[[50.1,11.8],[50.0,12.0]],
+"Thüringer Wald":[[50.95,10.1],[50.7,10.7],[50.5,11.2]],
+"Rhön":[[50.65,9.85],[50.35,10.0]],
+"Vogelsberg":[[50.55,9.15],[50.45,9.3]],
+"Taunus":[[50.2,8.0],[50.25,8.55]],
+"Hunsrück":[[49.6,6.7],[49.8,7.2],[50.0,7.65]],
+"Eifel":[[50.15,6.4],[50.3,6.9],[50.4,7.2]],
+"Westerwald":[[50.5,7.6],[50.7,8.0]],
+"Sauerland":[[51.25,7.6],[51.15,8.2],[51.0,8.4]],
+"Teutoburger Wald":[[52.25,7.75],[52.05,8.4],[51.8,8.85]],
+"Spessart":[[50.05,9.3],[49.9,9.5]],
+"Odenwald":[[49.75,8.8],[49.45,9.05]],
+"Pfälzerwald":[[49.4,7.85],[49.05,7.9]]
+};
+const MOUNT_ALT={"Rocky Mountains":["rockies","rockymountains","felsengebirge"],"Skandinavisches Gebirge":["skanden","skandinavischesgebirge","kjolen"],"Äthiopisches Hochland":["athiopischeshochland"],"Great Dividing Range":["greatdividingrange","australischekordilleren"],"Balkangebirge":["balkan"],"Bayerische Alpen":["alpen"],"Sauerland":["rothaargebirge"],"Pfälzerwald":["pfalzerwald"]};
+
+const POINTS={
+ world:{"Afrika":[8,22],"Asien":[48,95],"Europa":[53,18],"Nordamerika":[45,-100],"Südamerika":[-12,-58],"Australien":[-25,134],"Antarktis":[-80,40],
+        "Atlantischer Ozean":[15,-40],"Pazifischer Ozean":[5,-140],"Indischer Ozean":[-20,78],"Nordpolarmeer":[82,-20]},
+ europe:{"Nordsee":[56,3],"Ostsee":[57,19.5],"Mittelmeer":[35.5,17.5],"Schwarzes Meer":[43.3,34],"Atlantischer Ozean":[46,-8.5],"Kaspisches Meer":[42.5,50.8],"Adria":[42.8,15.6]},
+ germany:{"Nordsee":[54.4,7.4],"Ostsee":[54.75,12.3],"Bodensee":[47.6,9.4]}
+};
+
+
+/* ---------- Kartenrahmen ---------- */
+const MAPDEF={
+ world:{W:760,H:396,cities:WORLD_CITIES,rivers:["Nil","Amazonas","Mississippi","Missouri","Kongo","Niger","Jangtsekiang","Huang He","Mekong","Ganges","Indus","Ob","Jenissei","Lena","Amur","Wolga","Donau","Paraná","Madeira"],
+   mounts:["Rocky Mountains","Appalachen","Anden","Alpen","Atlas","Ural","Kaukasus","Himalaya","Skandinavisches Gebirge","Drakensberge","Äthiopisches Hochland","Great Dividing Range"],mw:5,tol:30,fs:11,cfs:9,title:"Erde"},
+ europe:{W:560,H:480,cities:EUROPE_CITIES,rivers:["Rhein","Elbe","Donau","Wolga","Dnepr","Don","Loire","Seine","Rhône","Po","Ebro","Tajo","Themse","Weichsel","Oder","Weser"],
+   mounts:["Alpen","Pyrenäen","Karpaten","Apennin","Dinarisches Gebirge","Balkangebirge","Skandinavisches Gebirge","Ural","Kaukasus","Zentralmassiv"],mw:6,tol:24,fs:12,cfs:9,title:"Europa"},
+ germany:{W:470,H:610,cities:GERMANY_CITIES,rivers:["Rhein","Elbe","Donau","Weser","Ems","Main","Mosel","Oder","Neiße","Saale","Spree","Havel","Neckar","Isar","Inn","Hunte"],
+   mounts:["Bayerische Alpen","Harz","Schwarzwald","Schwäbische Alb","Fränkische Alb","Bayerischer Wald","Erzgebirge","Fichtelgebirge","Thüringer Wald","Rhön","Vogelsberg","Taunus","Hunsrück","Eifel","Westerwald","Sauerland","Teutoburger Wald","Spessart","Odenwald","Pfälzerwald"],mw:9,tol:24,fs:13,cfs:11,title:"Deutschland",grid:{x0:34,x1:454,y0:40,y1:590,cols:6,rows:8}}
+};
+const findCity=(set,n)=>MAPDEF[set].cities.find(c=>c.n===n);
+
+/* Ländernamen (deutsch) an festen Punkten [Name, Breite, Länge] */
+const CLABELS={
+ world:[["Kanada",58,-108],["USA",40,-100],["Mexiko",24.5,-103],["Brasilien",-9,-52],["Argentinien",-37,-66],["Russland",62,98],["China",34,100],["Indien",23,78.5],["Kasachstan",48.5,67],["Australien",-24,133],["Algerien",27,2],["Saudi-Arabien",23.5,45],["Grönland",73,-41],["Kongo",-2,22]],
+ europe:[["Norwegen",61.5,8.8],["Schweden",63,15.8],["Finnland",63.5,26.5],["Russland",60.5,40],["Estland",58.7,25.8],["Lettland",56.9,25.6],["Litauen",55.4,23.8],["Belarus",53.4,28.2],["Polen",52.2,19.2],["Deutschland",51.2,10.2],["Niederlande",52.6,5.7],["Belgien",50.6,4.6],["Frankreich",46.6,2.4],["Spanien",39.2,-4],["Portugal",39.8,-8.2],["Großbritannien",54.6,-2.4],["Irland",53,-8],["Dänemark",56.1,9.2],["Schweiz",46.8,8],["Österreich",47.5,14.3],["Tschechien",49.8,15.4],["Slowakei",48.7,19.6],["Ungarn",47.1,19.4],["Rumänien",45.9,24.8],["Bulgarien",42.7,25.2],["Serbien",43.9,20.8],["Kroatien",45.4,15.8],["Griechenland",39.4,22],["Türkei",39.3,35.3],["Italien",43.3,11.6],["Ukraine",49.1,31.5],["Marokko",33,-6.2],["Algerien",34.6,3],["Tunesien",34.2,9.4],["Kasachstan",48.8,57.5]],
+ germany:[["Niederlande",52.6,6.05],["Belgien",50.55,5.85],["Frankreich",48.7,6.6],["Schweiz",47.35,8.4],["Österreich",47.55,13.9],["Tschechien",49.8,14.7],["Polen",52.6,15.1],["Dänemark",55.4,9.3],["Luxemburg",49.7,6.05]]
+};
+const WATERLABELS={germany:[["Nordsee",54.45,7.3],["Ostsee",54.75,12.3]],europe:[["Nordsee",56,3],["Ostsee",57.2,19.4],["Mittelmeer",36,17.5],["Schwarzes Meer",43.3,34],["Atlantischer Ozean",46,-8.6]],world:[]};
+
+/* ---------- Kartendaten laden: mehrere Quellen, die erste funktionierende gewinnt ---------- */
+const GEO={d3:!!window.d3,world:null,europe:null,states:null,src:"",note:""};
+const AM4="@amcharts/amcharts4-geodata@4.1.31";
+function fcOf(x){if(!x)return null;if(x.features)return x;if(x.default&&x.default.features)return x.default;return null;}
+async function tryImports(urls){for(const u of urls){try{const m=await import(u);const d=fcOf(m);if(d)return d;}catch(e){}}return null;}
+function tryScripts(urls,detect){return new Promise(res=>{let i=0;const next=()=>{if(i>=urls.length)return res(null);const s=document.createElement("script");s.src=urls[i++];
+  const to=setTimeout(()=>{s.onload=s.onerror=null;next();},20000);
+  s.onload=()=>{clearTimeout(to);let d=null;try{d=detect();}catch(e){}d?res(d):next();};s.onerror=()=>{clearTimeout(to);s.remove();next();};document.head.appendChild(s);};next();});}
+async function amcharts(path){
+ const key="am4geodata_"+path.replace(/\//g,"_");
+ let d=await tryScripts([`https://cdn.jsdelivr.net/npm/${AM4}/dist/script/${path}.js`,`https://unpkg.com/${AM4}/dist/script/${path}.js`],()=>fcOf(window[key]));
+ if(!d)d=await tryImports([`https://cdn.jsdelivr.net/npm/${AM4}/${path}.js`,`https://cdn.jsdelivr.net/npm/${AM4}/${path}/+esm`,`https://unpkg.com/${AM4}/${path}.js?module`]);
+ return d;
+}
+/* ECharts 4 liefert eine kodierte Weltkarte als Skript */
+function decodeEcharts(json){if(!json||!json.features)return null;if(!json.UTF8Encoding)return json;const sc=json.UTF8Scale==null?1024:json.UTF8Scale;
+ const dec=(str,off)=>{const r=[];let px=off[0],py=off[1];for(let i=0;i<str.length;i+=2){let x=str.charCodeAt(i)-64,y=str.charCodeAt(i+1)-64;x=(x>>1)^(-(x&1));y=(y>>1)^(-(y&1));x+=px;y+=py;px=x;py=y;r.push([x/sc,y/sc]);}return r;};
+ json.features.forEach(f=>{const g=f.geometry;if(!g)return;const eo=g.encodeOffsets;
+  if(g.type==="Polygon")g.coordinates=g.coordinates.map((c,i)=>typeof c==="string"?dec(c,eo[i]):c);
+  else if(g.type==="MultiPolygon")g.coordinates=g.coordinates.map((p,i)=>p.map((c,j)=>typeof c==="string"?dec(c,eo[i][j]):c));});
+ json.UTF8Encoding=false;return json;}
+async function echartsWorld(){const reg={};const prev=window.echarts;window.echarts={registerMap:(n,g)=>{reg[n]=g;}};
+ const d=await tryScripts(["https://cdn.jsdelivr.net/npm/echarts@4.7.0/map/js/world.js","https://unpkg.com/echarts@4.7.0/map/js/world.js"],()=>reg.world||null);
+ window.echarts=prev;return d?decodeEcharts(d):null;}
+/* jsVectorMap liefert SVG-Pfade in Miller-Projektion; zurückrechnen in Längen/Breiten */
+function svgRings(d){const t=d.match(/[MmLlHhVvZzCcSsQqTtAa]|-?\d*\.?\d+(?:e[-+]?\d+)?/g)||[];const rings=[];let r=null,x=0,y=0,sx=0,sy=0,cmd="",i=0;
+ const num=()=>parseFloat(t[i++]);
+ while(i<t.length){if(/[a-z]/i.test(t[i]))cmd=t[i++];
+  switch(cmd){
+   case"M":x=num();y=num();r=[[x,y]];rings.push(r);sx=x;sy=y;cmd="L";break;
+   case"m":x+=num();y+=num();r=[[x,y]];rings.push(r);sx=x;sy=y;cmd="l";break;
+   case"L":x=num();y=num();r.push([x,y]);break; case"l":x+=num();y+=num();r.push([x,y]);break;
+   case"H":x=num();r.push([x,y]);break; case"h":x+=num();r.push([x,y]);break;
+   case"V":y=num();r.push([x,y]);break; case"v":y+=num();r.push([x,y]);break;
+   case"C":i+=4;x=num();y=num();r.push([x,y]);break; case"c":i+=4;x+=num();y+=num();r.push([x,y]);break;
+   case"S":case"Q":i+=2;x=num();y=num();r.push([x,y]);break; case"s":case"q":i+=2;x+=num();y+=num();r.push([x,y]);break;
+   case"T":x=num();y=num();r.push([x,y]);break; case"t":x+=num();y+=num();r.push([x,y]);break;
+   case"A":i+=5;x=num();y=num();r.push([x,y]);break; case"a":i+=5;x+=num();y+=num();r.push([x,y]);break;
+   case"Z":case"z":if(r){r.push([sx,sy]);}x=sx;y=sy;cmd="";break;
+   default:i++;}}
+ return rings.filter(q=>q.length>3);}
+function jvmToGeo(m){const R=6381372,rd=Math.PI/180;const c=(m.projection&&m.projection.centralMeridian)||0;const type=(m.projection&&m.projection.type)||"mill";const ins=(m.insets||[])[0];if(!ins)return null;
+ const b=ins.bbox;const fx=(b[1].x-b[0].x)/ins.width,fy=(b[1].y-b[0].y)/ins.height;
+ const inv=(sx,sy)=>{const X=b[0].x+(sx-ins.left)*fx,Y=b[0].y+(sy-ins.top)*fy;const lon=c+X/R/rd;let lat;
+  if(type==="merc")lat=(2*Math.atan(Math.exp(-Y/R))-Math.PI/2)/rd;else lat=((Math.atan(Math.exp(-0.8*Y/R))-Math.PI/4)/0.4)/rd;return[lon,lat];};
+ const features=Object.entries(m.paths||{}).map(([id,p])=>({type:"Feature",properties:{id,name:p.name},geometry:{type:"MultiPolygon",coordinates:svgRings(p.path).map(r=>[r.map(q=>inv(q[0],q[1]))])}}));
+ return {type:"FeatureCollection",features};}
+async function jvmWorld(){const reg={};const prev=window.jsVectorMap;window.jsVectorMap={addMap:(n,d)=>{reg[n]=d;}};
+ const d=await tryScripts(["https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js","https://unpkg.com/jsvectormap@1.5.3/dist/maps/world.js"],()=>reg.world||reg.world_mill||Object.values(reg)[0]||null);
+ window.jsVectorMap=prev;return d?jvmToGeo(d):null;}
+function fixWinding(fc){
+ fc.features=fc.features.filter(f=>f&&f.geometry);
+ fc.features.forEach(f=>{const g=f.geometry;const polys=g.type==="Polygon"?[g.coordinates]:g.type==="MultiPolygon"?g.coordinates:[];
+  polys.forEach(p=>{try{if(d3.geoArea({type:"Polygon",coordinates:p})>2*Math.PI)p.forEach(r=>r.reverse());}catch(e){}});});
+ return fc;}
+
+if(GEO.d3)buildProjections();
+const MAPREADY=(async()=>{
+ if(!GEO.d3){GEO.note="Die Kartenbibliothek konnte nicht geladen werden. Fragen mit Karte sind ausgeblendet.";return false;}
+ const [w,eu,st]=await Promise.all([amcharts("worldLow"),amcharts("region/world/europeHigh"),amcharts("germanyHigh")]);
+ let world=w,src=w?"amCharts":"";
+ if(!world){world=await echartsWorld();if(world)src="ECharts";}
+ if(!world){world=await jvmWorld();if(world)src="jsVectorMap";}
+ if(world)GEO.world=fixWinding(world);
+ if(eu)GEO.europe=fixWinding(eu);
+ if(st)GEO.states=fixWinding(st);
+ GEO.src=src;
+ if(!world&&!eu)GEO.note="Die Ländergrenzen konnten nicht geladen werden (keine Verbindung zu den Karten-Servern). Bitte die Seite neu laden.";
+ buildBase();
+ return !!(world||eu);
+})();
+
+function buildProjections(){
+ const sph={type:"Sphere"};
+ for(const name of Object.keys(MAPDEF)){
+  const md=MAPDEF[name];let P;
+  if(name==="world")P=d3.geoNaturalEarth1().fitExtent([[4,4],[md.W-4,md.H-4]],sph);
+  else if(name==="europe")P=d3.geoConicConformal().rotate([-20,0]).parallels([40,62]).fitExtent([[0,0],[md.W,md.H]],{type:"MultiPoint",coordinates:[[-10.5,36],[-10.5,58],[0,60.5],[22,71],[56,66],[58,50],[45,35.5],[20,34.5],[-9,35.5]]}).clipExtent([[0,0],[md.W,md.H]]);
+  else P=d3.geoConicConformal().rotate([-10.4,0]).parallels([48,54]).fitExtent([[md.grid.x0,md.grid.y0],[md.grid.x1,md.grid.y1]],{type:"MultiPoint",coordinates:[[5.7,47.2],[15.3,47.2],[5.7,55.15],[15.3,55.15]]}).clipExtent([[0,0],[md.W,md.H]]);
+  md.P=P;const path=d3.geoPath(P).digits(1);md.path=path;
+  const proj=(la,lo)=>P([lo,la]);
+  md.cityPx={};md.cities.forEach(c=>{md.cityPx[c.n]=proj(c.la,c.lo);});
+  md.riverD={};md.riverPx={};md.rivers.forEach(r=>{const ls={type:"LineString",coordinates:RIVERS[r].map(p=>[p[1],p[0]])};md.riverD[r]=path(ls);md.riverPx[r]=RIVERS[r].map(p=>proj(p[0],p[1])).filter(Boolean);});
+  md.mountD={};md.mountPx={};md.mounts.forEach(m=>{const ls={type:"LineString",coordinates:MOUNTS[m].map(p=>[p[1],p[0]])};md.mountD[m]=path(ls);md.mountPx[m]=MOUNTS[m].map(p=>proj(p[0],p[1])).filter(Boolean);});
+  md.ptPx={};Object.entries(POINTS[name]).forEach(([k,v])=>{md.ptPx[k]=proj(v[0],v[1]);});
+  const inView=p=>p&&p[0]>8&&p[0]<md.W-8&&p[1]>8&&p[1]<md.H-8;
+  md.clbl=CLABELS[name].map(([n,la,lo])=>{const p=proj(la,lo);return inView(p)?`<text class="clbl" x="${p[0].toFixed(1)}" y="${p[1].toFixed(1)}" font-size="${md.cfs}" text-anchor="middle">${esc(n)}</text>`:"";}).join("");
+  md.wlbl=WATERLABELS[name].map(([n,la,lo])=>{const p=proj(la,lo);return inView(p)?`<text class="wlbl" x="${p[0].toFixed(1)}" y="${p[1].toFixed(1)}" font-size="${md.cfs+1}" text-anchor="middle">${esc(n)}</text>`:"";}).join("");
+ }
+}
+const isDE=f=>f.properties&&(f.properties.id==="DE"||f.properties.name==="Germany"||f.properties.name==="Deutschland");
+function colorize(feats,path){/* Nachbarländer bekommen möglichst verschiedene Farben */
+ const items=feats.map(f=>{let b=null;try{b=path.bounds(f);}catch(e){}return{f,b,c:-1,a:b&&isFinite(b[0][0])?(b[1][0]-b[0][0])*(b[1][1]-b[0][1]):0};}).filter(x=>x.b&&isFinite(x.b[0][0]));
+ items.sort((p,q)=>q.a-p.a);
+ const touch=(p,q)=>p.b[0][0]<=q.b[1][0]+1&&q.b[0][0]<=p.b[1][0]+1&&p.b[0][1]<=q.b[1][1]+1&&q.b[0][1]<=p.b[1][1]+1;
+ items.forEach((it,i)=>{const used=new Array(6).fill(0);for(let j=0;j<i;j++)if(touch(it,items[j]))used[items[j].c]++;let c=used.indexOf(0);if(c<0)c=used.indexOf(Math.min.apply(null,used));it.c=c;});
+ return items;}
+function buildBase(){
+ const sph={type:"Sphere"};
+ for(const name of Object.keys(MAPDEF)){
+  const md=MAPDEF[name],path=md.path;
+  let g= name==="world"?`<path class="sea" d="${path(sph)}"/>`:`<rect class="sea" width="${md.W}" height="${md.H}"/>`;
+  g+=`<path class="grat" d="${path(d3.geoGraticule().step(name==="germany"?[2,2]:name==="europe"?[10,10]:[20,20])())}"/>`;
+  let feats=[];
+  if(name==="world"){if(GEO.world)feats=GEO.world.features;else if(GEO.europe)feats=GEO.europe.features;}
+  else{const eu=GEO.europe,wl=GEO.world;
+   if(eu&&wl){const ids=new Set(eu.features.map(f=>f.properties&&f.properties.id));feats=wl.features.filter(f=>!ids.has(f.properties&&f.properties.id)).concat(eu.features);}
+   else feats=(eu||wl||{features:[]}).features;}
+  const pd=f=>{try{return path(f)||"";}catch(e){return"";}};
+  if(name==="germany"){feats.forEach(f=>{const d=pd(f);if(d)g+=`<path class="land ${isDE(f)?"de":"nb"}" d="${d}"/>`;});
+   if(GEO.states)GEO.states.features.forEach(f=>{const d=pd(f);if(d)g+=`<path class="state" d="${d}"/>`;});}
+  else colorize(feats,path).forEach(it=>{const d=pd(it.f);if(d)g+=`<path class="land c${it.c}" d="${d}"/>`;});
+  md.base=g;
+ }
+}
+
+/* ---------- Geometrie für Treffer ---------- */
+function dSeg(p,a,b){const dx=b[0]-a[0],dy=b[1]-a[1];const l=dx*dx+dy*dy;let t=l?((p[0]-a[0])*dx+(p[1]-a[1])*dy)/l:0;t=Math.max(0,Math.min(1,t));return Math.hypot(p[0]-(a[0]+t*dx),p[1]-(a[1]+t*dy));}
+function dLine(p,pts){if(pts.length===1)return Math.hypot(p[0]-pts[0][0],p[1]-pts[0][1]);let m=Infinity;for(let i=1;i<pts.length;i++)m=Math.min(m,dSeg(p,pts[i-1],pts[i]));return m;}
+const midOf=pts=>pts[Math.floor(pts.length/2)];
+
+/* ---------- Karte zeichnen ---------- */
+let LBLW=760;
+function lbl(p,t,fs,cls){const left=p[0]>LBLW*0.72;return `<text class="lbl ${cls||""}" x="${(left?p[0]-6:p[0]+6).toFixed(1)}" y="${(p[1]-6).toFixed(1)}" font-size="${fs}" text-anchor="${left?"end":"start"}">${esc(t)}</text>`;}
+function starPath(x,y,r){let d="";for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;d+=(i?"L":"M")+(x+rr*Math.cos(a)).toFixed(1)+","+(y+rr*Math.sin(a)).toFixed(1);}return `<path class="star pulse" d="${d}Z"/>`;}
+const GLINES={"Äquator":{lat:0},"Nördlicher Wendekreis":{lat:23.44},"Südlicher Wendekreis":{lat:-23.44},"Nördlicher Polarkreis":{lat:66.56},"Südlicher Polarkreis":{lat:-66.56},"Nullmeridian":{lon:0}};
+function gLinePath(md,k){const g=GLINES[k];const c=[];if(g.lat!==undefined)for(let lo=-180;lo<=180;lo+=2)c.push([lo,g.lat]);else for(let la=-89;la<=89;la+=2)c.push([g.lon,la]);return md.path({type:"LineString",coordinates:c});}
+function mapSVG(m){
+ const md=MAPDEF[m.name];const fs=md.fs;LBLW=md.W;const u=md.W/560;
+ let s=`<svg class="map${m.click?" clickable":""}" viewBox="0 0 ${md.W} ${md.H}" role="img" aria-label="Karte ${md.title}">${md.base||""}`;
+ if(!m.nolabels)s+=md.clbl+md.wlbl;
+ if(m.grid){const G=md.grid,cw=(G.x1-G.x0)/G.cols,rh=(G.y1-G.y0)/G.rows;
+  for(let i=0;i<=G.cols;i++)s+=`<line class="gridl" x1="${G.x0+i*cw}" y1="${G.y0}" x2="${G.x0+i*cw}" y2="${G.y1}"/>`;
+  for(let j=0;j<=G.rows;j++)s+=`<line class="gridl" x1="${G.x0}" y1="${G.y0+j*rh}" x2="${G.x1}" y2="${G.y0+j*rh}"/>`;
+  for(let i=0;i<G.cols;i++)s+=`<text class="gridt lbl" x="${G.x0+(i+.5)*cw}" y="${G.y0-10}" font-size="16" text-anchor="middle">${"ABCDEFGH"[i]}</text>`;
+  for(let j=0;j<G.rows;j++)s+=`<text class="gridt lbl" x="${G.x0-16}" y="${G.y0+(j+.5)*rh+6}" font-size="16" text-anchor="middle">${j+1}</text>`;}
+ if(m.glines)m.glines.forEach(gl=>{const d=gLinePath(md,gl.k);if(gl.hl)s+=`<path class="gline" d="${d}"/>`;s+=`<path class="gline-c" d="${d}"/>`;});
+ if(m.mounts)md.mounts.forEach(n=>{const hl=m.hl&&m.hl.t==="mount"&&m.hl.id===n;const w=md.mw;
+  if(hl)s+=`<path class="mk" d="${md.mountD[n]}" stroke-width="${w+12}"/>`;
+  s+=`<path class="mte" d="${md.mountD[n]}" stroke-width="${w+3}"/><path class="mtf" d="${md.mountD[n]}" stroke-width="${w}"/>`;});
+ if(m.rivers)md.rivers.forEach(n=>{const hl=m.hl&&m.hl.t==="river"&&m.hl.id===n;
+  if(hl)s+=`<path class="mk" d="${md.riverD[n]}" stroke-width="${9*u}"/>`;
+  s+=`<path class="riv${hl?" hl":""}" d="${md.riverD[n]}"/>`;});
+ const cr=m.name==="world"?2.6:3.2;
+ if(m.cities)md.cities.forEach(c=>{const p=md.cityPx[c.n];if(!p)return;
+  if(m.name==="europe"&&c.c>=2){const z=c.c===3?5.5:4.2;s+=`<rect class="cty-sq" x="${p[0]-z}" y="${p[1]-z}" width="${2*z}" height="${2*z}"/>`+(c.c===3?`<rect class="cty-sq" x="${p[0]-z+2.2}" y="${p[1]-z+2.2}" width="${2*z-4.4}" height="${2*z-4.4}"/>`:`<rect class="cty" x="${p[0]-1.6}" y="${p[1]-1.6}" width="3.2" height="3.2"/>`);}
+  else s+=`<circle class="cty" cx="${p[0]}" cy="${p[1]}" r="${cr}"/>`;});
+ if(m.hl&&m.hl.t==="city"){const p=md.cityPx[m.hl.id];if(p){s+=`<circle class="ring pulse" cx="${p[0]}" cy="${p[1]}" r="${cr*2.6}"/><circle class="cty" cx="${p[0]}" cy="${p[1]}" r="${cr}"/>`;if(m.hl.label)s+=lbl(p,m.hl.id,fs);}}
+ if(m.hl&&m.hl.t==="pt"){const p=md.ptPx[m.hl.id];if(p)s+=starPath(p[0],p[1],11*u);}
+ if(m.dist){const a=md.cityPx[m.dist.a],b=md.cityPx[m.dist.b];
+  s+=`<line class="dist" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`;
+  [a,b].forEach(p=>{s+=`<circle class="ring" cx="${p[0]}" cy="${p[1]}" r="6"/><circle class="cty" cx="${p[0]}" cy="${p[1]}" r="2.8"/>`;});
+  s+=lbl(a,m.dist.a,fs)+lbl(b,m.dist.b,fs);
+  const bx=14,by=md.H-30,bw=m.dist.barPx;
+  s+=`<rect class="barbg" x="${bx-8}" y="${by-22}" width="${bw+56}" height="44" rx="6"/>`;
+  s+=`<rect class="bar-a" x="${bx}" y="${by}" width="${bw/2}" height="7"/><rect class="bar-b" x="${bx+bw/2}" y="${by}" width="${bw/2}" height="7"/>`;
+  s+=`<text class="bart" x="${bx}" y="${by-6}" font-size="12" text-anchor="middle">0</text><text class="bart" x="${bx+bw}" y="${by-6}" font-size="12" text-anchor="middle">${fmt(m.dist.barKm)}</text><text class="bart" x="${bx+bw+6}" y="${by+8}" font-size="12">km</text>`;}
+ if(m.dir){const a=md.cityPx[m.dir.a],b=md.cityPx[m.dir.b];
+  s+=`<line class="dist" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke-dasharray="6 5"/>`;
+  s+=`<circle class="ring" cx="${a[0]}" cy="${a[1]}" r="7"/><circle class="cty" cx="${a[0]}" cy="${a[1]}" r="3"/><circle class="cty" cx="${b[0]}" cy="${b[1]}" r="4"/>`;
+  s+=lbl(a,m.dir.a+" (Start)",fs)+lbl(b,m.dir.b,fs);}
+ if(m.north){s+=`<g transform="translate(${md.W-28},30)"><path class="narrow" d="M0,-17 L7,6 L0,1.5 L-7,6Z"/><text class="lbl" y="22" text-anchor="middle" font-size="13">N</text></g>`;}
+ s+=`<g class="reveal"></g><g class="pins"></g></svg>`;
+ return s;
+}
+function pinSVG(x,y,cls,u){return `<path class="pin ${cls}" d="M${x},${y} l${-6*u},${-15*u} a${7*u},${7*u} 0 1,1 ${12*u},0 z"/>`;}
+
+/* ---------- Bilder ohne Karte ---------- */
+const DIRS=["Norden","Nordosten","Osten","Südosten","Süden","Südwesten","Westen","Nordwesten"];
+const DIRS_SHORT=["N","NO","O","SO","S","SW","W","NW"];
+function visualSVG(v){
+ if(v.type==="compass"){let s=`<svg viewBox="0 0 280 280" class="map" role="img" aria-label="Windrose"><rect class="vis-bg" width="280" height="280"/>`;
+  for(let i=0;i<8;i++){const a=-Math.PI/2+i*Math.PI/4,L=i%2?78:112,x=140+L*Math.cos(a),y=140+L*Math.sin(a);const px=140+16*Math.cos(a+Math.PI/2),py=140+16*Math.sin(a+Math.PI/2),qx=140+16*Math.cos(a-Math.PI/2),qy=140+16*Math.sin(a-Math.PI/2);
+   s+=`<path d="M${px},${py}L${x},${y}L${qx},${qy}Z" style="fill:${i%2?"var(--line)":"var(--muted)"};stroke:var(--ink);stroke-width:1"/>`;
+   const tx=140+(L+18)*Math.cos(a),ty=140+(L+18)*Math.sin(a)+7;s+=`<text class="vis-t" x="${tx}" y="${ty}" text-anchor="middle" font-size="20" font-weight="700" ${i===0?"":'style="fill:var(--pen)"'}>${v.letters[i]}</text>`;}
+  return s+`<circle cx="140" cy="140" r="7" style="fill:var(--card);stroke:var(--ink)"/></svg>`;}
+ if(v.type==="stars"){const S={dubhe:[288,214],merak:[300,242],phecda:[342,252],megrez:[346,222],alioth:[374,210],mizar:[398,204],alkaid:[424,214],polaris:[230,86],yildun:[212,100],eps:[198,121],zeta:[192,146],eta:[168,154],kochab:[158,128],pherkad:[176,122]};
+  let s=`<svg viewBox="0 0 460 300" class="map" role="img" aria-label="Sternenhimmel mit Großem und Kleinem Wagen"><rect class="sky" width="460" height="300"/>`;
+  [[60,40],[110,250],[400,60],[30,170],[260,30],[440,150],[80,120],[350,120],[130,200]].forEach(p=>s+=`<circle class="st" cx="${p[0]}" cy="${p[1]}" r="1.4" opacity=".6"/>`);
+  const ln=a=>"M"+a.map(k=>S[k].join(",")).join("L");
+  s+=`<path class="cline" d="${ln(["dubhe","merak","phecda","megrez","dubhe","megrez","alioth","mizar","alkaid"])}"/><path class="cline" d="${ln(["polaris","yildun","eps","zeta","eta","kochab","pherkad","zeta"])}"/>`;
+  if(v.reveal)s+=`<path class="hline" d="M${S.merak.join(",")}L${S.polaris.join(",")}"/>`;
+  Object.entries(S).forEach(([k,p])=>{const r=["polaris","dubhe","alkaid","kochab","merak"].indexOf(k)>=0?3.4:2.6;s+=`<circle class="st" cx="${p[0]}" cy="${p[1]}" r="${r}"/>`;});
+  v.cands.forEach((k,i)=>{const p=S[k];s+=`<text class="stl" x="${p[0]+8}" y="${p[1]-8}">${"ABCD"[i]}</text>`;});
+  return s+`<text x="330" y="285" font-size="13" fill="#c9d1ff" font-family="Lexend,sans-serif">Großer Wagen</text></svg>`;}
+ if(v.type==="contour"){const cx=210,cy=165,phi=v.phi*Math.PI/2-Math.PI/2;const sp=t=>19-11*Math.cos(t-phi);
+  let s=`<svg viewBox="0 0 420 330" class="map" role="img" aria-label="Höhenlinienkarte eines Berges"><rect class="vis-bg" width="420" height="330"/>`;
+  for(let k=1;k<=5;k++){let d="";for(let i=0;i<=72;i++){const t=i/72*2*Math.PI,r=(6-k)*sp(t)*.95+(k===5?2:0);d+=(i?"L":"M")+(cx+r*Math.cos(t)).toFixed(1)+","+(cy+r*Math.sin(t)).toFixed(1);}
+   s+=`<path class="cont" d="${d}Z"/>`;const t=phi+Math.PI+0.35,r=(6-k)*sp(t)*.95;s+=`<text class="lbl" x="${cx+r*Math.cos(t)}" y="${cy+r*Math.sin(t)+5}" font-size="13" text-anchor="middle">${k*100}</text>`;}
+  s+=`<path d="M${cx},${cy-9}L${cx+8},${cy+5}L${cx-8},${cy+5}Z" style="fill:var(--ink)"/><text class="lbl" x="${cx+12}" y="${cy-6}" font-size="14">${v.peak} m</text>`;
+  v.pts.forEach(pt=>{const t=phi+pt.side*Math.PI/2,r=(6-pt.ring-.5)*sp(t)*.95;const x=cx+r*Math.cos(t),y=cy+r*Math.sin(t);s+=`<circle cx="${x}" cy="${y}" r="5" style="fill:var(--pen)"/><text class="lbl" x="${x+8}" y="${y-8}" font-size="18" style="fill:var(--pen)">${pt.l}</text>`;});
+  return s+`</svg>`;}
+ return "";
+}
+
+/* ---------- Fragen ---------- */
+function mc(topic,p,opts,correct,x,extra){const o=shuffle(opts);return Object.assign({topic,k:"mc",p,o,a:o.indexOf(correct),x},extra||{});}
+const M=(topic,p,opts,x,extra)=>mc(topic,p,opts,opts[0],x,extra);
+const T=(topic,p,acc,x,extra)=>Object.assign({topic,k:"text",p,acc,show:acc[0],x},extra||{});
+/* Offene Frage: Schlüsselpunkte mit Wortlisten oder Mustern, need = wie viele Punkte nötig sind */
+const K=(l,a)=>({l,a});const KR=(l,re)=>({l,re:re.source});
+const O=(topic,p,keys,need,model,x)=>({topic,k:"open",p,keys,need,model,x});
+
+const BANK={
+orient:[
+ M("orient","In welcher Himmelsrichtung geht die Sonne auf?",["Osten","Westen","Norden","Süden"],"Die Sonne geht im Osten auf, steht mittags im Süden und geht im Westen unter."),
+ M("orient","Wo steht die Sonne bei uns mittags (gegen 12 Uhr, im Sommer gegen 13 Uhr)?",["Im Süden","Im Norden","Im Osten","Im Westen"],"Mittags steht die Sonne bei uns im Süden. Dein Schatten zeigt dann nach Norden."),
+ M("orient","Welches Hilfsmittel zeigt dir auch bei Nebel zuverlässig die Nordrichtung?",["Kompass","Sonnenuhr","Lineal","Wetterfahne"],"Die Magnetnadel des Kompasses richtet sich nach dem Magnetfeld der Erde aus und zeigt nach Norden."),
+ M("orient","Wo ist auf den meisten Karten Norden?",["Oben","Unten","Links","Rechts"],"Fast alle Karten sind „eingenordet“: Norden oben, Süden unten, Westen links, Osten rechts."),
+ M("orient","Welche dieser Orientierungshilfen ist zuverlässig?",["Der Stand der Sonne","Die Richtung, in die Wolken ziehen","Die Richtung, aus der der Wind weht","Die Flugrichtung von Vögeln"],"Wind, Wolken und Vögel ändern ständig die Richtung. Der Sonnenstand (und nachts der Polarstern) folgt festen Regeln."),
+ M("orient","Mittags fällt dein Schatten in eine bestimmte Richtung. In welche?",["Nach Norden","Nach Süden","Nach Osten","Nach Westen"],"Die Sonne steht mittags im Süden, also fällt der Schatten nach Norden."),
+ T("orient","Welche Himmelsrichtung liegt genau zwischen Norden und Westen?",["Nordwesten","nw"],"Zwischen Norden und Westen liegt Nordwesten (NW)."),
+ T("orient","Welche Himmelsrichtung liegt genau zwischen Süden und Osten?",["Südosten","so","südost"],"Zwischen Süden und Osten liegt Südosten (SO)."),
+ O("orient","Beschreibe, wie du mit Hilfe der Sonne die Himmelsrichtungen bestimmen kannst.",[K("Morgens geht die Sonne im Osten auf",["osten","ost"]),K("Mittags steht sie im Süden",["suden","sud"]),K("Abends geht sie im Westen unter",["westen","west"])],2,"Morgens geht die Sonne im Osten auf, mittags steht sie im Süden, abends geht sie im Westen unter. Wenn ich die Uhrzeit kenne, weiß ich also, wo welche Himmelsrichtung ist."),
+ O("orient","Erkläre, wie du eine Karte mit dem Kompass einnordest.",[K("Die Kompassnadel zeigt nach Norden",["nadel","norden","nord"]),K("Ich drehe die Karte",["dreh","ausricht","richte"]),K("bis der obere Kartenrand in dieselbe Richtung zeigt",["oben","oberer","oberen","gleiche richtung","gleicherichtung","dieselbe","selbe richtung","parallel","nordrand"])],2,"Ich lege den Kompass auf die Karte und drehe die Karte so lange, bis ihr oberer Rand (Norden) in dieselbe Richtung zeigt wie die Kompassnadel."),
+ O("orient","Nenne zwei Orientierungshilfen, mit denen du draußen die Himmelsrichtung herausfinden kannst.",[K("Sonne (Sonnenstand)",["sonne"]),K("Polarstern (Nordstern)",["polarstern","nordstern","stern"]),K("Kompass",["kompass"]),K("Karte, Navi oder Handy",["karte","navi","gps","handy","smartphone","app"])],2,"Zum Beispiel der Kompass und der Stand der Sonne. Nachts hilft der Polarstern."),
+ O("orient","Warum sind Wind und Wolken keine zuverlässigen Orientierungshilfen?",[K("Sie ändern ihre Richtung ständig",["ander","wechsel","dreh","unterschiedlich","immeranders","jedentag","verschieden","nichtimmer","unregelmass","kommen aus allen","allen richtungen","allenrichtungen"])],1,"Wind und Wolken kommen jeden Tag aus einer anderen Richtung. Darauf kann man sich nicht verlassen."),
+ O("orient","Beschreibe die Lage von Oldenburg in Deutschland.",[K("im Nordwesten Deutschlands",["nordwest","norden","nord"]),K("in Niedersachsen",["niedersachsen"]),K("an der Hunte, westlich von Bremen, nicht weit von der Nordsee",["hunte","bremen","nordsee","kust","meer"])],2,"Oldenburg liegt im Nordwesten Deutschlands in Niedersachsen. Die Stadt liegt an der Hunte, westlich von Bremen und nicht weit von der Nordsee."),
+ O("orient","Beschreibe die Lage von München in Deutschland.",[K("im Süden Deutschlands",["suden","sud"]),K("in Bayern",["bayern"]),K("an der Isar, nördlich der Alpen",["isar","alpen"])],2,"München liegt im Süden Deutschlands in Bayern, an der Isar und nördlich der Alpen."),
+ O("orient","Beschreibe die Lage von Hamburg in Deutschland.",[K("im Norden Deutschlands",["norden","nord"]),K("an der Elbe",["elbe"]),K("nicht weit von der Nordsee (großer Hafen)",["nordsee","hafen","meer","ostsee","kust"])],2,"Hamburg liegt im Norden Deutschlands an der Elbe. Über die Elbe ist die Stadt mit der Nordsee verbunden und hat einen großen Hafen."),
+ O("orient","Beschreibe die Lage von Berlin in Deutschland.",[K("im Osten (Nordosten) Deutschlands",["osten","ost"]),K("an der Spree (und Havel)",["spree","havel"]),K("Hauptstadt, umgeben von Brandenburg",["hauptstadt","brandenburg"])],2,"Berlin liegt im Nordosten Deutschlands an Spree und Havel. Es ist die Hauptstadt und liegt mitten in Brandenburg."),
+ O("orient","Beschreibe die Lage von Köln in Deutschland.",[K("im Westen Deutschlands",["westen","west"]),K("am Rhein",["rhein"]),K("in Nordrhein-Westfalen",["nordrheinwestfalen","nrw"])],2,"Köln liegt im Westen Deutschlands am Rhein, im Bundesland Nordrhein-Westfalen.")
+],
+nord:[
+ M("nord","Wie heißt der Nordstern noch?",["Polarstern","Abendstern","Sirius","Morgenstern"],"Nordstern und Polarstern sind derselbe Stern. Er steht fast genau über dem Nordpol."),
+ M("nord","Wenn du zum Polarstern schaust, in welche Richtung blickst du?",["Norden","Süden","Osten","Westen"],"Der Polarstern zeigt Norden. Hinter dir ist dann Süden, rechts Osten, links Westen."),
+ M("nord","Wie findest du den Polarstern am leichtesten?",["Die hintere Kante des Großen Wagens etwa 5-mal nach oben verlängern","Den hellsten Stern am Himmel suchen","Dort schauen, wo die Sonne untergegangen ist","Den Mond suchen und daneben schauen"],"Verbinde die beiden hinteren Sterne des Wagenkastens und verlängere die Strecke etwa fünfmal."),
+ M("nord","Ist der Polarstern der hellste Stern am Himmel?",["Nein, er ist nur mittelhell","Ja, er ist der hellste","Ja, aber nur im Winter","Er ist nur mit Fernglas zu sehen"],"Viele denken das, aber der Polarstern ist nicht besonders hell. Man findet ihn über den Großen Wagen."),
+ M("nord","Zu welchem Sternbild gehört der Polarstern?",["Kleiner Wagen (Kleiner Bär)","Großer Wagen","Orion","Kassiopeia"],"Der Polarstern ist der letzte Stern in der Deichsel des Kleinen Wagens."),
+ M("nord","Kann man den Polarstern von Australien aus sehen?",["Nein, nur von der Nordhalbkugel aus","Ja, überall auf der Erde","Ja, aber nur am Tag","Nur am Äquator"],"Der Polarstern steht über dem Nordpol. Von der Südhalbkugel aus liegt er unter dem Horizont."),
+ T("nord","Mit welchem Sternbild findet man den Polarstern am leichtesten?",["Großer Wagen","großer bär"],"Mit dem Großen Wagen: hintere Kastenkante etwa fünfmal verlängern."),
+ O("nord","Erkläre, wie du den Polarstern am Himmel findest.",[K("Großen Wagen suchen",["wagen","grosserbar","grossenbaren"]),K("die beiden hinteren Sterne des Kastens verbinden",["hinter","kasten","ruckwand","zweisterne","kante","beiden sterne","beidensterne"]),K("die Strecke etwa fünfmal verlängern",["funf","5","verlanger"])],2,"Ich suche den Großen Wagen. Dann verbinde ich die beiden hinteren Sterne des Wagenkastens und verlängere diese Strecke etwa fünfmal nach oben. Dort steht der Polarstern."),
+ O("nord","Wozu kann man den Polarstern bei der Orientierung nutzen?",[K("Er zeigt die Nordrichtung",["norden","nord","himmelsrichtung"])],1,"Der Polarstern steht immer im Norden. Wenn ich ihn finde, weiß ich, wo Norden ist, und kann die anderen Himmelsrichtungen ableiten."),
+ O("nord","Warum eignet sich der Polarstern besser zur Orientierung als andere Sterne?",[K("Er bleibt fast immer an derselben Stelle",["bleibt","stelle","bewegtsichnicht","stehtstill","stillsteht","fest","gleichen","selben","nichtdreh","nichtbeweg","immer im norden","immerimnorden"])],1,"Die anderen Sterne scheinen sich in der Nacht um den Polarstern zu drehen. Der Polarstern bleibt fast an derselben Stelle und zeigt deshalb immer nach Norden."),
+ O("nord","Du siehst den Polarstern genau vor dir. Beschreibe, wo die anderen drei Himmelsrichtungen liegen.",[KR("Osten ist rechts",/osten.{0,14}rechts|rechts.{0,14}osten/),KR("Westen ist links",/westen.{0,14}links|links.{0,14}westen/),KR("Süden ist hinter dir",/suden.{0,16}(hinter|hinten|rucken)|(hinter|hinten|rucken).{0,16}suden/)],2,"Vor mir ist Norden. Dann ist Osten rechts, Westen links und Süden hinter mir.")
+],
+luft:[
+ M("luft","Wie wird ein Senkrechtluftbild aufgenommen?",["Genau senkrecht von oben","Schräg von der Seite","Vom Boden aus","Von einem hohen Turm zur Seite"],"Beim Senkrechtluftbild zeigt die Kamera im Flugzeug genau nach unten."),
+ M("luft","Was ist ein Vorteil des Schrägluftbilds?",["Man erkennt Gebäude leicht, weil man auch ihre Wände sieht","Man kann Entfernungen genau messen","Nichts wird verdeckt","Alle Orte sind beschriftet"],"Im Schrägluftbild sieht man Fassaden und Formen. Deshalb erkennt man Kirchen, Häuser oder Brücken sofort."),
+ M("luft","Was ist ein Nachteil des Senkrechtluftbilds?",["Man sieht nur Dächer und Baumkronen, vieles ist schwer zu erkennen","Alles ist verzerrt","Hinten wirkt alles kleiner","Es ist immer schwarz-weiß"],"Von oben sieht ein Haus nur wie ein Rechteck aus. Ohne Beschriftung weiß man oft nicht, was man sieht."),
+ M("luft","Welche Darstellung ist einer Karte am ähnlichsten?",["Senkrechtluftbild","Schrägluftbild","Foto vom Boden","Zeichnung von der Seite"],"Senkrechtluftbild und Karte zeigen beide alles von oben."),
+ M("luft","„Man sieht die Hauswände und den Kirchturm von der Seite.“ Welche Darstellung ist das?",["Schrägluftbild","Senkrechtluftbild","Karte","Stadtplan"],"Seitenansichten gibt es nur im Schrägluftbild."),
+ M("luft","Was ist ein Nachteil einer Karte?",["Nicht alles ist eingezeichnet, man sieht nicht, wie es wirklich aussieht","Man kann nicht messen","Es fehlen die Himmelsrichtungen","Sie ist immer schräg"],"Eine Karte ist vereinfacht: Bäume, Autos oder einzelne Häuser fehlen, und die Farben sind Zeichen statt echter Farben."),
+ T("luft","Wie heißt die Zeichenerklärung einer Karte?",["Legende","zeichenerklärung","kartenlegende"],"Die Legende erklärt, was Farben, Linien und Zeichen auf der Karte bedeuten."),
+ O("luft","Nenne einen Vorteil und einen Nachteil des Schrägluftbilds.",[K("Vorteil: Gebäude sind gut zu erkennen, man sieht auch Wände",["erkenn","wand","wande","fassade","seite","anschaulich","wieinecht","echtaus","hoh"]),K("Nachteil: manches ist verdeckt, hinten wirkt alles kleiner, man kann nicht messen",["verdeck","verzerr","kleiner","hinten","nichtmess","messen","entfernung","versteckt","sieht man nicht","siehtmannicht"])],2,"Vorteil: Man erkennt Gebäude gut, weil man sie auch von der Seite sieht. Nachteil: Manche Dinge werden verdeckt, und hinten wirkt alles kleiner, deshalb kann man nicht messen."),
+ O("luft","Nenne einen Vorteil und einen Nachteil des Senkrechtluftbilds.",[K("Vorteil: Lage und Größe stimmen, man kann messen wie auf einer Karte",["mess","lage","grosse","karte","genau","entfernung","stimm","uberblick","ubersicht","nichts verdeckt","nichtsverdeckt"]),K("Nachteil: man sieht nur Dächer und Baumkronen, vieles ist schwer zu erkennen",["dach","dacher","schwer","nichterkenn","erkenn","namen","beschrift","baumkron","flach"])],2,"Vorteil: Alles liegt an der richtigen Stelle, man kann fast wie auf einer Karte messen. Nachteil: Man sieht nur Dächer und Baumkronen, deshalb erkennt man vieles schwer."),
+ O("luft","Warum braucht man trotz Luftbildern noch Karten?",[K("Karten haben Namen und Beschriftungen",["name","beschrift","schrift"]),K("Karten sind vereinfacht und übersichtlich",["vereinfach","ubersicht","einfach","wichtig","weggelassen","weglassen"]),K("Karten haben eine Legende und einen Maßstab",["legende","massstab","zeichen","farben","symbol"])],1,"Karten lassen Unwichtiges weg und sind dadurch übersichtlicher. Sie haben Namen, eine Legende und einen Maßstab. Auf einem Luftbild fehlt das alles."),
+ O("luft","Erkläre den Unterschied zwischen einem Senkrechtluftbild und einem Schrägluftbild.",[K("Senkrechtluftbild: genau von oben aufgenommen",["vonoben","nachunten","oben"]),K("Schrägluftbild: schräg von der Seite aufgenommen",["seite","seitlich","schrag","winkel"])],2,"Das Senkrechtluftbild wird genau von oben aufgenommen, das Schrägluftbild schräg von der Seite. Deshalb sieht man im Schrägluftbild auch Wände, im Senkrechtluftbild nur Dächer."),
+ O("luft","Was ist eine Legende und wozu braucht man sie?",[K("Die Legende ist die Zeichenerklärung",["erklar","bedeut"]),K("Sie erklärt Zeichen, Farben und Linien der Karte",["zeichen","farbe","symbol","linie"])],2,"Die Legende ist die Zeichenerklärung. Sie zeigt, was die Zeichen, Farben und Linien auf der Karte bedeuten, zum Beispiel welches Zeichen für eine Großstadt steht.")
+],
+mass:[
+ M("mass","Was bedeutet der Maßstab 1 : 100 000?",["1 cm auf der Karte sind 1 km in Wirklichkeit","1 km auf der Karte sind 100 000 km","Die Karte ist 100 000-mal größer als die Wirklichkeit","100 000 cm auf der Karte sind 1 cm in Wirklichkeit"],"Die Zahl hinter dem Doppelpunkt sagt, wie oft die Wirklichkeit verkleinert wurde. 100 000 cm = 1 000 m = 1 km."),
+ M("mass","Die Weltkarte auf deinem Arbeitsblatt hat den Maßstab 1 : 140 000 000. Wie weit ist 1 cm auf dieser Karte in Wirklichkeit?",["1 400 km","140 km","14 000 km","1 400 m"],"140 000 000 cm = 1 400 000 m = 1 400 km."),
+ M("mass","Auf einer Wanderkarte (1 : 25 000) ist ein Weg 4 cm lang. Wie lang ist er in Wirklichkeit?",["1 km","4 km","25 km","100 m"],"4 × 25 000 cm = 100 000 cm = 1 km."),
+ M("mass","Welcher Maßstab zeigt mehr Einzelheiten?",["1 : 25 000","1 : 1 000 000","Beide gleich viele","Das hängt von der Farbe ab"],"Kleine Zahl hinter dem Doppelpunkt = großer Maßstab = kleines Gebiet mit vielen Einzelheiten."),
+ M("mass","Eine Weltkarte hat immer einen …",["kleinen Maßstab","großen Maßstab","Maßstab von 1 : 1","Maßstab ohne Zahl"],"Für die ganze Erde muss stark verkleinert werden: große Zahl hinter dem Doppelpunkt = kleiner Maßstab."),
+ M("mass","Welche Karte hat den größten Maßstab?",["Stadtplan von Oldenburg","Deutschlandkarte","Europakarte","Weltkarte"],"Der Stadtplan zeigt das kleinste Gebiet mit den meisten Einzelheiten, also hat er den größten Maßstab."),
+ M("mass","Wie viele Zentimeter hat 1 Kilometer?",["100 000 cm","1 000 cm","10 000 cm","1 000 000 cm"],"1 km = 1 000 m und 1 m = 100 cm, also 1 km = 100 000 cm."),
+ O("mass","Erkläre, was der Maßstab 1 : 50 000 bedeutet.",[K("1 cm auf der Karte …",["1cm","einzentimeter","einencm","1zentimeter","einemzentimeter","einemcm"]),K("… sind 50 000 cm, also 500 m in Wirklichkeit",["50000","500m","500meter","05km","halbenkilometer","halberkilometer"])],2,"1 cm auf der Karte entspricht 50 000 cm in Wirklichkeit. Das sind 500 m, also ein halber Kilometer."),
+ O("mass","Erkläre den Unterschied zwischen einem großen und einem kleinen Maßstab.",[K("Großer Maßstab: kleine Zahl, kleines Gebiet, viele Einzelheiten",["einzelheit","detail","genau","kleinesgebiet","kleinezahl","stadtplan","wanderkarte"]),K("Kleiner Maßstab: große Zahl, großes Gebiet, wenige Einzelheiten",["grossesgebiet","grossezahl","weniger","wenig","uberblick","ubersicht","weltkarte","ganze","starkerverkleinert","vielverkleinert"])],2,"Ein großer Maßstab (z. B. 1 : 25 000) zeigt ein kleines Gebiet mit vielen Einzelheiten. Ein kleiner Maßstab (z. B. 1 : 10 000 000) zeigt ein großes Gebiet, ist stärker verkleinert und hat weniger Einzelheiten."),
+ O("mass","Wozu braucht man den Maßstab auf einer Karte?",[K("um Entfernungen in Wirklichkeit zu bestimmen",["entfernung","strecke","wieweit","abstand","lang","messen","rechnen","wirklichkeit","kilometer"]),K("er zeigt, wie stark verkleinert wurde",["verkleiner","kleiner"])],1,"Der Maßstab zeigt, wie stark die Wirklichkeit verkleinert wurde. Damit kann ich ausrechnen, wie weit Orte in Wirklichkeit voneinander entfernt sind."),
+ O("mass","Warum hat eine Weltkarte einen viel kleineren Maßstab als ein Stadtplan?",[K("Die ganze Erde muss auf ein Blatt passen",["passt","passen","blatt","papier","platz","ganzeerde","riesig","gross"]),K("Deshalb muss viel stärker verkleinert werden",["verkleiner","kleiner"])],1,"Die ganze Erde muss auf ein einziges Blatt passen. Dafür muss viel stärker verkleinert werden als bei einer Stadt.")
+],
+mess:[
+ M("mess","Was ist ein Messbalken (Maßstabsleiste)?",["Eine Strecke auf der Karte, die eine bestimmte Entfernung in Wirklichkeit zeigt","Ein Lineal, das im Atlas liegt","Die Linie des Äquators","Eine Linie, die gleich hohe Punkte verbindet"],"Der Messbalken zeigt zum Beispiel: Diese Strecke sind 500 km."),
+ M("mess","Der Messbalken ist 2 cm lang und steht für 100 km. Zwei Städte sind auf der Karte 6 cm voneinander entfernt. Wie weit ist das?",["300 km","600 km","120 km","200 km"],"6 cm sind 3-mal 2 cm, also 3 × 100 km = 300 km."),
+ M("mess","Warum ist ein Messbalken praktisch, wenn eine Karte vergrößert kopiert wird?",["Er wird mit vergrößert und stimmt deshalb weiter","Er bleibt gleich groß","Er zeigt dann Meter statt Kilometer","Er verschwindet beim Kopieren"],"Die Maßstabszahl stimmt nach dem Vergrößern nicht mehr, der Messbalken schon."),
+ M("mess","Was bedeutet „Luftlinie“?",["Die kürzeste, gerade Entfernung zwischen zwei Orten","Die Strecke, die ein Flugzeug mit Umwegen fliegt","Die Länge der Straße","Die Höhe über dem Meer"],"Luftlinie = gerade Linie von Ort zu Ort. Straßen sind meist länger."),
+ O("mess","Beschreibe, wie du mit dem Messbalken die Entfernung zwischen zwei Städten bestimmst.",[K("Strecke auf der Karte abmessen (Lineal, Papierstreifen)",["lineal","papier","streifen","abmess","messe","zirkel","faden","cm"]),K("am Messbalken anlegen und vergleichen",["messbalken","anleg","vergleich","wieoft","balken","mal"]),K("in Kilometer ablesen oder umrechnen",["km","kilometer","ables","rechne"])],2,"Ich lege das Lineal (oder einen Papierstreifen) an die beiden Städte und messe die Strecke. Dann vergleiche ich sie mit dem Messbalken und lese ab, wie viele Kilometer das sind."),
+ O("mess","Warum ist der Weg mit dem Auto meist länger als die Luftlinie?",[K("Straßen haben Kurven und Umwege",["kurve","umweg","nichtgerade","strass","berg","fluss","herum","drum","see "])],1,"Straßen verlaufen nicht gerade. Sie machen Kurven und Umwege, zum Beispiel um Berge, Seen oder Flüsse herum."),
+ O("mess","Wie misst du die Länge eines kurvigen Flusses auf der Karte?",[K("einen Faden oder Papierstreifen entlang des Flusses legen",["faden","schnur","papier","streifen","kurvenmesser","stuckfurstuck","teilstreck","abschnitt","kleine stucke","kleinestucke"]),K("dann am Messbalken ablesen",["messbalken","massstab","lineal","ables","umrechn"])],2,"Ich lege einen Faden genau entlang des Flusses, markiere die Länge und lege ihn dann gerade an den Messbalken. So lese ich die Länge in Kilometern ab.")
+],
+atlas:[
+ M("atlas","Im Register steht: „Oldenburg 34 B2“. Was bedeutet die 34?",["Die Seitenzahl","Die Einwohnerzahl in Tausend","Die Höhe in Metern","Die Postleitzahl"],"Zuerst kommt die Seite, dann das Planquadrat (Gitterfeld)."),
+ M("atlas","Im Register steht: „Oldenburg 34 B2“. Was bedeutet „B2“?",["Das Planquadrat (Gitterfeld) auf der Karte","Bundesstraße 2","Die zweite Auflage","Blatt 2 der Karte"],"B ist die Spalte (Buchstabe), 2 die Zeile (Zahl). Wo sich beide kreuzen, liegt der Ort."),
+ M("atlas","Wo findest du, welche Karten im Atlas enthalten sind?",["Im Inhaltsverzeichnis (Kartenweiser) vorne","Im Register hinten","In der Legende","Auf dem Buchrücken"],"Vorne steht, auf welcher Seite welche Karte ist."),
+ M("atlas","Eine Karte zeigt Gebirge, Flüsse und Höhen mit Farben. Wie heißt diese Kartenart?",["Physische Karte","Politische Karte","Thematische Karte","Stadtplan"],"Physische Karten zeigen die Oberfläche: Höhen, Gewässer, Gebirge."),
+ M("atlas","Die Karte „Europa – Ballungsräume“ ist eine …",["thematische Karte","physische Karte","politische Karte","Höhenlinienkarte"],"Thematische Karten zeigen ein bestimmtes Thema, hier: wo viele Menschen leben."),
+ T("atlas","Wie heißt das Namensverzeichnis hinten im Atlas?",["Register","namensverzeichnis","index"],"Im Register findest du Seite und Planquadrat jedes Ortes."),
+ O("atlas","Beschreibe, wie du im Atlas einen Ort findest, zum Beispiel Kairo.",[K("Im Register (hinten im Atlas) nachschlagen",["register","namensverzeichnis","verzeichnis","index","hinten"]),K("Die angegebene Seite aufschlagen",["seite","aufschlag"]),K("Im Planquadrat suchen (Buchstabe und Zahl)",["planquadrat","gitter","feld","quadrat","buchstabe"])],2,"Ich suche Kairo im Register hinten im Atlas. Dort steht die Seitenzahl und das Planquadrat. Ich schlage die Seite auf und suche im Planquadrat, wo sich Buchstabe und Zahl kreuzen."),
+ O("atlas","Was zeigt eine physische Karte?",[K("Höhen, Gebirge und Tiefländer",["hoh","gebirge","berg","tiefland","landschaft","oberflach","relief"]),K("Flüsse, Seen und Meere",["fluss","flusse","seen","meer","gewasser"])],1,"Eine physische Karte zeigt die Landschaft: Gebirge, Tiefländer und Höhen (mit Farben) sowie Flüsse, Seen und Meere."),
+ O("atlas","Was ist eine thematische Karte? Nenne ein Beispiel.",[K("Sie zeigt ein bestimmtes Thema",["thema","bestimmt"]),K("Beispiel: Bevölkerung, Ballungsräume, Klima, Landwirtschaft …",["bevolker","ballung","einwohner","klima","wirtschaft","verkehr","tourismus","industrie","wetter","religion","sprache","bodenschatz","energie","vegetation"])],2,"Eine thematische Karte zeigt ein bestimmtes Thema, zum Beispiel wo viele Menschen leben (Ballungsräume) oder wie das Klima ist."),
+ O("atlas","Was ist der Unterschied zwischen einer physischen und einer politischen Karte?",[K("Physische Karte: Landschaft, Höhen, Gewässer",["hoh","gebirge","berg","landschaft","fluss","gelande","oberflach"]),K("Politische Karte: Staaten und Grenzen",["staat","grenze","lander","hauptstadt"])],2,"Die physische Karte zeigt die Landschaft mit Höhen, Gebirgen und Gewässern. Die politische Karte zeigt die Staaten, ihre Grenzen und Hauptstädte.")
+],
+hoehe:[
+ M("hoehe","Was bedeutet die Angabe „m ü. NN“?",["Meter über Normalnull, also über dem Meeresspiegel","Meter über dem Nachbarort","Meter unter dem Nordpol","Meter neben der Nordsee"],"Höhen werden vom Meeresspiegel aus gemessen. Normalnull (NN) ist diese Ausgangshöhe."),
+ M("hoehe","Welche Farbe haben Tiefländer (niedrige Gebiete) in der physischen Atlaskarte meist?",["Grün","Dunkelbraun","Weiß","Rot"],"Grün = niedrig, gelb bis hellbraun = mittlere Höhen, dunkelbraun = Hochgebirge, weiß = Gletscher und Eis."),
+ M("hoehe","Die Höhenlinien liegen sehr eng beieinander. Wie ist der Hang dort?",["Steil","Flach","Sumpfig","Bewaldet"],"Eng = auf kurzer Strecke viel Höhenunterschied = steil. Weit = flach."),
+ M("hoehe","Wie wird ein Berggipfel mit Höhenangabe auf Karten meist dargestellt?",["Mit einem kleinen Dreieck ▲ und einer Zahl","Mit einem roten Kreis","Mit einem Stern","Mit einem Quadrat"],"Zum Beispiel: ▲ Zugspitze 2962."),
+ M("hoehe","Wie hoch ist die Zugspitze ungefähr?",["2 962 m","1 493 m","4 806 m","8 849 m"],"2 962 m. Zum Vergleich: Feldberg 1 493 m, Mont Blanc rund 4 800 m, Mount Everest 8 849 m."),
+ M("hoehe","In welchem Gebirge liegt der Brocken?",["Harz","Schwarzwald","Erzgebirge","Alpen"],"Der Brocken (1 141 m) ist der höchste Berg im Harz und in Norddeutschland."),
+ M("hoehe","Wie heißt der höchste Berg der Alpen?",["Mont Blanc","Zugspitze","Matterhorn","Großglockner"],"Der Mont Blanc an der Grenze von Frankreich und Italien ist rund 4 800 m hoch."),
+ T("hoehe","Wie heißt der höchste Berg der Erde?",["Mount Everest","everest","tschomolungma"],"Der Mount Everest im Himalaya ist 8 849 m hoch."),
+ O("hoehe","Was ist eine Höhenlinie?",[K("Sie verbindet Punkte, die gleich hoch liegen",["gleich","selbenhoh","selben hoh"])],1,"Eine Höhenlinie verbindet alle Punkte, die gleich hoch über dem Meeresspiegel liegen."),
+ O("hoehe","Woran erkennst du auf einer Karte mit Höhenlinien einen steilen Hang?",[K("Die Höhenlinien liegen eng beieinander",["eng","dicht","nah","zusammen","wenigabstand","kleinabstand","kurzerabstand","kleinerabstand"])],1,"Liegen die Höhenlinien eng beieinander, ist der Hang steil. Liegen sie weit auseinander, ist er flach."),
+ O("hoehe","Was bedeuten die Farben Grün und Braun in einer physischen Karte?",[KR("Grün: niedriges Land (Tiefland)",/grun.{0,30}(tief|niedrig|flach|unten)|(tief|niedrig|flach).{0,30}grun/),KR("Braun: hohes Land (Gebirge)",/braun.{0,30}(hoch|hoh|gebirg|berg)|(hoch|hoh|gebirg|berg).{0,30}braun/)],2,"Grün steht für niedriges Land, zum Beispiel das Norddeutsche Tiefland. Braun steht für hohes Land, je dunkler, desto höher, zum Beispiel die Alpen."),
+ O("hoehe","Nenne den höchsten Berg Deutschlands und das Gebirge, in dem er liegt.",[K("Zugspitze",["zugspitz"]),K("in den Alpen",["alpen","wetterstein"])],2,"Die Zugspitze (2 962 m) liegt in den Alpen, genauer im Wettersteingebirge an der Grenze zu Österreich.")
+],
+grad:[
+ M("grad","Durch welche Stadt verläuft der Nullmeridian?",["London (Greenwich)","Paris","Berlin","Rom"],"Der Nullmeridian (0°) läuft durch die Sternwarte in Greenwich in London."),
+ M("grad","Wie verlaufen Breitenkreise?",["Von West nach Ost, parallel zum Äquator","Vom Nordpol zum Südpol","Schräg über die Karte","Nur über Europa"],"Breitenkreise liegen wie Ringe parallel zum Äquator."),
+ M("grad","Wie verlaufen Längenkreise (Meridiane)?",["Vom Nordpol zum Südpol","Parallel zum Äquator","Nur auf der Südhalbkugel","Im Kreis um den Nordpol"],"Alle Meridiane treffen sich an den Polen."),
+ M("grad","Wo liegt Oldenburg ungefähr im Gradnetz?",["53° N, 8° O","53° S, 8° O","8° N, 53° O","53° N, 8° W"],"Oldenburg liegt nördlich des Äquators (N) und östlich des Nullmeridians (O)."),
+ M("grad","Welche Stadt liegt ungefähr bei 52° N und 13° O?",["Berlin","Madrid","Moskau","Rom"],"Berlin: 52° N, 13° O. Madrid liegt bei 40° N, 4° W, Moskau bei 56° N, 38° O, Rom bei 42° N, 12° O."),
+ M("grad","Welcher Kontinent wird vom Äquator NICHT berührt?",["Europa","Afrika","Südamerika","Asien (mit seinen Inseln)"],"Der Äquator läuft durch Südamerika, Afrika und die Inseln Südostasiens."),
+ O("grad","Was ist der Äquator?",[K("Er teilt die Erde in Nord- und Südhalbkugel",["halbkugel","teilt","mitte"]),K("Er ist der längste Breitenkreis (0°)",["breitenkreis","null","0","langst","linie","kreis"])],1,"Der Äquator ist eine gedachte Linie um die Mitte der Erde. Er ist der längste Breitenkreis (0°) und teilt die Erde in Nord- und Südhalbkugel."),
+ O("grad","Beschreibe die Lage von Australien auf der Erde.",[K("auf der Südhalbkugel",["sudhalbkugel","suden","sudlich"]),K("zwischen Indischem und Pazifischem Ozean",["indisch","pazifi","ozean"]),K("südöstlich von Asien",["asien","osten","ostlich"])],2,"Australien liegt auf der Südhalbkugel, südöstlich von Asien, zwischen dem Indischen und dem Pazifischen Ozean."),
+ O("grad","Wozu braucht man das Gradnetz der Erde?",[K("um die Lage eines Ortes genau anzugeben",["lage","finden","genau","position","koordinat","bestimm","wo ein","woein"])],1,"Mit Breiten- und Längenkreisen kann man die Lage jedes Ortes auf der Erde genau angeben, zum Beispiel Oldenburg: 53° N, 8° O.")
+]};
+
+/* ---------- Fragen aus den Karten ---------- */
+const RIVER_ALT2=Object.assign({},RIVER_ALT);
+const nearest=(set,c,n)=>MAPDEF[set].cities.filter(o=>o.n!==c.n).map(o=>({o,d:haversine(c,o)})).sort((a,b)=>a.d-b.d).slice(0,n).map(x=>x.o);
+function cityQs(topic,set){const out=[];const md=MAPDEF[set];
+ md.cities.forEach(c=>{
+  const near=nearest(set,c,6),far=pick(md.cities.filter(o=>o.n!==c.n&&near.indexOf(o)<0),1);
+  const opts=[c.n].concat(pick(near,2).map(o=>o.n),far.map(o=>o.n));
+  const base={name:set,cities:true,rivers:set==="germany"};
+  out.push(mc(topic,"Welche Stadt ist auf der Karte gelb markiert?",opts,c.n,null,{map:Object.assign({},base,{hl:{t:"city",id:c.n}})}));
+  out.push(T(topic,"Wie heißt die gelb markierte Stadt? Schreib den Namen.",[c.n].concat(c.alt),null,{map:Object.assign({},base,{hl:{t:"city",id:c.n}})}));
+  out.push({topic,k:"click",p:`Tippe auf der Karte auf ${c.n}.`,map:Object.assign({},base,{click:{t:"city",id:c.n}}),show:c.n});
+ });return out;}
+function riverQs(topic,set){const md=MAPDEF[set],out=[];md.rivers.forEach(r=>{
+  const opts=[r].concat(pick(md.rivers.filter(x=>x!==r),3));const base={name:set,rivers:true,mounts:true};
+  out.push(mc(topic,"Welcher Fluss ist gelb markiert?",opts,r,null,{map:Object.assign({},base,{hl:{t:"river",id:r}})}));
+  out.push(T(topic,"Wie heißt der gelb markierte Fluss?",[r].concat(RIVER_ALT2[r]||[]),null,{map:Object.assign({},base,{hl:{t:"river",id:r}})}));
+  out.push({topic,k:"click",p:`Tippe auf den Fluss ${r}.`,map:Object.assign({},base,{click:{t:"river",id:r}}),show:r});
+ });return out;}
+function mountQs(topic,set){const md=MAPDEF[set],out=[];md.mounts.forEach(m=>{
+  const opts=[m].concat(pick(md.mounts.filter(x=>x!==m),3));const base={name:set,rivers:true,mounts:true};
+  out.push(mc(topic,"Welches Gebirge ist gelb markiert?",opts,m,null,{map:Object.assign({},base,{hl:{t:"mount",id:m}})}));
+  out.push(T(topic,"Wie heißt das gelb markierte Gebirge?",[m].concat(MOUNT_ALT[m]||[]),null,{map:Object.assign({},base,{hl:{t:"mount",id:m}})}));
+  out.push({topic,k:"click",p:`Tippe auf das Gebirge: ${m}.`,map:Object.assign({},base,{click:{t:"mount",id:m}}),show:m});
+ });return out;}
+function pointQs(topic,set,kind){const keys=Object.keys(POINTS[set]);
+ const pool=kind==="Kontinent"?keys.filter(x=>!/Ozean|meer/i.test(x)):kind==="Ozean"?keys.filter(x=>/Ozean|meer/i.test(x)):keys;
+ return pool.map(k=>mc(topic,"Was ist mit dem gelben Stern markiert?",[k].concat(pick(pool.filter(x=>x!==k),3)),k,null,{map:{name:set,hl:{t:"pt",id:k},rivers:set!=="world",mounts:set!=="world",nolabels:true}}));}
+function lineExpl(k){return {"Äquator":"Der Äquator (0°) teilt die Erde in Nord- und Südhalbkugel.","Nördlicher Wendekreis":"Der nördliche Wendekreis liegt bei etwa 23,5° Nord.","Südlicher Wendekreis":"Der südliche Wendekreis liegt bei etwa 23,5° Süd.","Nördlicher Polarkreis":"Der nördliche Polarkreis liegt bei etwa 66,5° Nord und läuft durch Skandinavien.","Südlicher Polarkreis":"Der südliche Polarkreis liegt bei etwa 66,5° Süd, fast nur über dem Meer bei der Antarktis.","Nullmeridian":"Der Nullmeridian (0°) läuft von Pol zu Pol durch London-Greenwich."}[k];}
+function gradLineQs(){return Object.keys(GLINES).map(k=>mc("grad","Welche Linie ist gelb markiert?",[k].concat(pick(Object.keys(GLINES).filter(x=>x!==k),3)),k,lineExpl(k),{map:{name:"world",glines:Object.keys(GLINES).map(x=>({k:x,hl:x===k}))}}));}
+function distQs(set,n){if(!GEO.d3)return [];const md=MAPDEF[set],out=[];const barKm=set==="germany"?100:500;const range=set==="germany"?[150,620]:[500,2600];
+ let tries=0;while(out.length<n&&tries<500){tries++;const [a,b]=pick(md.cities,2);const km=haversine(a,b);if(km<range[0]||km>range[1])continue;
+  const pa=md.cityPx[a.n],pb=md.cityPx[b.n];if(!pa||!pb)continue;const lp=Math.hypot(pa[0]-pb[0],pa[1]-pb[1]);const barPx=barKm*lp/km;if(barPx<36||barPx>md.W*0.45||lp<barPx*1.2)continue;
+  const step=set==="germany"?10:50;const r=x=>Math.round(x/step)*step;const real=r(km);
+  const opts=[real];[0.5,1.6,2.2,0.7,1.35].forEach(f=>{const v=r(km*f);if(opts.every(o=>Math.abs(o-v)>step*1.5)&&opts.length<4)opts.push(v);});
+  const times=(lp/barPx).toFixed(1).replace(".",",");
+  out.push(mc("mess",`Wie weit sind ${a.n} und ${b.n} ungefähr voneinander entfernt (Luftlinie)? Nutze den Messbalken.`,opts.map(v=>fmt(v)+" km"),fmt(real)+" km",
+   `Die Linie ist etwa ${times}-mal so lang wie der Messbalken (${barKm} km). ${times} × ${barKm} km ≈ ${fmt(real)} km.`,{map:{name:set,dist:{a:a.n,b:b.n,barKm,barPx},rivers:set==="germany"}}));}
+ return out;}
+function bearing(a,b){const t=Math.PI/180,f1=a.la*t,f2=b.la*t,dl=(b.lo-a.lo)*t;const x=Math.atan2(Math.sin(dl)*Math.cos(f2),Math.cos(f1)*Math.sin(f2)-Math.sin(f1)*Math.cos(f2)*Math.cos(dl))/t;return (x+360)%360;}
+function dirQs(set,n){if(!GEO.d3)return [];const md=MAPDEF[set],out=[];let tries=0;while(out.length<n&&tries<600){tries++;const [a,b]=pick(md.cities,2);const pa=md.cityPx[a.n],pb=md.cityPx[b.n];if(!pa||!pb)continue;
+  const dx=pb[0]-pa[0],dy=pb[1]-pa[1];if(Math.hypot(dx,dy)<80)continue;let ang=Math.atan2(dx,-dy)*180/Math.PI;if(ang<0)ang+=360;
+  const sec=x=>Math.floor(((x+22.5)%360)/45),off=x=>(x+22.5)%45;const br=bearing(a,b);
+  if(off(ang)<8||off(ang)>37||off(br)<5||off(br)>40||sec(ang)!==sec(br))continue;
+  const corr=DIRS[sec(ang)];
+  out.push(mc("orient",`In welcher Himmelsrichtung liegt ${b.n} von ${a.n} aus gesehen?`,[corr].concat(pick(DIRS.filter(d=>d!==corr),3)),corr,`Norden ist oben auf der Karte. ${b.n} liegt von ${a.n} aus im ${corr}.`,{map:{name:set,dir:{a:a.n,b:b.n},north:true,rivers:set==="germany"}}));}
+ return out;}
+function gridQs(n){if(!GEO.d3)return [];const md=MAPDEF.germany,G=md.grid,cw=(G.x1-G.x0)/G.cols,rh=(G.y1-G.y0)/G.rows,out=[];
+ shuffle(md.cities).forEach(c=>{if(out.length>=n)return;const p=md.cityPx[c.n];if(!p)return;const fx=(p[0]-G.x0)/cw,fy=(p[1]-G.y0)/rh;const ex=fx-Math.floor(fx),ey=fy-Math.floor(fy);
+  if(ex<.12||ex>.88||ey<.12||ey>.88||fx<0||fy<0||fx>=G.cols||fy>=G.rows)return;const cell="ABCDEFGH"[Math.floor(fx)]+(Math.floor(fy)+1);
+  out.push({topic:"atlas",k:"grid",p:`In welchem Planquadrat liegt ${c.n}? Schreib z. B. „C4“.`,ans:cell,show:cell,x:`Spalte ${cell[0]} (Buchstabe oben), Zeile ${cell.slice(1)} (Zahl links). Im Register steht immer zuerst die Seite, dann das Planquadrat.`,map:{name:"germany",grid:true,hl:{t:"city",id:c.n,label:true}}});});
+ return out;}
+function compassQs(n){const out=[];for(let q=0;q<n;q++){const L=shuffle("ABCDEFG".split(""));const letters=["N"].concat(L);const i=1+rnd(7);const corr=letters[i];
+  out.push(mc("orient",`Welcher Buchstabe auf der Windrose zeigt nach ${DIRS[i]}?`,[corr].concat(pick(L.filter(x=>x!==corr),3)),corr,`${DIRS[i]} (${DIRS_SHORT[i]}). Merkhilfe im Uhrzeigersinn: Nie Ohne Seife Waschen (N, O, S, W).`,{vis:{type:"compass",letters}}));}
+ return out;}
+function starQs(n){const out=[];for(let q=0;q<n;q++){const cands=shuffle(["polaris","dubhe","alkaid","kochab"]);const corr="ABCD"[cands.indexOf("polaris")];
+  out.push(mc("nord","Welcher Stern ist der Polarstern?",["A","B","C","D"],corr,"Verlängere die hintere Kante des Wagenkastens (die zwei Sterne links am Kasten) etwa fünfmal. Die gelbe Linie zeigt den Weg.",{vis:{type:"stars",cands},visReveal:true}));}
+ return out;}
+function contourQs(n){const out=[];for(let q=0;q<n;q++){const phi=rnd(4);const peak=520+rnd(60);
+  if(q%2===0){const pts=[0,1,2,3].map(sd=>({side:sd,ring:2,l:"ABCD"[(sd+phi)%4]}));const corr=pts[0].l;
+   out.push(mc("hoehe","An welchem Punkt ist der Hang am steilsten?",["A","B","C","D"],corr,"Dort liegen die Höhenlinien am engsten zusammen. Eng = steil, weit = flach.",{vis:{type:"contour",phi,peak,pts}}));}
+  else{const ring=1+rnd(4);const side=rnd(4);const lo=ring*100,hi=lo+100;
+   const R=["unter 100 m","zwischen 100 und 200 m","zwischen 200 und 300 m","zwischen 300 und 400 m","zwischen 400 und 500 m","über 500 m"];
+   const corr=R[ring];const others=R.map((r,i)=>({r,d:Math.abs(i-ring)})).filter(x=>x.d>0).sort((x,y)=>x.d-y.d||Math.random()-.5).slice(0,3).map(x=>x.r);
+   out.push(mc("hoehe","Wie hoch liegt Punkt X ungefähr?",[corr].concat(others),corr,`Punkt X liegt zwischen der ${lo}-m- und der ${hi}-m-Höhenlinie.`,{vis:{type:"contour",phi,peak,pts:[{side,ring,l:"X"}]}}));}}
+ return out;}
+function megaQs(){return ["London","Paris","Moskau"].map(b=>{const others=pick(EUROPE_CITIES.filter(c=>c.c===2),3).map(c=>c.n);
+  return mc("europa","Welcher dieser Ballungsräume hat über 10 Millionen Einwohner?",[b].concat(others),b,"Auf dem Arbeitsblatt „Europa – Ballungsräume“ haben London, Paris und Moskau das große Quadrat für über 10 Mio. Einwohner.",{});});}
+/* Lage-Fragen mit Karte: Freitext */
+function lageQs(){const L=[
+ ["Leipzig",[K("im Osten Deutschlands",["osten","ost"]),K("in Sachsen",["sachsen"]),K("zwischen Halle und Dresden / südlich von Berlin",["halle","dresden","berlin","saale","elster"])],"Leipzig liegt im Osten Deutschlands in Sachsen, südlich von Berlin und zwischen Halle und Dresden."],
+ ["Frankfurt am Main",[K("in der Mitte (Südwesten) Deutschlands",["mitte","westen","west","sud"]),K("am Main",["main"]),K("in Hessen",["hessen"])],"Frankfurt liegt etwa in der Mitte Deutschlands, etwas im Südwesten, am Main im Bundesland Hessen."],
+ ["Dresden",[K("im Osten (Südosten) Deutschlands",["osten","ost"]),K("an der Elbe",["elbe"]),K("in Sachsen, nahe Tschechien",["sachsen","tschech","erzgebirge"])],"Dresden liegt im Südosten Deutschlands an der Elbe. Es ist die Hauptstadt von Sachsen, nicht weit von Tschechien."],
+ ["Bremen",[K("im Norden (Nordwesten)",["norden","nord"]),K("an der Weser",["weser"]),K("nahe Oldenburg / Nordsee",["oldenburg","nordsee","hamburg","meer"])],"Bremen liegt im Nordwesten Deutschlands an der Weser, östlich von Oldenburg und nicht weit von der Nordsee."],
+ ["Stuttgart",[K("im Südwesten Deutschlands",["sudwest","suden","sud"]),K("am Neckar",["neckar"]),K("in Baden-Württemberg",["badenwurttemberg","wurttemberg","schwarzwald","alb"])],"Stuttgart liegt im Südwesten Deutschlands am Neckar. Es ist die Hauptstadt von Baden-Württemberg."]];
+ return L.map(([n,keys,model])=>Object.assign(O("de",`Beschreibe die Lage von ${n}. Nutze die Karte (Himmelsrichtung, Fluss, Bundesland oder Nachbarstädte).`,keys,2,model),{map:{name:"germany",rivers:true,mounts:true,cities:true,hl:{t:"city",id:n,label:true}}}));}
+
+const TOPICS=[
+ {id:"orient",name:"Orientierung & Himmelsrichtungen",sub:"Sonne, Kompass, Windrose, Lage beschreiben",pool:()=>BANK.orient.concat(compassQs(3),dirQs("europe",4),dirQs("germany",3))},
+ {id:"nord",name:"Nordstern",sub:"Polarstern finden und nutzen",flag:true,pool:()=>BANK.nord.concat(starQs(3))},
+ {id:"luft",name:"Luftbilder & Karten",sub:"Senkrecht- und Schrägluftbild, Karte: Vor- und Nachteile",pool:()=>BANK.luft},
+ {id:"mass",name:"Maßstab",sub:"Was die Zahlen bedeuten, großer und kleiner Maßstab",flag:true,pool:()=>BANK.mass},
+ {id:"mess",name:"Messbalken & Entfernung",sub:"Entfernungen auf Karten bestimmen",pool:()=>BANK.mess.concat(distQs("europe",4),distQs("germany",4))},
+ {id:"atlas",name:"Orte im Atlas finden",sub:"Register, Seite, Planquadrat, Kartenarten",pool:()=>BANK.atlas.concat(gridQs(8))},
+ {id:"hoehe",name:"Höhen & Berge",sub:"Höhenlinien, Farben, höchste Berge",pool:()=>BANK.hoehe.concat(contourQs(4))},
+ {id:"welt",name:"Städte der Welt",sub:"Arbeitsblatt Erde – Ballungsräume",pool:()=>cityQs("welt","world")},
+ {id:"europa",name:"Städte Europas",sub:"Arbeitsblatt Europa – Ballungsräume",pool:()=>cityQs("europa","europe").concat(megaQs())},
+ {id:"de",name:"Deutschland physisch",sub:"Mittelgebirge, Flüsse, Städte, Lage beschreiben",pool:()=>riverQs("de","germany").concat(mountQs("de","germany"),cityQs("de","germany").filter((_,i)=>i%3!==1),pointQs("de","germany"),lageQs())},
+ {id:"phys",name:"Gebirge & Flüsse: Welt und Europa",sub:"Arbeitsblätter Erde und Europa – physische Übersicht",pool:()=>riverQs("phys","world").concat(mountQs("phys","world"),riverQs("phys","europe"),mountQs("phys","europe"),pointQs("phys","europe"))},
+ {id:"grad",name:"Gradnetz, Kontinente & Ozeane",sub:"Äquator, Wendekreise, Polarkreise",pool:()=>BANK.grad.concat(gradLineQs(),pointQs("grad","world","Kontinent"),pointQs("grad","world","Ozean"))}
+];
+
+/* ---------- Quiz-Ablauf ---------- */
+const app=$("#app");let ST=null;
+const usable=q=>!(q.map&&!GEO.d3);
+function sampleTopic(t,n){const pool=t.pool().filter(usable);const by={};pool.forEach(q=>{(by[q.k]=by[q.k]||[]).push(q);});
+ const kinds=Object.keys(by);const sh={};kinds.forEach(k=>sh[k]=shuffle(by[k]));const out=[];let i=0;
+ while(out.length<n&&kinds.some(k=>sh[k].length)){const k=kinds[i%kinds.length];if(sh[k].length)out.push(sh[k].pop());i++;}
+ return shuffle(out);}
+function startTopic(id){const t=TOPICS.find(x=>x.id===id);begin(t.name,id,sampleTopic(t,10));}
+function startExam(){let qs=[];TOPICS.forEach(t=>{qs=qs.concat(sampleTopic(t,t.flag?2:1));});
+ shuffle(["welt","europa","de","phys","mess","luft"]).forEach(id=>{const q=sampleTopic(TOPICS.find(x=>x.id===id),1)[0];if(q)qs.push(q);});
+ begin("Probe-Klassenarbeit","exam",shuffle(qs).slice(0,20));}
+function startWrong(){const s=store.get();const list=(s.wrong||[]).slice(-15);if(list.length)begin("Fehler üben","wrong",shuffle(list));}
+function begin(title,id,qs){ST={title,id,qs,i:0,score:0,log:[]};renderQ();window.scrollTo(0,0);}
+
+function renderHome(){
+ const s=store.get();const best=s.best||{};const nw=(s.wrong||[]).length;
+ app.innerHTML=`
+ <header class="head"><span class="eyebrow">Erdkunde · Klasse 5 · Orientierung im Atlas</span><h1>Atlas-<span>Check</span></h1>
+  <p>Üben für die Klassenarbeit: Karten, Himmelsrichtungen, Maßstab, Höhen. Mit Karten zum Antippen, Auswahlfragen und Fragen, bei denen du in eigenen Worten antwortest.</p>
+  <div class="status" id="status"><i></i><span>Karten werden geladen …</span></div></header>
+ <section class="hero"><h2>Probe-Klassenarbeit</h2><p>20 gemischte Fragen aus allen Themen. Nordstern und Maßstab kommen öfter dran, weil du sie auf deinem Zettel mit „?“ markiert hast.</p>
+  <div class="row"><button class="btn inv" id="exam">Probe-Klassenarbeit starten</button>${nw?`<button class="btn ghost oninv" id="wrong">Fehler üben (${nw})</button>`:""}</div></section>
+ <section class="sec"><h3>Einzelne Themen üben</h3><div class="tiles">
+ ${TOPICS.map(t=>{const b=best[t.id];return `<button class="tile" data-t="${t.id}"><b>${esc(t.name)}</b><small>${esc(t.sub)}</small>${t.flag?`<span class="q">? auf deinem Zettel</span>`:""}
+   <div class="meter"><i style="width:${b||0}%"></i></div><div class="best"><span>10 Fragen</span><span>${b!=null?"Bestes Ergebnis: "+b+" %":"noch nicht geübt"}</span></div></button>`;}).join("")}
+ </div></section>
+ <p class="foot">Ländergrenzen: Natural-Earth-basierte Kartendaten, beim Öffnen geladen. Flüsse und Gebirge sind vereinfacht eingezeichnet, ähnlich wie auf den Arbeitsblättern. In der Klassenarbeit arbeitest du mit dem Atlas: Seitenzahlen und Planquadrate sind dort anders als hier.</p>`;
+ $("#exam").onclick=startExam;if(nw)$("#wrong").onclick=startWrong;
+ app.querySelectorAll(".tile").forEach(b=>b.onclick=()=>startTopic(b.dataset.t));
+ const upd=()=>{const el=$("#status");if(!el)return;const ok=!!(GEO.world||GEO.europe);el.className="status "+(ok?"ok":"warn");el.lastChild.textContent=ok?`Karten mit Ländergrenzen bereit${GEO.states?" (mit Bundesländern)":""}`:GEO.note||"Karten nicht verfügbar";};
+ MAPREADY.then(upd);
+}
+
+const KINDNAME={mc:"Auswahl",text:"Begriff",open:"Eigene Worte",click:"Auf Karte tippen",grid:"Planquadrat"};
+function renderQ(){
+ const q=ST.qs[ST.i];const n=ST.qs.length;ST.done=false;ST.pin=null;
+ app.innerHTML=`<div class="qbar"><button class="x" id="quit">✕ Beenden</button><div class="prog"><span>${esc(ST.title)} · Frage ${ST.i+1} von ${n} · ${ST.score} richtig</span><div class="pbar"><i style="width:${ST.i/n*100}%"></i></div></div></div>
+ <article class="card"><div class="chips"><span class="chip">${esc((TOPICS.find(t=>t.id===q.topic)||{}).name||"")}</span><span class="chip">${KINDNAME[q.k]||""}</span></div>
+ <p class="prompt">${esc(q.p)}</p><div id="vis"></div><div id="ans"></div><div id="fb"></div></article>`;
+ $("#quit").onclick=renderHome;
+ if(q.vis)$("#vis").innerHTML=`<div class="mapbox"><div class="mapwrap">${visualSVG(q.vis)}</div></div>`;
+ if(q.map)drawMapInto($("#vis"),q);
+ const A=$("#ans");
+ if(q.k==="mc"){A.innerHTML=`<div class="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
+  A.querySelectorAll(".opt").forEach(b=>b.onclick=()=>checkMC(+b.dataset.i));}
+ else if(q.k==="text"||q.k==="grid"){A.innerHTML=`<form class="inrow" id="f"><input id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${q.k==="grid"?"z. B. C4":"Antwort eingeben"}" aria-label="Antwort"><button class="btn" id="go">Prüfen</button></form>`;
+  $("#f").onsubmit=e=>{e.preventDefault();const v=$("#inp").value.trim();if(v)checkInput(v);};}
+ else if(q.k==="open"){A.innerHTML=`<form class="inrow" id="f"><textarea id="inp" placeholder="Antworte in ganzen Sätzen, so wie in der Klassenarbeit." aria-label="Deine Antwort"></textarea><button class="btn" id="go">Antwort prüfen</button></form>`;
+  $("#f").onsubmit=e=>{e.preventDefault();const v=$("#inp").value.trim();if(v.length>=3)checkOpen(v);};}
+ else if(q.k==="click"){A.innerHTML=`<div class="row"><button class="btn" id="go" disabled>Prüfen</button><span class="hint" id="clickhint">Tippe zuerst auf die Karte.</span></div>`;$("#go").onclick=checkClick;}
+}
+async function drawMapInto(host,q){
+ host.innerHTML=`<div class="mapbox"><div class="mapwrap"><div class="mapload">Karte wird geladen …</div></div></div>`;
+ await MAPREADY;if(!ST||ST.qs[ST.i]!==q)return;
+ const m=q.map;const md=MAPDEF[m.name];const mm=Object.assign({},m,{cities:m.cities||(m.click&&m.click.t==="city")});
+ const warn=(GEO.world||GEO.europe)?"":`<span style="color:var(--bad)">Ländergrenzen nicht geladen</span>`;
+ host.innerHTML=`<div class="mapbox"><div class="mapwrap">${mapSVG(mm)}</div><div class="maptools"><span>Karte: ${md.title}${(m.rivers||m.mounts)?" · Flüsse und Gebirge vereinfacht":""} ${warn}</span><button type="button" id="zoom">Karte vergrößern</button></div></div>`;
+ const wrap=host.querySelector(".mapwrap");$("#zoom").onclick=e=>{wrap.classList.toggle("zoom");e.target.textContent=wrap.classList.contains("zoom")?"Karte verkleinern":"Karte vergrößern";};
+ if(m.click){const svg=host.querySelector("svg");svg.addEventListener("click",e=>{if(ST.done)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());ST.pin=[p.x,p.y];
+  svg.querySelector(".pins").innerHTML=pinSVG(p.x,p.y,"",md.W/560);$("#go").disabled=false;const h=$("#clickhint");if(h)h.textContent="Du kannst noch einmal tippen, um den Punkt zu ändern.";});}
+}
+
+function saveWrong(q,ok){const s=store.get();s.wrong=s.wrong||[];const key=w=>JSON.stringify([w.p,w.map&&w.map.hl,w.map&&w.map.click,w.vis,w.map&&w.map.dist,w.map&&w.map.dir]);const k=key(q);
+ s.wrong=s.wrong.filter(w=>key(w)!==k);if(!ok)s.wrong.push(q);s.wrong=s.wrong.slice(-40);store.set(s);}
+function finish(ok,userTxt,corrTxt,note,extra){
+ const q=ST.qs[ST.i];ST.done=true;if(ok)ST.score++;const entry={q,ok,user:userTxt,corr:corrTxt};ST.log.push(entry);saveWrong(q,ok);
+ revealMap(q);
+ if(q.visReveal){const w=$("#vis .mapwrap");if(w)w.innerHTML=visualSVG(Object.assign({},q.vis,{reveal:true}));}
+ const last=ST.i===ST.qs.length-1;
+ $("#fb").innerHTML=`<div class="fb ${ok?"ok":"bad"}"><span class="verdict">${ok?"Richtig!":(q.k==="open"?"Noch nicht vollständig":"Leider falsch")}</span>
+  ${!ok&&corrTxt?`<p>Richtig ist: <b>${esc(corrTxt)}</b></p>`:""}${note?`<p>${esc(note)}</p>`:""}${extra||""}${q.x?`<p>${esc(q.x)}</p>`:""}
+  <div class="row" style="margin-top:4px"><button class="btn" id="next">${last?"Ergebnis ansehen":"Weiter"}</button>${!ok&&q.k==="open"?`<button class="linkbtn" id="override">Meine Antwort meint dasselbe – als richtig werten</button>`:""}</div></div>`;
+ const nb=$("#next");nb.onclick=()=>{if(last)renderResult();else{ST.i++;renderQ();window.scrollTo(0,0);}};nb.focus({preventScroll:true});
+ const ov=$("#override");if(ov)ov.onclick=()=>{entry.ok=true;ST.score++;saveWrong(q,true);const fb=$("#fb .fb");fb.className="fb ok";fb.querySelector(".verdict").textContent="Als richtig gewertet";ov.remove();};
+ $("#fb").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function checkMC(i){if(ST.done)return;const q=ST.qs[ST.i];const ok=i===q.a;
+ $("#ans").querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add("right");else if(j===i)b.classList.add("wrong");});
+ finish(ok,q.o[i],q.o[q.a]);}
+function checkInput(v){if(ST.done)return;const q=ST.qs[ST.i];let ok=false,note=null,corr=q.show;
+ if(q.k==="grid"){const c=canon(v).toUpperCase();const m=c.match(/^([A-H])(\d)$/)||c.match(/^(\d)([A-H])$/);const cell=m?(isNaN(m[1])?m[1]+m[2]:m[2]+m[1]):"";ok=cell===q.ans;}
+ else{const cv=canon(v);const accs=q.acc.map(canon);if(accs.indexOf(cv)>=0)ok=true;else{const d=Math.min.apply(null,accs.map(a=>lev(cv,a)));const lim=cv.length>=8?2:cv.length>=4?1:0;if(d<=lim){ok=true;note=`Fast richtig geschrieben. Richtig heißt es: ${q.show}.`;}}}
+ const inp=$("#inp");inp.classList.add(ok?"right":"wrong");inp.disabled=true;$("#go").disabled=true;
+ finish(ok,v,corr,note);}
+function checkOpen(v){if(ST.done)return;const q=ST.qs[ST.i];const cv=canon(v);
+ const hits=q.keys.map(k=>k.re?new RegExp(k.re).test(cv):k.a.some(a=>{const ca=canon(a);return ca.length>0&&cv.indexOf(ca)>=0;}));
+ const n=hits.filter(Boolean).length;const ok=n>=q.need;
+ const inp=$("#inp");inp.classList.add(ok?"right":"wrong");inp.disabled=true;$("#go").disabled=true;
+ const need=q.need>=q.keys.length?"alle Punkte":q.need===1?"mindestens einen Punkt":`mindestens ${q.need} Punkte`;
+ const extra=`<p>Das gehört in eine gute Antwort (${need}):</p><ul class="keys">${q.keys.map((k,i)=>`<li class="${hits[i]?"hit":"miss"}"><b>${hits[i]?"✓":"○"}</b><span>${esc(k.l)}</span></li>`).join("")}</ul>
+  <div class="model"><span>Musterantwort</span>${esc(q.model)}</div>`;
+ finish(ok,v,ok?"":"siehe Musterantwort",null,extra);}
+function checkClick(){if(ST.done||!ST.pin)return;const q=ST.qs[ST.i];const m=q.map,md=MAPDEF[m.name],p=ST.pin,t=m.click;let ok=false,note=null,best=null,bd=Infinity;
+ if(t.t==="city"){md.cities.forEach(c=>{const cp=md.cityPx[c.n];if(!cp)return;const d=Math.hypot(cp[0]-p[0],cp[1]-p[1]);if(d<bd){bd=d;best=c.n;}});ok=best===t.id&&bd<=md.tol;}
+ if(t.t==="river"){md.rivers.forEach(r=>{const d=dLine(p,md.riverPx[r]);if(d<bd){bd=d;best=r;}});ok=best===t.id&&bd<=md.tol*.7;}
+ if(t.t==="mount"){md.mounts.forEach(r=>{const d=dLine(p,md.mountPx[r]);if(d<bd){bd=d;best=r;}});ok=best===t.id&&bd<=md.mw/2+md.tol*.6;}
+ if(!ok&&best&&best!==t.id&&bd<=md.tol)note=`Du hast auf ${best} getippt.`;
+ if(t.t==="city"&&!ok){const tgt=findCity(m.name,t.id);const inv=md.P.invert(p);if(inv&&tgt){const km=haversine({la:inv[1],lo:inv[0]},tgt);note=(note?note+" ":"")+`Dein Punkt liegt etwa ${fmt(Math.round(km/10)*10)} km daneben.`;}}
+ $("#go").disabled=true;const svg=$("#vis svg");if(svg)svg.querySelector(".pins").innerHTML=pinSVG(p[0],p[1],ok?"":"bad",md.W/560);
+ finish(ok,best?("getippt: "+best):"",q.show,note);}
+function revealMap(q){const svg=$("#vis svg.map");if(!svg||!q.map)return;const m=q.map,md=MAPDEF[m.name],fs=md.fs;LBLW=md.W;const g=svg.querySelector(".reveal");if(!g)return;let s="";
+ const t=(m.click||m.hl)||{};const u=md.W/560;
+ if(t.t==="city"){const p=md.cityPx[t.id];s+=`<circle class="goodring" cx="${p[0]}" cy="${p[1]}" r="${9*u}"/>`+(t.label?"":lbl(p,t.id,fs,"good"));}
+ if(t.t==="river"){if(m.click)s+=`<path class="mk" d="${md.riverD[t.id]}" stroke-width="${9*u}"/>`;s+=lbl(midOf(md.riverPx[t.id]),t.id,fs,"good");}
+ if(t.t==="mount"){if(m.click)s+=`<path class="mk" d="${md.mountD[t.id]}" stroke-width="${md.mw+12}"/>`;s+=lbl(midOf(md.mountPx[t.id]),t.id,fs,"good");}
+ if(t.t==="pt"){const p=md.ptPx[t.id];s+=lbl([p[0]+6,p[1]],t.id,fs,"good");}
+ if(m.dist){const a=md.cityPx[m.dist.a],b=md.cityPx[m.dist.b];const L=Math.hypot(b[0]-a[0],b[1]-a[1]);const ux=(b[0]-a[0])/L,uy=(b[1]-a[1])/L;for(let d=m.dist.barPx;d<L;d+=m.dist.barPx){const x=a[0]+ux*d,y=a[1]+uy*d;s+=`<line class="tick" x1="${x-uy*7}" y1="${y+ux*7}" x2="${x+uy*7}" y2="${y-ux*7}"/>`;}}
+ g.innerHTML=s;}
+
+function renderResult(){
+ const n=ST.qs.length,sc=ST.log.filter(l=>l.ok).length,pct=Math.round(sc/n*100);const s=store.get();s.best=s.best||{};
+ if(TOPICS.some(t=>t.id===ST.id))s.best[ST.id]=Math.max(s.best[ST.id]||0,pct);store.set(s);
+ const msg=pct>=90?"Sehr stark. Das sitzt.":pct>=75?"Gut! Schau dir die Fehler unten noch einmal an.":pct>=50?"Ordentlich, aber da geht noch was. Übe die falschen Fragen gleich nochmal.":"Hier lohnt sich Üben. Nimm dir die Themen einzeln vor und wiederhole die Fehler.";
+ const wrong=ST.log.filter(l=>!l.ok);
+ app.innerHTML=`<header class="head"><span class="eyebrow">${esc(ST.title)}</span><div class="big">${pct} %<small> · ${sc} von ${n} richtig</small></div><p style="font-family:var(--f-hand);font-size:22px;color:var(--pen);margin:0">${esc(msg)}</p></header>
+ <div class="row">${wrong.length?`<button class="btn" id="redo">Fehler gleich üben (${wrong.length})</button>`:""}<button class="btn ghost" id="again">Neue Runde</button><button class="btn ghost" id="home">Zur Übersicht</button></div>
+ <section class="sec"><h3>Alle Fragen</h3><ol class="rlist">${ST.log.map(l=>`<li class="${l.ok?"r":"w"}"><span class="m">${l.ok?"✓":"✗"}</span><div><p>${esc(l.q.p)}</p>${l.ok?"":`<p class="muted">Deine Antwort: ${esc(l.user||"–")}${l.q.k==="open"?"":" · Richtig: <b>"+esc(l.corr||"")+"</b>"}</p>${l.q.k==="open"?`<p class="muted">Musterantwort: ${esc(l.q.model)}</p>`:""}`}</div></li>`).join("")}</ol></section>`;
+ $("#home").onclick=renderHome;
+ $("#again").onclick=()=>{if(ST.id==="exam")startExam();else if(ST.id==="wrong")startWrong();else startTopic(ST.id);};
+ if(wrong.length)$("#redo").onclick=()=>begin("Fehler üben","wrong",shuffle(wrong.map(l=>l.q)));
+ window.scrollTo(0,0);
+}
+renderHome();
+</script>
+
+</body>
+</html>

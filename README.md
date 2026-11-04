@@ -6,7 +6,7 @@ Lernaufgaben und Quizze zum Üben, als einzelne Webseiten über GitHub Pages.
 
 ```
 Lernaufgaben/
-  Klasse 5/
+  Klasse5/
     Erdkunde/
       atlas-check/   Quiz „Orientierung im Atlas“
 ```
@@ -17,4 +17,4 @@ Jede Lernaufgabe liegt in einem eigenen Ordner unter `Lernaufgaben/<Klasse>/<Fac
 
 | Klasse | Fach | Lernaufgabe | Link |
 |---|---|---|---|
-| 5 | Erdkunde | Atlas-Check: Orientierung im Atlas | [öffnen](https://mircoblum.github.io/schule/Lernaufgaben/Klasse%205/Erdkunde/atlas-check/) |
+| 5 | Erdkunde | Atlas-Check: Orientierung im Atlas | [öffnen](https://mircoblum.github.io/schule/Lernaufgaben/Klasse5/Erdkunde/atlas-check/) |

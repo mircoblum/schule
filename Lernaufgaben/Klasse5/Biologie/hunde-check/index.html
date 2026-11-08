@@ -82,6 +82,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .btn.inv{background:var(--hero-ink);color:var(--hero)}
 .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
 .btn.ghost.oninv{color:var(--hero-ink);border-color:color-mix(in srgb,var(--hero-ink) 50%,transparent)}
+a.btn{display:inline-flex;align-items:center;text-decoration:none}
 .btn.small{min-height:36px;padding:7px 12px;font-size:14px;font-weight:500}
 .btn:disabled{opacity:.45;cursor:default}
 .sec{display:flex;flex-direction:column;gap:10px}
@@ -631,7 +632,7 @@ function renderHome(){
  <header class="head"><span class="eyebrow">Biologie · Klasse 5 · Klassenarbeit am 10.11.</span><h1>Hunde-<span>Check</span></h1>
   <p>Üben für die Bio-Klassenarbeit: Kennzeichen von Lebewesen, das Hundegebiss, Kennzeichen der Säugetiere und Züchtung. Mit Skizzen zum Antippen, Auswahlfragen und Fragen, bei denen du in eigenen Worten antwortest.</p></header>
  <section class="hero"><h2>Probe-Klassenarbeit</h2><p>20 gemischte Fragen, je 5 aus jedem der vier Themen auf deinem Zettel.</p>
-  <div class="row"><button class="btn inv" id="exam">Probe-Klassenarbeit starten</button>${nw?`<button class="btn ghost oninv" id="wrong">Fehler üben (${nw})</button>`:""}</div></section>
+  <div class="row"><button class="btn inv" id="exam">Probe-Klassenarbeit starten</button>${nw?`<button class="btn ghost oninv" id="wrong">Fehler üben (${nw})</button>`:""}<a class="btn ghost oninv" href="probe-klassenarbeit.pdf" target="_blank" rel="noopener">Als PDF zum Ausdrucken</a></div></section>
  <section class="sec"><h3>Einzelne Themen üben</h3><div class="tiles">
  ${TOPICS.map(t=>{const b=best[t.id];return `<button class="tile" data-t="${t.id}"><b>${esc(t.name)}</b><small>${esc(t.sub)}</small><span class="src">${esc(t.src)}</span>${t.flag?`<span class="q">${esc(t.flag)}</span>`:""}
    <div class="meter"><i style="width:${b||0}%"></i></div><div class="best"><span>10 Fragen</span><span>${b!=null?"Bestes Ergebnis: "+b+" %":"noch nicht geübt"}</span></div></button>`;}).join("")}

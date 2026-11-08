@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Hunde-Check">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f3f6f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f151a" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<title>Hunde-Check Biologie Klasse 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Kalam:wght@400;700&family=Lexend:wght@400;500;600&display=swap">
+<style>
+/* Gleicher Aufbau wie der Atlas-Check (Erdkunde): eine Spalte wie ein Arbeitsblatt, Füller-Blau als Akzent,
+   Textmarker-Gelb für Markierungen. Für Biologie: Mappen-Grün im Kopfbereich, Skizzen als Strichzeichnungen. */
+:root{
+  --paper:#f3f6f6; --card:#ffffff; --ink:#15202b; --muted:#56636e; --line:#d5dde0;
+  --pen:#2a3cb4; --pen-ink:#ffffff; --pen-soft:#e5e9fb;
+  --hero:#1d6448; --hero-ink:#ffffff;
+  --ok:#1b7548; --ok-soft:#dcf0e4; --bad:#b0261d; --bad-soft:#fae3df;
+  --marker:#ffd60a; --marker-op:.75;
+  --dog:#f7f0e3; --dog2:#e2d6c0; --ear:#c69a6c;
+  --bone:#efe5cf; --hole:#d9ccb0; --tooth:#ffffff;
+  --t-sch:#f08a24; --t-fang:#2e9e5b; --t-back:#3a74d8; --t-reiss:#8d43b8;
+  --leaf:#4f9a3c; --trap:#d9534a; --frog:#7fae5a; --lung:#f2a7a7; --warm:#d8462f; --cold:#2f7fd0;
+  --coldbg:#e3f0fb; --warmbg:#fff3cf; --sun:#f6b81a; --womb:#fbe0e0; --milk:#ffffff; --cell:#dff0d2; --cellk:#6a9b4c;
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --f-hand:"Kalam", "Comic Sans MS", "Bradley Hand", cursive;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0f151a; --card:#161e25; --ink:#e6edf1; --muted:#9aa9b4; --line:#2a353e;
+  --pen:#93a3ff; --pen-ink:#0f151a; --pen-soft:#1f2650;
+  --hero:#86d4ad; --hero-ink:#0f151a;
+  --ok:#62d39c; --ok-soft:#12301f; --bad:#ff8b7c; --bad-soft:#3a1814;
+  --marker:#f0cc00; --marker-op:.55;
+  --dog:#3a372f; --dog2:#2a2823; --ear:#8a6a4a;
+  --bone:#4a4438; --hole:#2b271f; --tooth:#f4efe2;
+  --t-sch:#ffa24d; --t-fang:#4fcf86; --t-back:#76a6ff; --t-reiss:#c58ae8;
+  --leaf:#6fbf5a; --trap:#ff7a70; --frog:#8fc46a; --lung:#d98585; --warm:#ff7a5c; --cold:#6cb2f5;
+  --coldbg:#16283a; --warmbg:#3a321a; --sun:#f6c84a; --womb:#4a2a2e; --milk:#f4f4f4; --cell:#24361d; --cellk:#9fd17f;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0f151a; --card:#161e25; --ink:#e6edf1; --muted:#9aa9b4; --line:#2a353e;
+  --pen:#93a3ff; --pen-ink:#0f151a; --pen-soft:#1f2650;
+  --hero:#86d4ad; --hero-ink:#0f151a;
+  --ok:#62d39c; --ok-soft:#12301f; --bad:#ff8b7c; --bad-soft:#3a1814;
+  --marker:#f0cc00; --marker-op:.55;
+  --dog:#3a372f; --dog2:#2a2823; --ear:#8a6a4a;
+  --bone:#4a4438; --hole:#2b271f; --tooth:#f4efe2;
+  --t-sch:#ffa24d; --t-fang:#4fcf86; --t-back:#76a6ff; --t-reiss:#c58ae8;
+  --leaf:#6fbf5a; --trap:#ff7a70; --frog:#8fc46a; --lung:#d98585; --warm:#ff7a5c; --cold:#6cb2f5;
+  --coldbg:#16283a; --warmbg:#3a321a; --sun:#f6c84a; --womb:#4a2a2e; --milk:#f4f4f4; --cell:#24361d; --cellk:#9fd17f;
+  color-scheme:dark }
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-top:calc(20px + env(safe-area-inset-top, 0px));padding-bottom:calc(48px + env(safe-area-inset-bottom, 0px))}
+[hidden]{display:none!important}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+button,select{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.head{display:flex;flex-direction:column;gap:6px;padding-top:4px}
+.head h1{font-size:clamp(30px,7vw,44px);font-weight:800;letter-spacing:-.01em}
+.head h1 span{color:var(--pen)}
+.head p{margin:0;color:var(--muted);max-width:60ch}
+.hero{background:var(--hero);color:var(--hero-ink);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.hero h2{font-size:24px}
+.hero p{margin:0;opacity:.92;max-width:54ch}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:600;background:var(--pen);color:var(--pen-ink);min-height:46px}
+.btn.inv{background:var(--hero-ink);color:var(--hero)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost.oninv{color:var(--hero-ink);border-color:color-mix(in srgb,var(--hero-ink) 50%,transparent)}
+.btn.small{min-height:36px;padding:7px 12px;font-size:14px;font-weight:500}
+.btn:disabled{opacity:.45;cursor:default}
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec h3{font-size:18px}
+.tiles{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:560px){.tiles{grid-template-columns:1fr 1fr}}
+.tile{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.tile:hover{border-color:var(--pen)}
+.tile b{font-weight:600;font-size:16px}
+.tile small{color:var(--muted);font-size:13px}
+.tile .q{font-family:var(--f-hand);color:var(--pen);font-size:15px;line-height:1.2}
+.tile .src{font-size:12px;color:var(--muted)}
+.meter{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ok);width:0}
+.tile .best{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tile.plain{flex-direction:row;align-items:center;gap:12px}
+.tile.plain svg{flex:none;width:64px;height:auto}
+.tile.plain div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.qbar{display:flex;align-items:center;gap:12px}
+.qbar .prog{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+.qbar .prog span{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.qbar .x{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;font-size:14px;flex:none}
+.pbar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--pen);transition:width .3s}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (max-width:480px){.card{padding:14px}}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--pen-soft);color:var(--pen);font-weight:500}
+.prompt{font-size:20px;font-weight:500;line-height:1.35;margin:0}
+@media (max-width:480px){.prompt{font-size:18px}}
+.opts{display:grid;grid-template-columns:1fr;gap:8px}
+@media (min-width:560px){.opts{grid-template-columns:1fr 1fr}}
+.opt{display:flex;align-items:center;gap:10px;text-align:left;padding:12px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);min-height:50px}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:600;background:var(--pen-soft);color:var(--pen)}
+.opt .box{flex:none;width:24px;height:24px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;font-size:15px;font-weight:700;color:var(--pen-ink)}
+.opt.on{border-color:var(--pen)} .opt.on .box{background:var(--pen);border-color:var(--pen)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.missed{border-color:var(--ok);border-style:dashed}
+.opt:disabled{cursor:default}
+.opt .num{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;border:2px dashed var(--line);color:var(--muted)}
+.opt.on .num{border:0;background:var(--pen);color:var(--pen-ink)}
+.inrow{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.inrow input,.inrow textarea{flex:1 1 220px;min-width:0;font:inherit;font-size:17px;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+.inrow textarea{flex-basis:100%;min-height:110px;resize:vertical;line-height:1.45}
+.inrow .right{border-color:var(--ok);background:var(--ok-soft)}
+.inrow .wrong{border-color:var(--bad);background:var(--bad-soft)}
+.match{display:flex;flex-direction:column;gap:8px}
+.mrow{display:grid;grid-template-columns:1fr;gap:6px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+@media (min-width:560px){.mrow{grid-template-columns:minmax(0,2fr) minmax(0,3fr);align-items:center}}
+.mrow>span{font-weight:600}
+.mrow select{width:100%;min-height:44px;font-size:16px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+.mrow.right{border-color:var(--ok);background:var(--ok-soft)} .mrow.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.mrow .fix{grid-column:1/-1;font-size:14px;color:var(--ok);font-weight:500}
+.fb{border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb .verdict{font-family:var(--f-hand);font-size:24px;font-weight:700;line-height:1.1}
+.fb.ok .verdict{color:var(--ok)} .fb.bad .verdict{color:var(--bad)}
+.fb p{margin:0;max-width:62ch}
+.fb ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:2px}
+.keys{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.keys li{display:flex;gap:8px;align-items:baseline;font-size:15px}
+.keys li b{flex:none;width:18px;font-family:var(--f-hand);font-size:18px}
+.keys li.hit b{color:var(--ok)} .keys li.miss b{color:var(--bad)}
+.model{border-left:3px solid var(--pen);padding:6px 12px;background:var(--card);border-radius:0 8px 8px 0}
+.model span{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hint{font-size:14px;color:var(--muted)}
+.linkbtn{background:none;border:0;padding:0;color:var(--pen);text-decoration:underline;font-size:14px}
+.vis{border-radius:10px;border:1.5px solid var(--line);background:var(--card);overflow:hidden}
+.vis svg{display:block;width:100%;height:auto}
+.vis.narrow svg{max-width:430px;margin:0 auto}
+.vis .cap{font-size:12px;color:var(--muted);padding:0 12px 8px}
+.big{font-family:var(--f-display);font-size:64px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:22px;color:var(--muted);font-weight:600}
+.rlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.rlist li{display:grid;grid-template-columns:28px 1fr;gap:8px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card)}
+.rlist li .m{font-family:var(--f-hand);font-size:22px;font-weight:700;line-height:1}
+.rlist li.r .m{color:var(--ok)} .rlist li.w .m{color:var(--bad)}
+.rlist li div{min-width:0}
+.rlist li p{margin:0;font-size:14px;overflow-wrap:anywhere}
+.foot{font-size:12px;color:var(--muted);max-width:70ch}
+/* Spickzettel */
+.cheat{display:flex;flex-direction:column;gap:12px}
+.cheat h2{font-size:22px}
+.cheat .merk{font-family:var(--f-hand);font-size:20px;line-height:1.25;color:var(--pen);background:color-mix(in srgb,var(--marker) 35%,transparent);padding:4px 10px;border-radius:6px;align-self:flex-start}
+.icgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (min-width:600px){.icgrid{grid-template-columns:1fr 1fr 1fr}}
+.ic{border:1.5px solid var(--line);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.ic svg{width:100%;height:auto;display:block}
+.ic b{font-size:15px}
+.ic span{font-size:13px;color:var(--muted);line-height:1.35}
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.legend li{display:grid;grid-template-columns:30px 1fr;gap:8px;align-items:start}
+.legend li i{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font-style:normal;font-weight:700;color:#fff;font-size:14px}
+.legend li span{font-size:15px}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+/* Simulator */
+.simstat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.simstat div{background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column}
+.simstat b{font-family:var(--f-display);font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.simstat span{font-size:12px;color:var(--muted)}
+.win{background:var(--ok-soft);border-radius:12px;padding:14px 16px}
+.win b{font-family:var(--f-hand);font-size:24px;color:var(--ok);display:block;line-height:1.1}
+/* SVG-Skizzen */
+svg text{font-family:var(--f-body)}
+.dog .d-body,.dog .d-leg{fill:var(--dog);stroke:var(--ink);stroke-width:1.4px;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.dog .d-far{fill:var(--dog2);stroke:var(--ink);stroke-width:1.4px;vector-effect:non-scaling-stroke}
+.dog .d-ear{fill:var(--ear);stroke:var(--ink);stroke-width:1.4px;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.dog .d-to{fill:none;stroke:var(--ink);stroke-width:5.6px;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.dog .d-ti{fill:none;stroke:var(--dog);stroke-width:3px;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.dog .d-eye,.dog .d-nose{fill:var(--ink)}
+.dog .d-womb{fill:var(--womb);stroke:var(--warm);stroke-width:1.3px;stroke-dasharray:3 2;vector-effect:non-scaling-stroke}
+.dog .d-mk{fill:none;stroke:var(--marker);stroke-opacity:var(--marker-op);stroke-width:18px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.dog .d-fur{fill:none;stroke:var(--ink);stroke-width:1.1px;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.sk-ln{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.sk-ar{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sk-t{fill:var(--ink);font-size:10px}
+.sk-ts{fill:var(--muted);font-size:9px}
+.sk-tb{fill:var(--ink);font-size:11px;font-weight:600}
+.sk-mk{fill:var(--marker);fill-opacity:var(--marker-op)}
+.sk-mkl{fill:none;stroke:var(--marker);stroke-opacity:var(--marker-op);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+.sk-ground{stroke:var(--line);stroke-width:2}
+.bone{fill:var(--bone);stroke:var(--ink);stroke-width:1.5;stroke-linejoin:round}
+.hole{fill:var(--hole);stroke:var(--ink);stroke-width:1.3}
+.tooth{stroke:#1f2a33;stroke-width:1.1;stroke-linejoin:round;fill:var(--tooth)}
+.tooth.c-sch{fill:var(--t-sch)} .tooth.c-fang{fill:var(--t-fang)} .tooth.c-back{fill:var(--t-back)} .tooth.c-reiss{fill:var(--t-reiss)}
+.t-mk{fill:none;stroke:var(--marker);stroke-opacity:.95;stroke-width:8;stroke-linejoin:round}
+.nbox{fill:var(--card);stroke:var(--ink);stroke-width:1.3}
+.ntx{fill:var(--ink);font-size:12px;font-weight:600}
+.zone{fill:transparent;stroke:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.zone.sel{fill:var(--marker);fill-opacity:.28;stroke:var(--pen);stroke-width:2;stroke-dasharray:5 4}
+.zone.good{fill:var(--ok);fill-opacity:.16;stroke:var(--ok);stroke-width:2.5}
+.zone.badz{fill:var(--bad);fill-opacity:.14;stroke:var(--bad);stroke-width:2.5}
+.zone.pick{stroke:var(--pen);stroke-width:2.5;fill:var(--pen);fill-opacity:.1}
+.leaf{fill:var(--leaf);stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round}
+.trap{fill:var(--trap)}
+.stem{fill:none;stroke:var(--leaf);stroke-width:4;stroke-linecap:round}
+.frog{fill:var(--frog);stroke:var(--ink);stroke-width:1.3;stroke-linejoin:round}
+.lung{fill:var(--lung);stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round}
+.warmln{fill:none;stroke:var(--warm);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.coldln{fill:none;stroke:var(--cold);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.warmtx{fill:var(--warm);font-size:10px;font-weight:600}
+.coldtx{fill:var(--cold);font-size:10px;font-weight:600}
+.coldbg{fill:var(--coldbg)} .warmbg{fill:var(--warmbg)}
+.sun{fill:var(--sun);stroke:var(--ink);stroke-width:1.2}
+.sunr{stroke:var(--sun);stroke-width:2.4;stroke-linecap:round}
+.therm{fill:var(--card);stroke:var(--ink);stroke-width:1.3}
+.thermf{fill:var(--warm)}
+.milk{fill:var(--milk);stroke:var(--ink);stroke-width:1}
+.cell{fill:var(--cell);stroke:var(--cellk);stroke-width:1.6}
+.nuc{fill:var(--cellk)}
+.lens{fill:none;stroke:var(--ink);stroke-width:5}
+.handle{stroke:var(--ink);stroke-width:10;stroke-linecap:round}
+.egg{fill:var(--card);stroke:var(--ink);stroke-width:1.4}
+.xx{stroke:var(--bad);stroke-width:3;stroke-linecap:round}
+.bar{fill:var(--pen)} .bar.goal{fill:var(--ok)}
+.goalln{stroke:var(--ok);stroke-width:1.5;stroke-dasharray:5 4}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+"use strict";
+/* ---------- Hilfen ---------- */
+const $=(s,el=document)=>el.querySelector(s);
+const rnd=n=>Math.floor(Math.random()*n);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const pick=(a,n)=>shuffle(a).slice(0,n);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const f1=n=>(+n).toFixed(1).replace(/\.0$/,"");
+function canon(s){return String(s).toLowerCase().replace(/ß/g,"ss").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/ae/g,"a").replace(/oe/g,"o").replace(/ue/g,"u").replace(/[^a-z0-9]/g,"");}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,i)=>i);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c;}return p[n];}
+const STOREKEY="hundecheck5";
+const store={get(){try{return JSON.parse(localStorage.getItem(STOREKEY))||{}}catch(e){return{}}},set(v){try{localStorage.setItem(STOREKEY,JSON.stringify(v))}catch(e){}}};
+let UID=0;
+
+/* =====================================================================
+   SKIZZEN
+   ===================================================================== */
+
+/* Hund als Strichzeichnung, Blick nach links. Lokale Koordinaten: Nase bei x≈-9, Schwanz bei x≈99,
+   Füße bei y = 54 + Beinlänge. o: {x,y,s,ear,leg,earUp,run,legsMk,fur,womb} */
+function dogG(o){
+ const L=o.leg==null?20:o.leg, E=o.ear==null?12:o.ear, s=o.s||1, H=L+2;
+ const rot=(a,cx)=>o.run?` transform="rotate(${a} ${cx} 54)"`:"";
+ const ear=o.earUp?`<path class="d-ear" d="M14,16 L20,2 L27,18 Z"/>`
+   :`<ellipse class="d-ear" cx="21" cy="${f1(16+E/2)}" rx="5" ry="${f1(E/2+2)}" transform="rotate(-8 21 16)"/>`;
+ const legs=[[32,"d-far",18],[80,"d-far",-14],[24,"d-leg",-26],[71,"d-leg",26]];
+ const mk=o.legsMk?legs.map(([x])=>`<path class="d-mk" d="M${x+4},56 v${H-4}"/>`).join(""):"";
+ const fur=o.fur?`<path class="d-fur" d="M30,38 l-2,-5 M38,38 l-1,-5 M46,38 l0,-5 M54,38 l1,-5 M62,38 l1,-5 M70,38 l2,-5 M78,38 l3,-4 M34,60 l-1,4 M44,60 l0,4 M54,60 l0,4 M64,60 l1,4"/>`:"";
+ const womb=o.womb?`<ellipse class="d-womb" cx="52" cy="50" rx="17" ry="8.5"/><circle class="d-body" cx="46" cy="50" r="4.2"/><ellipse class="d-body" cx="54" cy="51.5" rx="6.5" ry="4"/><ellipse class="d-ear" cx="47.5" cy="47" rx="1.8" ry="3" transform="rotate(30 47.5 47)"/>`:"";
+ return `<g transform="translate(${f1(o.x)},${f1(o.y)}) scale(${s})" class="dog">${mk}
+ <path class="d-to" d="M86,45 Q98,41 98,27"/><path class="d-ti" d="M86,45 Q98,41 98,27"/>
+ ${legs.map(([x,c,a])=>`<rect class="${c}" x="${x}" y="52" width="${c==="d-leg"?8:7}" height="${H}" rx="3.5"${rot(a,x+4)}/>`).join("")}
+ <path class="d-body" d="M24,44 L12,24 L30,20 L38,40 Z"/>
+ <rect class="d-body" x="22" y="38" width="66" height="22" rx="11"/>
+ <path class="d-body" d="M8,20 L-4,23 Q-9,25 -8,29 Q-7,32 -2,32 L10,31 Z"/>
+ <ellipse class="d-body" cx="16" cy="24" rx="12" ry="10"/>
+ ${fur}${womb}${ear}
+ <circle class="d-eye" cx="11" cy="21" r="1.7"/><circle class="d-nose" cx="-6" cy="25.5" r="2.3"/>
+ </g>`;
+}
+const arrow=(x1,y1,x2,y2,cls)=>{const a=Math.atan2(y2-y1,x2-x1),h=6;const p1=[x2-h*Math.cos(a-0.5),y2-h*Math.sin(a-0.5)],p2=[x2-h*Math.cos(a+0.5),y2-h*Math.sin(a+0.5)];
+ return `<path class="${cls||"sk-ar"}" d="M${f1(x1)},${f1(y1)} L${f1(x2)},${f1(y2)} M${f1(p1[0])},${f1(p1[1])} L${f1(x2)},${f1(y2)} L${f1(p2[0])},${f1(p2[1])}"/>`;};
+const snow=(x,y,r)=>`<path class="coldln" style="stroke-width:1.6" d="M${x-r},${y} h${2*r} M${f1(x-r*.5)},${f1(y-r*.87)} L${f1(x+r*.5)},${f1(y+r*.87)} M${f1(x-r*.5)},${f1(y+r*.87)} L${f1(x+r*.5)},${f1(y-r*.87)}"/>`;
+const sunG=(x,y,r)=>{let s="";for(let i=0;i<8;i++){const a=i*Math.PI/4;s+=`<line class="sunr" x1="${f1(x+Math.cos(a)*(r+3))}" y1="${f1(y+Math.sin(a)*(r+3))}" x2="${f1(x+Math.cos(a)*(r+8))}" y2="${f1(y+Math.sin(a)*(r+8))}"/>`;}return s+`<circle class="sun" cx="${x}" cy="${y}" r="${r}"/>`;};
+const thermo=(x,y,label)=>`<rect class="therm" x="${x-4}" y="${y}" width="8" height="40" rx="4"/><circle class="therm" cx="${x}" cy="${y+44}" r="7"/><rect class="thermf" x="${x-2}" y="${y+12}" width="4" height="32"/><circle class="thermf" cx="${x}" cy="${y+44}" r="5"/><text class="sk-tb" x="${x+11}" y="${y+16}">${label}</text>`;
+const svgWrap=(vb,inner,label)=>`<svg viewBox="${vb}" role="img" aria-label="${esc(label||"Skizze")}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+
+/* ---------- Gebiss des Hundes (Schädel von der Seite, Blick nach links) ---------- */
+const TG={sch:"Schneidezähne",fang:"Fangzähne (Eckzähne)",back:"Backenzähne",reiss:"Reißzahn"};
+const TG1={sch:"Schneidezahn",fang:"Fangzahn (Eckzahn)",back:"Backenzahn",reiss:"Reißzahn"};
+const TFN={sch:"Fleischreste vom Knochen abschaben",fang:"Beute ergreifen und festhalten",back:"Fleisch zerkleinern und zerreißen",reiss:"Knochen zerbrechen"};
+const TNUM={sch:1,fang:2,back:3,reiss:4};
+const TEETH=(()=>{const T=[];
+ [30,37,44].forEach(x=>T.push(["sch",`M${x},133 h6 v8 q0,4 -3,4 q-3,0 -3,-4 Z`]));
+ [31,37,43].forEach(x=>T.push(["sch",`M${x},153 h5 v-7 q0,-3 -2.5,-3 q-2.5,0 -2.5,3 Z`]));
+ T.push(["fang","M49,153 L60,153 Q59,140 53,127 Q49,140 49,153 Z"]);
+ T.push(["fang","M62,133 L75,133 Q74,150 66,165 Q62,150 62,133 Z"]);
+ [[80,94],[98,112],[116,130],[133,145]].forEach(([a,b])=>T.push(["back",`M${a},153 L${b},153 L${(a+b)/2-1},141 Z`]));
+ [[82,98],[102,118],[122,140]].forEach(([a,b])=>T.push(["back",`M${a},133 L${b},133 L${(a+b)/2+2},146 Z`]));
+ T.push(["reiss","M151,153 L187,153 L181,140 L172,145 L163,130 Z"]);
+ T.push(["reiss","M146,133 L180,133 L174,146 L165,142 L156,157 Z"]);
+ [[190,202],[205,216]].forEach(([a,b])=>T.push(["back",`M${a},133 L${b},133 L${b-1},140 Q${(a+b)/2},146 ${a+1},140 Z`]));
+ [[192,205],[208,220]].forEach(([a,b])=>T.push(["back",`M${a},153 L${b},153 L${b-1},146 Q${(a+b)/2},140 ${a+1},146 Z`]));
+ return T;})();
+const TZONES=[["sch",20,49],["fang",49,79],["back",79,146],["reiss",146,188],["back",188,228]];
+/* o: {colored,numbers,hl,zones,names} */
+function skullSVG(o){o=o||{};
+ const mand=`<path class="bone" d="M27,152 L230,152 C246,150 254,140 260,128 L268,110 L281,132 L292,140 C295,160 289,176 270,183 C232,192 120,187 70,181 C44,177 30,168 27,152 Z"/>`;
+ const sk=`<path class="bone" d="M22,128 C20,117 26,108 38,104 L120,88 C150,82 172,70 192,54 C214,36 250,28 282,36 C312,44 330,70 330,98 C330,116 322,128 308,134 L272,141 L238,136 L30,135 Z"/>
+ <ellipse class="hole" cx="200" cy="88" rx="23" ry="19"/><ellipse class="hole" cx="31" cy="117" rx="5" ry="7"/>
+ <path class="bone" d="M166,118 C200,110 240,112 270,121 L268,130 C240,123 200,122 168,127 Z"/>
+ <path class="sk-ln" style="opacity:.5" d="M120,96 C130,104 150,110 166,118 M240,60 C250,80 262,100 270,121"/>`;
+ const hl=o.hl?TEETH.filter(t=>t[0]===o.hl).map(t=>`<path class="t-mk" d="${t[1]}"/>`).join(""):"";
+ const teeth=TEETH.map(t=>`<path class="tooth${o.colored?" c-"+t[0]:""}" d="${t[1]}"/>`).join("");
+ let nums="";
+ if(o.numbers){const nb=(x,y,n)=>`<rect class="nbox" x="${x-9}" y="${y-9}" width="18" height="18" rx="3"/><text class="ntx" x="${x}" y="${y+4.3}" text-anchor="middle">${n}</text>`;
+  nums=`<path class="sk-ln" d="M30,50 L38,131 M64,50 L68,131 M82,74 V69 H138 V74 M110,69 V58 M110,74 V131 M152,204 V209 H184 V204 M168,209 V214 M168,204 V160"/>`+nb(28,40,1)+nb(62,40,2)+nb(110,48,3)+nb(168,223,4);}
+ const zones=o.zones?TZONES.map(([g,a,b])=>`<rect class="zone" data-z="${g}" x="${a}" y="96" width="${b-a}" height="100" rx="6"/>`).join(""):"";
+ return svgWrap(o.numbers?"0 24 340 212":o.zones?"8 58 250 142":"0 24 340 176",mand+sk+hl+teeth+nums+zones,"Gebiss des Hundes");
+}
+
+/* ---------- Kennzeichen von Lebewesen und Merkmale der Säugetiere ---------- */
+const ICONS={
+ bewegung:()=>svgWrap("0 0 240 130",`<line class="sk-ground" x1="20" y1="112" x2="225" y2="112"/>`+dogG({x:58,y:28,s:1,run:true})+`<path class="sk-ln" d="M172,52 h40 M178,66 h34 M172,80 h40"/><path class="sk-ln" style="opacity:.55" d="M28,104 q6,-6 12,0 M44,108 q5,-5 10,0"/>`,"Hund läuft"),
+ reiz:()=>{const lobe=(cx,hy,a,shut)=>`<g transform="rotate(${a} ${cx} ${hy})"><ellipse class="leaf" cx="${cx}" cy="${hy-21}" rx="12" ry="22"/><ellipse class="trap" cx="${cx+(a<0?3:-3)}" cy="${hy-21}" rx="6" ry="15"/><path class="sk-ln" style="stroke:var(--leaf);stroke-width:2" d="M${cx-8},${hy-38} l-5,-7 M${cx-2},${hy-43} l-1,-8 M${cx+4},${hy-43} l2,-8 M${cx+9},${hy-37} l6,-6"/></g>`;
+  const fly=(x,y)=>`<ellipse cx="${x-3}" cy="${y-4}" rx="5" ry="3" style="fill:var(--card);stroke:var(--ink);stroke-width:1"/><ellipse cx="${x+3}" cy="${y-4}" rx="5" ry="3" style="fill:var(--card);stroke:var(--ink);stroke-width:1"/><ellipse cx="${x}" cy="${y}" rx="5" ry="3.2" style="fill:var(--ink)"/>`;
+  return svgWrap("0 0 240 130",`<path class="stem" d="M60,124 Q56,104 60,84"/>${lobe(60,84,-38)}${lobe(60,84,38)}${fly(60,30)}<path class="sk-ln" style="opacity:.6" d="M48,20 q-6,-4 -2,-10 M72,20 q6,-4 2,-10"/>
+  ${arrow(108,70,138,70)}<path class="stem" d="M184,124 Q180,104 184,84"/>${lobe(184,84,-7)}${lobe(184,84,7)}<path class="sk-ln" d="M182,40 l-4,-6 M186,40 l4,-6"/>`,"Venusfliegenfalle offen und geschlossen");},
+ stoff:()=>svgWrap("0 0 240 130",dogG({x:82,y:20,s:.78})+
+  arrow(8,40,74,52)+arrow(8,66,76,66)+arrow(8,92,74,80)+`<text class="sk-t" x="6" y="34">Futter</text><text class="sk-t" x="6" y="61">Wasser</text><text class="sk-t" x="6" y="105">Sauerstoff</text>`+
+  arrow(166,56,232,44)+arrow(166,76,232,92)+`<text class="sk-t" x="182" y="34">Kot, Urin</text><text class="sk-t" x="170" y="106">Kohlenstoff-</text><text class="sk-t" x="186" y="118">dioxid</text>`,"Stoffe rein und raus"),
+ wachstum:()=>svgWrap("0 0 240 130",`<path class="sk-ln" style="stroke-dasharray:3 3;opacity:.5" d="M40,87 H216 M131,49 H216"/><line class="sk-ground" x1="10" y1="116" x2="210" y2="116"/>`+dogG({x:24,y:80.5,s:.48})+arrow(78,104,108,104)+dogG({x:122,y:40,s:.96})+
+  `<path class="sk-ln" d="M224,116 V24 M220,116 h8 M220,93 h8 M220,70 h8 M220,47 h8 M220,24 h8"/>`,"Welpe und großer Hund"),
+ entw:()=>{const tad=(x,y)=>`<path class="sk-ln" style="stroke-width:2.2" d="M${x+10},${y} q7,-6 14,0 t14,0"/><ellipse class="frog" cx="${x}" cy="${y}" rx="12" ry="9"/><circle cx="${x-5}" cy="${y-3}" r="1.6" style="fill:var(--ink)"/>`;
+  const leg=(x,y)=>`<path class="sk-ln" style="stroke-width:2.2" d="M${x+11},${y} q5,-4 10,0"/><path class="frog" d="M${x+5},${y+4} q11,2 9,11 l-10,0 Z"/><path class="frog" d="M${x-8},${y+6} l-3,8 l5,0 Z"/><ellipse class="frog" cx="${x}" cy="${y}" rx="13" ry="10"/><circle cx="${x-6}" cy="${y-3}" r="1.6" style="fill:var(--ink)"/>`;
+  const frog=(x,y)=>`<path class="frog" d="M${x+10},${y+4} q16,2 12,14 l-14,0 Z"/><path class="frog" d="M${x-12},${y+6} l-4,12 l7,0 Z"/><ellipse class="frog" cx="${x}" cy="${y}" rx="18" ry="12"/><circle class="frog" cx="${x-9}" cy="${y-11}" r="5"/><circle class="frog" cx="${x+1}" cy="${y-12}" r="5"/><circle cx="${x-10}" cy="${y-12}" r="1.8" style="fill:var(--ink)"/><circle cx="${x}" cy="${y-13}" r="1.8" style="fill:var(--ink)"/><path class="sk-ln" d="M${x-16},${y+2} q6,4 14,2"/>`;
+  return svgWrap("0 0 240 130",`<path class="coldln" style="opacity:.4" d="M6,104 q10,-5 20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0 t20,0"/>`+tad(24,66)+arrow(68,66,88,66)+leg(110,64)+arrow(140,66,162,66)+frog(198,70),"Kaulquappe wird zum Frosch");},
+ fort:()=>svgWrap("0 0 240 130",dogG({x:28,y:6,s:.55,earUp:true})+`<text class="sk-ts" x="56" y="58" text-anchor="middle">Rüde</text>`+`<path class="sk-ar" d="M112,26 v14 M105,33 h14"/>`+dogG({x:138,y:6,s:.55})+`<text class="sk-ts" x="166" y="58" text-anchor="middle">Hündin</text>`+
+  arrow(112,58,112,80)+dogG({x:64,y:86,s:.3})+dogG({x:102,y:86,s:.3})+dogG({x:140,y:86,s:.3,earUp:true}),"Elterntiere und Welpen"),
+ zellen:()=>{const id="cl"+(++UID);let cells="";for(let r=0;r<6;r++)for(let c=0;c<6;c++){const x=48+c*20+(r%2?10:0),y=10+r*18;cells+=`<rect class="cell" x="${x}" y="${y}" width="19" height="17" rx="3"/><circle class="nuc" cx="${x+7+((r+c)%3)*2}" cy="${y+8}" r="2.6"/>`;}
+  return svgWrap("0 0 240 130",`<defs><clipPath id="${id}"><circle cx="110" cy="60" r="46"/></clipPath></defs><circle cx="110" cy="60" r="46" style="fill:var(--card)"/><g clip-path="url(#${id})">${cells}</g><circle class="lens" cx="110" cy="60" r="46"/><line class="handle" x1="144" y1="94" x2="176" y2="122"/>`,"Blick durchs Mikroskop");},
+ /* Säugetiere */
+ beine:()=>svgWrap("0 0 240 130",`<line class="sk-ground" x1="20" y1="104" x2="220" y2="104"/>`+dogG({x:64,y:24,s:1.05,legsMk:true})+`<text class="sk-t" x="96" y="120" text-anchor="end">vorne</text><text class="sk-t" x="140" y="120">hinten</text><path class="sk-ln" style="opacity:.5" d="M88,112 v-4 M146,112 v-4"/>`,"Hund mit vier Beinen"),
+ fell:()=>svgWrap("0 0 240 130",dogG({x:66,y:16,s:1.08,fur:true})+snow(26,28,8)+snow(212,24,7)+snow(30,96,6)+snow(214,92,8)+snow(190,56,5)+
+  `<path class="warmln" d="M98,76 Q100,64 107,64 Q114,64 116,74"/><path class="warmln" d="M112,70 L116,75 L120,69"/><text class="warmtx" x="122" y="76">Wärme</text>`,"Hund mit Fell im Schnee"),
+ lunge:()=>svgWrap("0 0 240 130",`<rect class="lung" x="114" y="10" width="12" height="40" rx="5"/><path class="sk-ln" style="opacity:.5" d="M114,18 h12 M114,26 h12 M114,34 h12 M114,42 h12"/>
+  <path class="lung" d="M112,50 C82,40 64,70 68,100 C72,122 106,122 112,104 Z"/><path class="lung" d="M128,50 C158,40 176,70 172,100 C168,122 134,122 128,104 Z"/>
+  <path class="sk-ln" style="opacity:.6" d="M120,50 L104,62 L94,80 M104,62 L100,96 M120,50 L136,62 L146,80 M136,62 L140,96"/>
+  <path class="coldln" d="M40,14 Q80,6 108,16"/><path class="coldln" d="M100,10 L109,16 L100,21"/><text class="coldtx" x="14" y="34">Luft mit</text><text class="coldtx" x="14" y="46">Sauerstoff</text>`,"Lunge"),
+ temp:()=>svgWrap("0 0 240 130",`<rect class="coldbg" x="0" y="0" width="119" height="130"/><rect class="warmbg" x="121" y="0" width="119" height="130"/>`+snow(14,16,6)+snow(56,12,5)+snow(100,22,6)+sunG(214,22,10)+
+  dogG({x:16,y:58,s:.55})+dogG({x:136,y:58,s:.55})+thermo(96,46,"")+thermo(216,46,"")+`<text class="sk-tb" x="96" y="118" text-anchor="middle">38 °C</text><text class="sk-tb" x="216" y="118" text-anchor="middle">38 °C</text><text class="coldtx" x="8" y="44">draußen −5 °C</text><text class="warmtx" x="128" y="44">draußen 30 °C</text>`,"Körpertemperatur bei Kälte und Hitze"),
+ saeugen:()=>{const pup=(x)=>`<ellipse class="d-body" style="fill:var(--dog);stroke:var(--ink);stroke-width:1.3" cx="${x+8}" cy="107" rx="13" ry="7"/><circle style="fill:var(--dog);stroke:var(--ink);stroke-width:1.3" cx="${x-3}" cy="99" r="6.5"/><ellipse style="fill:var(--ear);stroke:var(--ink);stroke-width:1" cx="${x}" cy="97" rx="2.6" ry="4.5"/>`;
+  const drop=(x,y)=>`<path class="milk" d="M${x},${y} q3,5 0,7 q-3,-2 0,-7 Z"/>`;
+  return svgWrap("0 0 240 130",`<line class="sk-ground" x1="10" y1="115" x2="230" y2="115"/>
+  <path style="fill:none;stroke:var(--ink);stroke-width:5.6;stroke-linecap:round" d="M44,74 Q26,70 18,56"/><path style="fill:none;stroke:var(--dog);stroke-width:3;stroke-linecap:round" d="M44,74 Q26,70 18,56"/>
+  <ellipse style="fill:var(--dog2);stroke:var(--ink);stroke-width:1.3" cx="64" cy="102" rx="22" ry="9"/>
+  <rect style="fill:var(--dog);stroke:var(--ink);stroke-width:1.4" x="40" y="58" width="128" height="38" rx="19"/>
+  <rect style="fill:var(--dog);stroke:var(--ink);stroke-width:1.3" x="150" y="98" width="52" height="10" rx="5"/>
+  <path style="fill:var(--dog);stroke:var(--ink);stroke-width:1.4" d="M184,52 L200,55 Q205,58 203,62 Q201,65 196,64 L182,66 Z"/>
+  <ellipse style="fill:var(--dog);stroke:var(--ink);stroke-width:1.4" cx="174" cy="56" rx="15" ry="13"/>
+  <ellipse style="fill:var(--ear);stroke:var(--ink);stroke-width:1.3" cx="166" cy="56" rx="6" ry="11" transform="rotate(14 166 56)"/>
+  <circle cx="179" cy="52" r="1.8" style="fill:var(--ink)"/><circle cx="201" cy="57.5" r="2.3" style="fill:var(--ink)"/>`+pup(82)+pup(110)+pup(138)+drop(95,92)+drop(124,91)+drop(152,92),"Hündin säugt Welpen");},
+ lebend:()=>svgWrap("0 0 240 130",`<line class="sk-ground" x1="16" y1="110" x2="150" y2="110"/>`+dogG({x:30,y:24,s:1.15,womb:true})+`<ellipse class="egg" cx="200" cy="70" rx="15" ry="20"/><path class="xx" d="M184,52 L216,88 M216,52 L184,88"/><text class="sk-ts" x="200" y="108" text-anchor="middle">kein Ei</text>`,"Welpe im Bauch der Mutter")
+};
+const KZ={ /* Kennzeichen von Lebewesen */
+ bewegung:{n:"Bewegung",d:"Lebewesen bewegen sich aus eigener Kraft, auch Pflanzen (langsam).",ic:"bewegung"},
+ reiz:{n:"Reizbarkeit",d:"Lebewesen nehmen Reize wahr (Licht, Geräusch, Berührung) und reagieren darauf.",ic:"reiz"},
+ stoff:{n:"Stoffwechsel",d:"Stoffe aufnehmen, im Körper umwandeln, Abfallstoffe abgeben.",ic:"stoff"},
+ wachstum:{n:"Wachstum",d:"Lebewesen werden größer und schwerer.",ic:"wachstum"},
+ entw:{n:"Entwicklung",d:"Lebewesen verändern sich im Laufe ihres Lebens (Gestalt, Fähigkeiten, Verhalten).",ic:"entw"},
+ fort:{n:"Fortpflanzung",d:"Lebewesen bekommen Nachkommen.",ic:"fort"},
+ zellen:{n:"Aufbau aus Zellen",d:"Alle Lebewesen bestehen aus winzigen Zellen (nur im Mikroskop sichtbar).",ic:"zellen"}
+};
+const SM={ /* Merkmale der Säugetiere (Mappe) */
+ beine:{n:"Körperextremitäten",d:"Zwei Vorderbeine und zwei Hinterbeine.",ic:"beine"},
+ fell:{n:"Körperbehaarung",d:"Das Fell verhindert, dass zu viel Körperwärme verloren geht. Im Winter ist es oft besonders dicht.",ic:"fell"},
+ lunge:{n:"Lungenatmung",d:"Mit der Lunge wird Sauerstoff aus der Luft aufgenommen.",ic:"lunge"},
+ temp:{n:"Konstante Körpertemperatur",d:"Die Körpertemperatur bleibt gleich, egal wie warm es draußen ist (gleichwarm).",ic:"temp"},
+ saeugen:{n:"Junge werden gesäugt",d:"Die Welpen werden nach der Geburt mit Muttermilch ernährt.",ic:"saeugen"},
+ lebend:{n:"Lebend gebärend",d:"Die Welpen entwickeln sich im Körper der Mutter (Schwangerschaft) und kommen lebend zur Welt.",ic:"lebend"}
+};
+
+/* ---------- Züchtung: Schema über mehrere Generationen ---------- */
+function breedSVG(v){v=v||{};const st=v.step||0,s=.55;
+ const row=(y,list)=>list.map(([x,e])=>dogG({x,y,s,ear:e})).join("");
+ const num=(x,y,n)=>`<circle cx="${x}" cy="${y}" r="9" style="fill:var(--card);stroke:var(--ink);stroke-width:1.3"/><text class="ntx" x="${x}" y="${y+4.3}" text-anchor="middle">${n}</text>`;
+ const HL={1:[172,54,70,36],2:[170,136,82,58],3:[172,244,186,36]};
+ let g=st?`<rect class="sk-mk" x="${HL[st][0]}" y="${HL[st][1]}" width="${HL[st][2]}" height="${HL[st][3]}" rx="10"/>`:"";
+ g+=`<text class="sk-tb" x="6" y="36">Eltern</text>`+row(8,[[150,12],[240,11]]);
+ g+=arrow(208,58,208,86)+num(188,72,1);
+ g+=`<text class="sk-tb" x="6" y="118">Welpen</text>`+row(90,[[84,8],[152,14],[220,22],[288,11]]);
+ g+=`<ellipse cx="246" cy="112" rx="36" ry="27" style="fill:none;stroke:var(--pen);stroke-width:2;stroke-dasharray:5 3"/><text class="sk-ts" x="246" y="152" text-anchor="middle">längste Ohren</text>`;
+ g+=arrow(234,158,210,190)+num(190,168,2);
+ g+=`<text class="sk-tb" x="6" y="226">neues Paar</text>`+row(198,[[150,22],[250,23]])+`<text class="sk-ts" x="280" y="194" text-anchor="middle">aus anderer Familie</text>`;
+ g+=`<path class="sk-ar" style="stroke-dasharray:5 4" d="M208,248 L208,272"/>`+arrow(208,266,208,276)+num(188,262,3)+`<text class="sk-ts" x="222" y="266">nach vielen Generationen</text>`;
+ g+=`<text class="sk-tb" x="6" y="314">neue Rasse</text>`+row(286,[[110,31],[190,34],[270,32]]);
+ return svgWrap("0 0 360 340",g,"Züchtung über mehrere Generationen");
+}
+/* ---------- Wurf von Welpen zum Antippen ---------- */
+function litterSVG(v,zones){const n=v.vals.length,W=82,ground=200;let g="",top=ground;
+ v.vals.forEach((val,i)=>{let o={ear:12,leg:16,s:.68};if(v.trait==="ear")o.ear=val;if(v.trait==="leg")o.leg=val;if(v.trait==="size")o.s=val;
+  const h=(54+o.leg+2)*o.s;const cx=i*W+W/2;o.x=cx-45*o.s;o.y=ground-h;top=Math.min(top,o.y+10*o.s);g+=dogG(o);
+  g+=`<text class="sk-tb" x="${cx}" y="${ground+17}" text-anchor="middle">${"ABCDE"[i]}</text>`;});
+ const y0=Math.floor(top-8);
+ if(zones)v.vals.forEach((_,i)=>{g+=`<rect class="zone" data-z="${"ABCDE"[i]}" x="${i*W+2}" y="${y0+2}" width="${W-4}" height="${ground+22-y0}" rx="8"/>`;});
+ return svgWrap(`0 ${y0} ${n*W} ${ground+26-y0}`,`<line class="sk-ground" x1="4" y1="${ground}" x2="${n*W-4}" y2="${ground}"/>`+g,"Welpen A bis D");
+}
+function visualSVG(v,zones){if(!v)return "";
+ if(v.type==="icon")return ICONS[v.n]();
+ if(v.type==="skull")return skullSVG(Object.assign({},v,{zones}));
+ if(v.type==="breed")return breedSVG(v);
+ if(v.type==="litter")return litterSVG(v,zones);
+ return "";}
+
+/* =====================================================================
+   FRAGEN
+   ===================================================================== */
+function mc(topic,p,opts,correct,x,extra){const o=shuffle(opts);return Object.assign({topic,k:"mc",p,o,a:o.indexOf(correct),x},extra||{});}
+const M=(topic,p,opts,x,extra)=>mc(topic,p,opts,opts[0],x,extra);
+const T=(topic,p,acc,x,extra)=>Object.assign({topic,k:"text",p,acc,show:acc[0],x},extra||{});
+const K=(l,a)=>({l,a});const KR=(l,re)=>({l,re:re.source});
+const O=(topic,p,keys,need,model,x,extra)=>Object.assign({topic,k:"open",p,keys,need,model,x},extra||{});
+/* Zuordnen: Paare [links, rechts]; n = wie viele Paare gezogen werden */
+const MA=(topic,p,pairs,x,n,extra)=>()=>{const ps=extra&&extra.keep?pairs.slice():n?pick(pairs,n):shuffle(pairs);const rights=shuffle([...new Set(ps.map(q=>q[1]))]);return Object.assign({topic,k:"match",s:"special",p,pairs:ps,rights,x},extra||{});};
+/* Reihenfolge */
+const OR=(topic,p,items,x)=>()=>{let shown=shuffle(items);while(shown.join("|")===items.join("|"))shown=shuffle(items);return {topic,k:"order",s:"special",p,items,shown,x};};
+/* Mehrfachauswahl */
+const MU=(topic,p,right,wrong,x,nr,nw)=>()=>{const r=nr?pick(right,nr):right.slice(),w=nw?pick(wrong,nw):wrong.slice();const o=shuffle(r.concat(w));return {topic,k:"multi",s:"special",p,o,a:r.map(t=>o.indexOf(t)),x};};
+const fresh=list=>list.map(q=>typeof q==="function"?q():q);
+
+const MERKSATZ="Bello Rennt Schnell Weg, Er Findet Zuhause.";
+const BANK={
+/* ---------------- Kennzeichen von Lebewesen ---------------- */
+leb:[
+ M("leb","Ronda wird in ihrem ersten Lebensjahr immer größer und schwerer. Welches Kennzeichen von Lebewesen ist das?",["Wachstum","Bewegung","Reizbarkeit","Fortpflanzung"],"Wachstum heißt: Ein Lebewesen wird größer und schwerer. Dafür braucht Ronda Nahrung, am Anfang die Muttermilch."),
+ M("leb","Die neugeborenen Welpen krabbeln wackelig zur Milchquelle. Welches Kennzeichen zeigen sie?",["Bewegung","Wachstum","Fortpflanzung","Aufbau aus Zellen"],"Lebewesen bewegen sich aus eigener Kraft. Die Welpen krabbeln selbst zur Mutter."),
+ M("leb","Ronda frisst, trinkt, atmet und gibt Kot und Urin ab. Welches Kennzeichen ist das?",["Stoffwechsel","Entwicklung","Reizbarkeit","Wachstum"],"Stoffwechsel: Stoffe werden aufgenommen, im Körper umgewandelt, und Abfallstoffe werden wieder abgegeben."),
+ M("leb","Ronda hört ihren Namen und kommt sofort angelaufen. Welches Kennzeichen zeigt sie dabei vor allem?",["Reizbarkeit","Wachstum","Stoffwechsel","Fortpflanzung"],"Der Ruf ist ein Reiz (ein Geräusch). Ronda nimmt ihn mit den Ohren wahr und reagiert darauf. Das ist Reizbarkeit."),
+ M("leb","Ronda wird zum ersten Mal läufig. Das heißt, sie kann ab jetzt Junge bekommen. Welches Kennzeichen ist gemeint?",["Fortpflanzung","Bewegung","Stoffwechsel","Reizbarkeit"],"Fortpflanzung: Lebewesen bekommen Nachkommen. So entstehen neue Lebewesen derselben Art."),
+ M("leb","Aus dem tollpatschigen Welpen wird ein flinker Junghund und später ein ruhiger, erwachsener Hund. Welches Kennzeichen ist das?",["Entwicklung","Reizbarkeit","Stoffwechsel","Bewegung"],"Bei der Entwicklung verändert sich ein Lebewesen im Laufe seines Lebens: nicht nur die Größe, sondern auch Fähigkeiten und Verhalten."),
+ M("leb","Eine Kaulquappe verwandelt sich in einen Frosch. Welches Kennzeichen ist das vor allem?",["Entwicklung","Bewegung","Reizbarkeit","Stoffwechsel"],"Die Kaulquappe verändert ihre Gestalt: Sie bekommt Beine, der Schwanz verschwindet. Das ist Entwicklung."),
+ M("leb","Die Venusfliegenfalle klappt zu, wenn ein Insekt ihre Fühlhaare berührt. Welches Kennzeichen zeigt die Pflanze?",["Reizbarkeit","Fortpflanzung","Wachstum","Aufbau aus Zellen"],"Die Berührung ist der Reiz, das Zuklappen ist die Reaktion. Auch Pflanzen sind reizbar, und hier bewegt sich die Pflanze sogar."),
+ M("leb","Woraus bestehen alle Lebewesen?",["Aus Zellen","Aus Knochen","Aus Fell und Haut","Aus Wasser und Steinen"],"Alle Lebewesen sind aus winzigen Zellen aufgebaut. Man sieht sie nur mit dem Mikroskop."),
+ M("leb","Welches Kennzeichen von Lebewesen kannst du im Alltag NICHT mit bloßem Auge beobachten?",["Aufbau aus Zellen","Bewegung","Wachstum","Fortpflanzung"],"Zellen sind so klein, dass man ein Mikroskop braucht. Bewegung, Wachstum und Fortpflanzung kann man dagegen gut beobachten."),
+ M("leb","Welche Aussage über die Kennzeichen von Lebewesen stimmt?",["Ein Lebewesen zeigt alle Kennzeichen des Lebens","Ein Kennzeichen reicht, damit etwas lebendig ist","Nur Tiere zeigen die Kennzeichen, Pflanzen nicht","Bewegung allein beweist, dass etwas lebt"],"Erst wenn alle Kennzeichen zutreffen, ist etwas ein Lebewesen. Ein Auto bewegt sich auch, lebt aber nicht."),
+ M("leb","Ein Roboterhund kann laufen und bellen. Warum ist er trotzdem kein Lebewesen?",["Er wächst nicht, pflanzt sich nicht fort und hat keinen Stoffwechsel","Er ist zu klein für ein Lebewesen","Er hat kein echtes Fell","Er bellt anders als ein echter Hund"],"Der Roboterhund zeigt nur einzelne Kennzeichen (er bewegt sich und reagiert auf Geräusche). Er wächst aber nicht, bekommt keine Jungen, frisst nicht (er braucht Strom) und besteht nicht aus Zellen."),
+ M("leb","Ein Feuer wird größer, bewegt sich und „frisst“ Holz. Ist es ein Lebewesen?",["Nein, es besteht nicht aus Zellen und pflanzt sich nicht fort","Ja, weil es wächst","Ja, weil es sich bewegt","Ja, weil es Stoffe verbraucht"],"Ein Feuer zeigt nur einzelne Merkmale, die ähnlich aussehen. Es besteht aber nicht aus Zellen, entwickelt sich nicht und bekommt keine Nachkommen."),
+ M("leb","Was sind „lebende Steine“?",["Pflanzen, die aussehen wie Steine","Steine, die langsam wachsen","Versteinerte Tiere","Steine, auf denen Moos wächst"],"Lebende Steine sind kleine Pflanzen aus trockenen Gebieten. Sie sehen aus wie Kieselsteine, wachsen aber, nehmen Wasser auf, blühen und bilden Samen."),
+ M("leb","Was ist ein Reiz?",["Ein Signal aus der Umwelt, z. B. Licht, ein Geräusch oder eine Berührung","Ein besonders leckeres Futter","Ein Körperteil des Hundes","Eine Krankheit"],"Lebewesen nehmen Reize mit ihren Sinnesorganen wahr und reagieren darauf. Das nennt man Reizbarkeit."),
+ M("leb","Was gehört alles zum Stoffwechsel?",["Stoffe aufnehmen, im Körper umwandeln und Abfallstoffe abgeben","Nur das Fressen","Nur das Wachsen","Nur das Laufen"],"Auch das Atmen gehört dazu: Sauerstoff wird aufgenommen, Kohlenstoffdioxid abgegeben."),
+ M("leb","Eine Pflanze nimmt mit den Wurzeln Wasser auf und gibt über die Blätter Stoffe ab. Welches Kennzeichen ist das?",["Stoffwechsel","Bewegung","Fortpflanzung","Entwicklung"],"Auch Pflanzen haben einen Stoffwechsel: Sie nehmen Stoffe auf, wandeln sie um und geben Stoffe ab."),
+ M("leb","Eine Sonnenblume dreht ihre Blüte im Laufe des Tages zur Sonne. Was zeigt das?",["Auch Pflanzen bewegen sich und reagieren auf Reize","Pflanzen haben Muskeln wie Tiere","Die Sonnenblume ist eigentlich ein Tier","Nur der Wind dreht die Blüte"],"Das Licht ist der Reiz, die Drehung die Reaktion. Pflanzen bewegen sich nur viel langsamer als Tiere."),
+ T("leb","Wie nennt man die Fähigkeit von Lebewesen, Reize wahrzunehmen und darauf zu reagieren?",["Reizbarkeit","reizbar"],"Reizbarkeit: Lebewesen nehmen Reize (z. B. Licht, Geräusche, Berührung) wahr und reagieren darauf."),
+ T("leb","Aufnahme, Umwandlung und Abgabe von Stoffen nennt man …",["Stoffwechsel"],"Beim Stoffwechsel nimmt ein Lebewesen Stoffe auf, wandelt sie um und gibt Abfallstoffe ab."),
+ T("leb","Wie heißen die winzigen Bausteine, aus denen alle Lebewesen bestehen?",["Zellen","Zelle"],"Zellen sind so klein, dass man sie nur mit dem Mikroskop sieht."),
+ T("leb","Wie heißt die Wissenschaft von den Lebewesen?",["Biologie"],"„Bios“ ist griechisch und bedeutet „Leben“."),
+ T("leb","Ein Lebewesen bekommt Nachkommen. Wie heißt dieses Kennzeichen?",["Fortpflanzung","Vermehrung"],"Durch Fortpflanzung entstehen neue Lebewesen derselben Art."),
+ O("leb","Nenne fünf Kennzeichen von Lebewesen.",[K("Bewegung",["beweg"]),K("Reizbarkeit",["reiz"]),K("Stoffwechsel",["stoffwechsel"]),K("Wachstum",["wachs"]),K("Entwicklung",["entwick"]),K("Fortpflanzung",["fortpflanz","vermehr","nachkommen"]),K("Aufbau aus Zellen",["zelle"])],5,"Bewegung, Reizbarkeit, Stoffwechsel, Wachstum, Entwicklung, Fortpflanzung und Aufbau aus Zellen. Merksatz: „"+MERKSATZ+"“"),
+ O("leb","Begründe mithilfe der Kennzeichen von Lebewesen, dass der Roboterhund kein Lebewesen ist.",[K("Er wächst nicht",["wachs"]),K("Er pflanzt sich nicht fort (keine Jungen)",["fortpflanz","junge","welpen","nachkommen","vermehr","babys","kinder"]),K("Er hat keinen Stoffwechsel (frisst nicht, braucht Strom)",["stoffwechsel","frisst","fressen","essen","trink","strom","akku","batterie","atme","nahrung","futter","kot"]),K("Er entwickelt sich nicht",["entwick"]),K("Er besteht nicht aus Zellen",["zelle","metall","plastik","kunststoff","maschine"])],2,"Der Roboterhund kann sich zwar bewegen und auf Geräusche reagieren, aber er zeigt nicht alle Kennzeichen von Lebewesen: Er wächst nicht, entwickelt sich nicht, bekommt keine Jungen und hat keinen Stoffwechsel, denn er braucht Strom statt Nahrung. Außerdem besteht er nicht aus Zellen, sondern aus Metall und Kunststoff."),
+ O("leb","Nenne zwei Gemeinsamkeiten von einem Roboterhund und einem echten Hund.",[K("Ähnliches Aussehen (Kopf, Ohren, vier Beine, Schwanz)",["aussehen","aussieht","siehtaus","sehenaus","beine","pfoten","ohren","kopf","schwanz","form","ahnlich"]),K("Beide bewegen sich (laufen)",["beweg","lauf","geh","renn"]),K("Beide reagieren auf Reize (z. B. Geräusche, Berührung)",["reagier","reiz","hort","horen","beruhr"]),K("Beide machen Geräusche (bellen)",["bell","laut","gerausch"])],2,"Beide sehen ähnlich aus (Kopf, Ohren, vier Beine). Beide können sich bewegen und reagieren zum Beispiel auf Geräusche."),
+ O("leb","Erkläre, was man unter Stoffwechsel versteht, und nenne ein Beispiel beim Hund.",[K("Stoffe werden aufgenommen (Nahrung, Wasser, Sauerstoff)",["aufnehm","aufgenommen","nimmt","frisst","fressen","essen","trink","nahrung","futter","sauerstoff","einatm"]),K("Stoffe werden im Körper umgewandelt",["umwandel","umgewandelt","wandelt","verdau","verarbeit","energie"]),K("Abfallstoffe werden abgegeben (Kot, Urin, Kohlenstoffdioxid)",["abgeb","abgegeben","gibt","kot","urin","pipi","kacka","ausatm","kohlenstoffdioxid","co2","ausscheid"])],2,"Beim Stoffwechsel nimmt ein Lebewesen Stoffe auf, wandelt sie im Körper um und gibt Abfallstoffe wieder ab. Beispiel: Der Hund frisst Futter und atmet Sauerstoff ein. Er gibt Kot, Urin und Kohlenstoffdioxid ab."),
+ O("leb","Erkläre am Beispiel der Venusfliegenfalle, dass auch Pflanzen reizbar sind.",[K("Ein Insekt berührt die Fühlhaare (Reiz)",["beruhr","insekt","fliege","haar","reiz","tier"]),K("Die Falle klappt zu (Reaktion)",["klapp","schliess","geschlossen","reagier","reaktion","schnapp","fangt","fangen","macht zu","machtzu"])],2,"Wenn ein Insekt die Fühlhaare der Venusfliegenfalle berührt, ist das ein Reiz. Die Pflanze reagiert darauf, indem sie ihre Falle zuklappt. Also sind auch Pflanzen reizbar."),
+ O("leb","Lebende Steine sehen aus wie Steine. Begründe, warum sie trotzdem Lebewesen sind.",[K("Sie wachsen",["wachs"]),K("Sie pflanzen sich fort (blühen, bilden Samen)",["bluh","blut","samen","fortpflanz","vermehr","nachkommen"]),K("Sie haben einen Stoffwechsel (nehmen Wasser auf)",["wasser","stoffwechsel","licht","nahrstoff","mineral","aufnehm"]),K("Sie bestehen aus Zellen",["zelle"]),K("Sie entwickeln sich oder reagieren auf Reize",["entwick","reiz","reagier"])],2,"Lebende Steine sind Pflanzen. Sie wachsen, nehmen Wasser auf (Stoffwechsel), blühen und bilden Samen (Fortpflanzung) und bestehen aus Zellen. Ein echter Stein kann das alles nicht."),
+ O("leb","Ein Auto bewegt sich, „tankt“ Benzin und stößt Abgase aus. Erkläre, warum es trotzdem kein Lebewesen ist.",[K("Es wächst nicht und entwickelt sich nicht",["wachs","entwick"]),K("Es pflanzt sich nicht fort",["fortpflanz","junge","kinder","nachkommen","vermehr","babys"]),K("Es besteht nicht aus Zellen",["zelle","metall"]),K("Ein Lebewesen muss alle Kennzeichen zeigen",["allekennzeichen","alle merkmale","allemerkmale","nichtalle"])],2,"Ein Auto zeigt nur einzelne Merkmale, die so ähnlich aussehen. Es wächst aber nicht, entwickelt sich nicht, bekommt keine Nachkommen und besteht nicht aus Zellen. Ein Lebewesen muss alle Kennzeichen zeigen."),
+ MA("leb","Ordne jedem Kennzeichen ein Beispiel aus Rondas Leben zu.",[["Bewegung","Ronda rennt über die Wiese."],["Reizbarkeit","Ronda spitzt die Ohren, als es klingelt."],["Stoffwechsel","Ronda frisst und gibt Kot ab."],["Wachstum","Ronda wird größer und schwerer."],["Fortpflanzung","Ronda bekommt selbst Welpen."],["Entwicklung","Aus dem tollpatschigen Welpen wird ein ruhiger Hund."]],"Jedes Kennzeichen lässt sich an Ronda beobachten. Nur den Aufbau aus Zellen sieht man nicht mit bloßem Auge.",4),
+ OR("leb","Bringe Rondas Leben in die richtige Reihenfolge.",["Ronda wird blind und taub geboren.","Sie krabbelt zur Milchquelle und trinkt Muttermilch.","Sie wächst und wird immer munterer.","Sie wird ein flinker Junghund und zum ersten Mal läufig.","Sie wird ruhiger und gelassener."],"So zeigt Ronda nacheinander Bewegung, Stoffwechsel, Wachstum, Entwicklung und Fortpflanzung."),
+ MU("leb","Welche davon sind Lebewesen? Wähle alle richtigen aus.",["Lebender Stein","Venusfliegenfalle","Hundewelpe","Sonnenblume"],["Roboterhund","Feuer","Kieselstein","Auto"],"Lebewesen zeigen alle Kennzeichen des Lebens. Roboterhund, Feuer, Stein und Auto wachsen nicht, pflanzen sich nicht fort und bestehen nicht aus Zellen.",3,3),
+ MU("leb","Welche davon sind Kennzeichen von Lebewesen? Wähle alle richtigen aus.",["Wachstum","Reizbarkeit","Fortpflanzung","Stoffwechsel","Entwicklung","Bewegung"],["Sprechen können","Ein Fell haben","Laut sein","Vier Beine haben"],"Fell und vier Beine sind Merkmale von Säugetieren, aber keine Kennzeichen aller Lebewesen. Pflanzen haben beides nicht und leben trotzdem.",3,2)
+],
+/* ---------------- Gebiss ---------------- */
+zahn:[
+ M("zahn","Wie nennt man das Gebiss des Hundes?",["Raubtiergebiss (Fleischfressergebiss)","Pflanzenfressergebiss","Nagetiergebiss","Allesfressergebiss"],"Der Hund ist ein Fleischfresser. Sein Gebiss ist dafür gebaut, Beute zu packen, festzuhalten und Fleisch zu zerteilen."),
+ M("zahn","Mit welchen Zähnen ergreift der Hund seine Beute und hält sie fest?",["Mit den Fangzähnen","Mit den Schneidezähnen","Mit den Backenzähnen","Mit dem Reißzahn"],"Die langen, spitzen Fangzähne bohren sich in die Beute und halten sie fest."),
+ M("zahn","Die Fangzähne des Hundes sind seine …",["Eckzähne","Schneidezähne","Backenzähne","Milchzähne"],"Die langen, spitzen Eckzähne heißen beim Hund Fangzähne."),
+ M("zahn","Womit zerkleinert und zerreißt der Hund das Fleisch?",["Mit den Backenzähnen","Mit den Schneidezähnen","Mit den Fangzähnen","Mit der Zunge"],"Die scharfen, zackigen Backenzähne arbeiten wie eine Schere."),
+ M("zahn","Welcher Zahn ist besonders kräftig und kann sogar Knochen zerbrechen?",["Der Reißzahn","Der Fangzahn","Ein Schneidezahn","Ein Milchzahn"],"In jeder Zahnreihe ist einer der Backenzähne besonders groß und stark: der Reißzahn."),
+ M("zahn","Wofür braucht der Hund seine kleinen Schneidezähne vorne?",["Um Fleischreste vom Knochen abzuschaben","Um Knochen zu zerbrechen","Um die Beute festzuhalten","Um Gras abzubeißen"],"Mit den Schneidezähnen nagt und schabt der Hund die letzten Fleischreste vom Knochen."),
+ M("zahn","Zu welcher Zahnart gehört der Reißzahn?",["Zu den Backenzähnen","Zu den Schneidezähnen","Zu den Fangzähnen","Er ist ein Milchzahn"],"Der Reißzahn ist ein besonders großer, kräftiger Backenzahn. In jeder Zahnreihe gibt es einen."),
+ M("zahn","Warum sind die Fangzähne lang und spitz?",["Damit sie sich in die Beute bohren und sie festhalten","Damit der Hund besser kauen kann","Damit der Hund Gras abzupfen kann","Damit der Hund besser bellen kann"],"Form und Aufgabe passen zusammen: lang und spitz zum Packen und Festhalten."),
+ M("zahn","Wie nennt man das langgestreckte Gebiss (die Schnauze mit den Zähnen) beim Hund?",["Fang","Rüssel","Schnabel","Panzer"],"Mit dem langgestreckten Gebiss, dem Fang, kann der Hund die Beute im Laufen ergreifen."),
+ M("zahn","Welche Zähne sitzen ganz vorne im Gebiss?",["Die Schneidezähne","Die Backenzähne","Die Reißzähne","Die Fangzähne"],"Von vorne nach hinten: Schneidezähne, Fangzahn, Backenzähne (darunter der Reißzahn)."),
+ M("zahn","In welcher Reihenfolge sitzen die Zähne von vorne nach hinten?",["Schneidezähne – Fangzahn – Backenzähne","Fangzahn – Schneidezähne – Backenzähne","Backenzähne – Fangzahn – Schneidezähne","Schneidezähne – Backenzähne – Fangzahn"],"Vorne die Schneidezähne, dann der lange Fangzahn, dahinter die Backenzähne mit dem Reißzahn."),
+ M("zahn","Warum hat der Hund keine flachen Mahlzähne wie eine Kuh?",["Er ist ein Fleischfresser und muss Beute packen und Fleisch zerreißen","Er frisst nur weiches Futter aus dem Napf","Seine Zähne wachsen noch","Er hat überhaupt keine Backenzähne"],"Pflanzenfresser zermahlen Gras mit flachen Zähnen. Der Hund braucht spitze und scharfe Zähne für Fleisch."),
+ T("zahn","Wie heißt der besonders kräftige Backenzahn, mit dem der Hund Knochen zerbricht?",["Reißzahn","Reißzähne"],"Der Reißzahn ist der stärkste Backenzahn. In jeder Zahnreihe gibt es einen."),
+ T("zahn","Wie heißen die langen, spitzen Eckzähne des Hundes?",["Fangzähne","Fangzahn"],"Mit den Fangzähnen ergreift der Hund die Beute und hält sie fest."),
+ T("zahn","Mit welchen Zähnen schabt der Hund Fleischreste vom Knochen ab?",["Schneidezähne","Schneidezahn"],"Die kleinen Schneidezähne sitzen ganz vorne."),
+ T("zahn","Wie nennt man das Gebiss eines Fleischfressers wie dem Hund?",["Raubtiergebiss","Fleischfressergebiss"],"Raubtiergebiss oder Fleischfressergebiss."),
+ O("zahn","Nenne die vier Zahnarten im Gebiss des Hundes.",[K("Schneidezähne",["schneidez","schneidz","schneidezahn"]),K("Fangzähne (Eckzähne)",["fangz","eckz"]),K("Backenzähne",["backenz","backz"]),K("Reißzahn",["reissz","reisz","reiszahn"])],4,"Schneidezähne, Fangzähne (Eckzähne), Backenzähne und der Reißzahn, ein besonders kräftiger Backenzahn."),
+ O("zahn","Beschreibe die Aufgaben der Fangzähne und des Reißzahns.",[KR("Fangzähne: Beute ergreifen und festhalten",/(fang|eck).{0,70}(fest|halt|greif|pack|fass|beute)|(fest|halt|greif|pack|fass).{0,70}(fang|eck)/),KR("Reißzahn: Knochen zerbrechen",/reis.{0,70}(knochen|brech|knack)|(knochen|brech|knack).{0,70}reis/)],2,"Mit den langen, spitzen Fangzähnen ergreift der Hund die Beute und hält sie fest. Mit dem besonders kräftigen Reißzahn kann er sogar Knochen zerbrechen."),
+ O("zahn","Erkläre, warum man das Gebiss des Hundes ein Raubtiergebiss nennt.",[K("Der Hund frisst Fleisch und jagt Beute (Fleischfresser)",["fleisch","beute","jag","raubtier","tierefrisst","andere tiere"]),K("Die Zähne sind dafür gebaut: spitze Fangzähne zum Festhalten, scharfe Backenzähne zum Zerreißen",["fangz","eckz","spitz","scharf","reiss","festhalt","zerreiss","zerkleiner","knochen"])],2,"Der Hund ist ein Fleischfresser und jagt Beute. Seine Zähne sind dafür gebaut: Mit den spitzen Fangzähnen packt und hält er die Beute, mit den scharfen Backenzähnen und dem Reißzahn zerteilt er Fleisch und Knochen."),
+ MA("zahn","Ordne jeder Zahnart ihre Aufgabe zu.",[["Schneidezähne","Fleischreste vom Knochen abschaben"],["Fangzähne","Beute ergreifen und festhalten"],["Backenzähne","Fleisch zerkleinern und zerreißen"],["Reißzahn","Knochen zerbrechen"]],"Form und Aufgabe passen zusammen: klein und vorne zum Schaben, lang und spitz zum Festhalten, zackig zum Zerreißen, besonders kräftig zum Knacken von Knochen."),
+ MA("zahn","Ordne den Nummern in der Skizze die Namen der Zähne zu.",[["Nummer 1","Schneidezähne"],["Nummer 2","Fangzahn (Eckzahn)"],["Nummer 3","Backenzähne"],["Nummer 4","Reißzahn"]],"1 Schneidezähne (vorne), 2 Fangzahn (lang und spitz), 3 Backenzähne, 4 Reißzahn (der kräftigste Backenzahn).",0,{vis:{type:"skull",colored:true,numbers:true},s:"vis",keep:true}),
+ MU("zahn","Welche Aussagen über das Hundegebiss stimmen? Wähle alle richtigen aus.",["Die Fangzähne sind lang und spitz.","Der Reißzahn ist ein besonders kräftiger Backenzahn.","Mit den Schneidezähnen schabt der Hund Fleisch vom Knochen.","Das Gebiss des Hundes ist ein Raubtiergebiss."],["Mit den Schneidezähnen zerbricht der Hund Knochen.","Der Hund hat flache Mahlzähne wie eine Kuh.","Die Fangzähne zerkleinern das Fleisch."],"Schneidezähne schaben, Fangzähne halten fest, Backenzähne zerkleinern, der Reißzahn knackt Knochen.",3,2)
+],
+/* ---------------- Säugetiere ---------------- */
+saeug:[
+ M("saeug","Warum gehört der Hund zu den Säugetieren?",["Seine Jungen werden lebend geboren und mit Muttermilch gesäugt","Er hat vier Beine und einen Schwanz","Er kann schnell rennen","Er frisst Fleisch"],"Das wichtigste Merkmal steckt schon im Namen: Säugetiere säugen ihre Jungen mit Muttermilch."),
+ M("saeug","Wozu dient das Fell des Hundes?",["Es verhindert, dass der Hund zu viel Körperwärme an die Umgebung abgibt","Es macht den Hund schneller","Es hilft beim Atmen","Es schützt vor Verletzungen beim Laufen"],"Das Fell wirkt wie eine warme Jacke: Die Körperwärme bleibt im Körper."),
+ M("saeug","Wann ist das Fell des Hundes häufig besonders dicht?",["Im Winter","Im Sommer","Nach dem Baden","Wenn er rennt"],"Im Winter wächst ein dichteres Fell (Winterfell). Es hält die Wärme besser im Körper."),
+ M("saeug","Womit atmet ein Hund?",["Mit Lungen","Mit Kiemen","Durch die Haut","Durch das Fell"],"Säugetiere atmen mit Lungen. Damit nehmen sie Sauerstoff aus der Luft auf."),
+ M("saeug","Was bedeutet „konstante Körpertemperatur“?",["Die Körpertemperatur bleibt fast immer gleich, egal wie warm oder kalt es draußen ist","Der Hund ist immer kalt","Die Körpertemperatur ändert sich mit dem Wetter","Der Hund hat Fieber"],"Ein Hund hat etwa 38 bis 39 °C, im Schnee genauso wie im Sommer. Solche Tiere nennt man gleichwarm."),
+ M("saeug","Wie ernähren sich Welpen in den ersten Wochen nach der Geburt?",["Mit Muttermilch","Mit Fleisch","Mit Trockenfutter","Mit Gras"],"Die Hündin säugt ihre Welpen. Die erste Muttermilch schützt sie auch vor Krankheiten."),
+ M("saeug","Was bedeutet „lebend gebärend“?",["Die Jungen entwickeln sich im Bauch der Mutter und kommen lebend zur Welt","Die Jungen schlüpfen aus Eiern","Die Jungen werden im Wasser geboren","Die Jungen können sofort allein leben"],"Bei lebend gebärenden Tieren gibt es eine Schwangerschaft. Vögel dagegen legen Eier."),
+ M("saeug","Wo entwickeln sich die Organe eines Welpen?",["Im Körper der Mutter während der Schwangerschaft","In einem Ei im Nest","Erst nach der Geburt","In der Muttermilch"],"Während der Schwangerschaft wachsen die Welpen im Körper der Hündin heran."),
+ M("saeug","Wie lange wachsen die Welpen ungefähr im Körper der Hündin heran?",["Etwa 60 Tage","Etwa 9 Monate","Etwa eine Woche","Etwa zwei Jahre"],"Etwa 60 Tage, also rund zwei Monate. Beim Menschen sind es etwa 9 Monate."),
+ M("saeug","Welpen kommen blind und taub zur Welt und müssen beschützt werden. Wie nennt man solche Jungtiere?",["Nesthocker","Nestflüchter","Einzelgänger","Leittiere"],"Nesthocker sind nach der Geburt hilflos. Nestflüchter (z. B. Fohlen) können schon kurz nach der Geburt laufen."),
+ M("saeug","Wie heißen das weibliche und das männliche Tier beim Hund?",["Hündin und Rüde","Hündin und Hengst","Stute und Rüde","Henne und Hahn"],"Das Weibchen ist die Hündin, das Männchen der Rüde."),
+ M("saeug","Was passiert bei der inneren Befruchtung?",["Eine Spermienzelle verschmilzt im Körper der Hündin mit einer Eizelle","Die Hündin legt Eier, die danach befruchtet werden","Die Welpen wachsen aus der Muttermilch","Die Eizelle wird im Wasser befruchtet"],"„Innere“ Befruchtung, weil sie innerhalb des Körpers der Hündin stattfindet."),
+ M("saeug","Wie viele Beine (Gliedmaßen) hat ein Hund?",["Zwei Vorderbeine und zwei Hinterbeine","Vier Vorderbeine","Sechs Beine","Zwei Beine und zwei Arme"],"Säugetiere wie der Hund haben vier Gliedmaßen: zwei vorne, zwei hinten."),
+ M("saeug","Welches Tier ist KEIN Säugetier?",["Huhn","Katze","Pferd","Mensch"],"Das Huhn hat Federn statt Fell, legt Eier und säugt seine Küken nicht. Es ist ein Vogel."),
+ M("saeug","Welches dieser Tiere ist ein Säugetier?",["Delfin","Hai","Pinguin","Krokodil"],"Der Delfin lebt im Wasser, atmet aber mit Lungen, bringt lebende Junge zur Welt und säugt sie."),
+ M("saeug","Ein Huhn atmet mit Lungen und hat eine konstante Körpertemperatur. Warum ist es trotzdem kein Säugetier?",["Es legt Eier, hat Federn statt Fell und säugt seine Küken nicht","Weil es nur zwei Beine hat","Weil es kleiner als ein Hund ist","Weil es Körner frisst"],"Für ein Säugetier müssen alle Merkmale passen. Beim Huhn fehlen Fell, Lebendgeburt und Säugen."),
+ M("saeug","Der Hund hat eine Wirbelsäule. Zu welcher Tiergruppe gehört er deshalb außerdem?",["Zu den Wirbeltieren","Zu den Insekten","Zu den Weichtieren","Zu den Fischen"],"Alle Tiere mit Wirbelsäule sind Wirbeltiere. Säugetiere sind eine Gruppe der Wirbeltiere."),
+ T("saeug","Womit säugt die Hündin ihre Welpen?",["Muttermilch","Milch"],"Deshalb heißen diese Tiere Säugetiere."),
+ T("saeug","Mit welchem Organ atmen Säugetiere?",["Lunge","Lungen"],"Mit der Lunge nehmen sie Sauerstoff aus der Luft auf."),
+ T("saeug","Wie nennt man Jungtiere, die blind und taub geboren werden und lange im Nest bleiben?",["Nesthocker"],"Hundewelpen sind Nesthocker."),
+ T("saeug","Wie heißt der männliche Hund?",["Rüde"],"Hündin = Weibchen, Rüde = Männchen."),
+ T("saeug","Tiere, deren Körpertemperatur immer gleich bleibt, nennt man …",["gleichwarm","gleichwarme Tiere","Warmblüter"],"Gleichwarme Tiere haben eine konstante Körpertemperatur."),
+ O("saeug","Nenne vier Kennzeichen von Säugetieren.",[K("Körperbehaarung (Fell)",["fell","haar","behaar"]),K("Lungenatmung",["lunge"]),K("Konstante Körpertemperatur (gleichwarm)",["temperatur","gleichwarm","konstant","warmblut"]),KR("Junge werden gesäugt (Muttermilch)",/gesaugt|saugen|saugt|milch/),K("Lebend gebärend",["lebend","gebar","geboren","schwanger"]),K("Zwei Vorder- und zwei Hinterbeine",["beine","vorder","hinter","extremit","gliedmass"])],4,"Säugetiere haben ein Fell (Körperbehaarung), atmen mit Lungen, haben eine konstante Körpertemperatur, sind lebend gebärend und säugen ihre Jungen mit Muttermilch. Außerdem haben sie zwei Vorder- und zwei Hinterbeine."),
+ O("saeug","Begründe, dass der Hund ein Säugetier ist.",[K("Er hat ein Fell",["fell","haar","behaar"]),K("Er atmet mit Lungen",["lunge"]),K("Seine Körpertemperatur bleibt gleich",["temperatur","gleichwarm","konstant"]),KR("Er säugt seine Jungen mit Muttermilch",/gesaugt|saugen|saugt|milch/),K("Seine Jungen werden lebend geboren",["lebend","gebar","geboren","schwanger"])],2,"Der Hund ist ein Säugetier, weil seine Welpen lebend geboren und mit Muttermilch gesäugt werden. Außerdem hat er ein Fell, atmet mit Lungen und hat eine konstante Körpertemperatur."),
+ O("saeug","Erkläre, wie das Fell den Hund vor Kälte schützt.",[K("Das Fell hält die Körperwärme im Körper",["warme","warm","heiz","isolier"]),K("Im Winter ist das Fell besonders dicht",["dicht","dick","winterfell","mehrhaare"])],2,"Das Fell sorgt dafür, dass der Hund nicht so viel Körperwärme an die Umgebung abgibt. Im Winter ist es besonders dicht, so bleibt die Wärme im Körper."),
+ O("saeug","Erkläre, was „konstante Körpertemperatur“ bedeutet.",[K("Die Körpertemperatur bleibt (fast) gleich",["gleich","konstant","verandertsichnicht","andertsichnicht","bleibt"]),K("egal wie warm oder kalt es draußen ist",["aussen","drauss","wetter","umgebung","kalt","winter","sommer","egal","unabhang"])],2,"Die Körpertemperatur des Hundes bleibt fast immer gleich (etwa 38 bis 39 °C), egal ob es draußen warm oder kalt ist. Sie ist unabhängig von der Außentemperatur."),
+ O("saeug","Erkläre, was „lebend gebärend“ bedeutet.",[K("Die Jungen entwickeln sich im Körper der Mutter (Schwangerschaft)",["bauch","korper","schwanger","mutter","innen"]),K("Sie kommen lebend zur Welt und schlüpfen nicht aus Eiern",["lebend","geboren","welt","keineeier","keinei","nichtausei","schlupf"])],2,"Die Jungen wachsen im Körper der Mutter heran. Während der Schwangerschaft entwickeln sich ihre Organe. Dann kommen sie lebend zur Welt und schlüpfen nicht aus einem Ei."),
+ O("saeug","Ein Huhn atmet auch mit Lungen. Begründe, warum es trotzdem kein Säugetier ist.",[KR("Es legt Eier",/eier|legtein|schlupf/),K("Es hat Federn statt Fell",["feder"]),KR("Es säugt seine Jungen nicht",/gesaugt|saugen|saugt|milch|still/)],2,"Das Huhn legt Eier, aus denen die Küken schlüpfen. Es hat Federn statt Fell und säugt seine Küken nicht mit Milch. Deshalb ist es ein Vogel und kein Säugetier."),
+ MA("saeug","Ordne jedem Merkmal der Säugetiere die passende Erklärung zu.",Object.values(SM).map(m=>[m.n,m.d.split(". ")[0].replace(/\.$/,"")]),"So steht es auch in deiner Mappe: Körperextremitäten, Körperbehaarung, Lungenatmung, konstante Körpertemperatur, Junge werden gesäugt, lebend gebärend.",4),
+ OR("saeug","Bringe die Fortpflanzung beim Hund in die richtige Reihenfolge.",["Hündin und Rüde paaren sich.","Spermienzellen des Rüden gelangen in den Körper der Hündin.","Eine Spermienzelle verschmilzt mit einer Eizelle (innere Befruchtung).","Die Welpen wachsen etwa 60 Tage im Körper der Hündin heran.","Die Welpen werden lebend geboren.","Die Welpen werden mit Muttermilch gesäugt."],"Paarung, innere Befruchtung, Schwangerschaft (etwa 60 Tage), Geburt, Säugen."),
+ MU("saeug","Welche Merkmale haben Säugetiere? Wähle alle richtigen aus.",["Fell","Lungenatmung","Lebend gebärend","Konstante Körpertemperatur","Junge werden gesäugt"],["Federn","Kiemenatmung","Legen Eier","Schuppen"],"Federn haben Vögel, Kiemen und Schuppen haben Fische. Säugetiere haben Fell, atmen mit Lungen, sind gleichwarm, lebend gebärend und säugen ihre Jungen.",3,2)
+],
+/* ---------------- Züchtung ---------------- */
+zucht:[
+ M("zucht","Was versteht man unter Züchtung?",["Der Mensch wählt gezielt Tiere mit gewünschten Merkmalen aus und lässt sie sich fortpflanzen","Tiere suchen sich ihre Partner selbst aus","Ein Tier lernt neue Tricks","Wölfe leben im Rudel"],"Werden Hunde vom Menschen gezielt ausgewählt und miteinander gepaart, spricht man von Züchtung."),
+ M("zucht","Wer ist der Vorfahre des Haushundes?",["Der Wolf","Der Fuchs","Der Bär","Die Hyäne"],"Untersuchungen haben ergeben: Alle Hunderassen stammen vom Wolf ab."),
+ M("zucht","Welche Merkmale werden an die Welpen vererbt?",["Fellfarbe, Körpergröße und Ohrenform","„Sitz“ und „Platz“ machen","An der Leine laufen","Den eigenen Namen kennen"],"Merkmale wie Fellfarbe, Körpergröße, Ohren- und Schwanzform sind in der Erbinformation gespeichert. Erlerntes wird nicht vererbt."),
+ M("zucht","Ein Hund hat gelernt, „Sitz“ zu machen. Können seine Welpen das automatisch?",["Nein, erlerntes Verhalten wird nicht vererbt","Ja, das wird immer vererbt","Ja, aber nur die Rüden","Nur wenn die Mutter es auch kann"],"„Sitz machen“ ist antrainiert. Es steht nicht in der Erbinformation, deshalb müssen es die Welpen selbst lernen."),
+ M("zucht","Wo sind Merkmale wie Fellfarbe und Körpergröße gespeichert?",["In der Erbinformation","Im Futter","Im Halsband","Im Gedächtnis des Hundes"],"Die Erbinformation wird von den Eltern an die Welpen weitergegeben."),
+ M("zucht","Welpen derselben Hündin sehen sich ähnlich, unterscheiden sich aber leicht. Wie nennt man das?",["Vielfalt (Variabilität)","Züchtung","Befruchtung","Rangordnung"],"Diese kleinen Unterschiede (Vielfalt, Variabilität) nutzt der Züchter, um die passenden Tiere auszuwählen."),
+ M("zucht","Wie viele Hunderassen gibt es heute ungefähr?",["Mehr als 400","Etwa 10","Etwa 40","Mehr als 40 000"],"Durch Züchtung sind weltweit hunderte Hunderassen entstanden, mehr als 400."),
+ M("zucht","Wie lange züchtet der Mensch schon Hunde? (Laut Schulbuch)",["Etwa 10 000 Jahre","Etwa 100 Jahre","Etwa 500 Jahre","Etwa 1 Million Jahre"],"Innerhalb von etwa 10 000 Jahren hat der Mensch viele Merkmale verstärkt oder abgeschwächt."),
+ M("zucht","Nach der ersten Generation sind noch nicht alle Welpen groß. Was macht der Züchter, der große Hunde will?",["Er paart den größten Welpen mit einem großen Nachkommen eines anderen Hundepaares","Er gibt auf, weil Züchtung nicht klappt","Er paart den kleinsten Welpen","Er füttert die Welpen mehr, damit ihre Kinder größer werden"],"Mehr Futter macht einen Hund nicht erblich größer. Nur die Auswahl über viele Generationen verändert die Merkmale einer Rasse."),
+ M("zucht","Warum muss die Auswahl über viele Generationen wiederholt werden?",["Damit sich das Merkmal bei allen Nachkommen verfestigt","Weil die Hunde sonst alt werden","Weil der Züchter es so lernt","Damit die Hunde Tricks lernen"],"Erst nach vielen Generationen zeigen alle Hunde das gewünschte Merkmal zuverlässig."),
+ M("zucht","Wann spricht man von einer neuen Hunderasse?",["Wenn sich das gewünschte Merkmal verfestigt hat und alle Hunde es zeigen","Sobald ein einzelner Welpe anders aussieht","Wenn ein Hund einen neuen Namen bekommt","Wenn ein Hund einen Trick gelernt hat"],"Die Hunde mit dem verfestigten Merkmal werden als eigene Rasse angesehen."),
+ M("zucht","Der Dackel hat kurze Beine. Wie ist das entstanden?",["Menschen haben immer wieder Hunde mit kurzen Beinen ausgewählt und miteinander gepaart","Die Hunde haben sich kurze Beine antrainiert","Die Beine sind beim Graben abgenutzt worden","Die Hunde bekamen zu wenig Futter"],"Kurze Beine sind ein vererbtes Merkmal. Der Mensch hat es über viele Generationen gezielt verstärkt."),
+ M("zucht","Warum konnten Hunde mit kurzen Beinen beim Menschen überleben, Wölfe mit kurzen Beinen in der Wildnis aber kaum?",["Der Mensch sorgte für die Hunde, in der Wildnis wären sie bei der Jagd zu langsam","Kurze Beine sind in der Wildnis besser","Wölfe haben nie unterschiedliche Beine","Hunde brauchen überhaupt keine Beine"],"Beim Wolf setzen sich die Merkmale durch, die das Überleben sichern. Beim Menschen konnten neue Eigenschaften wie kurze Beine erhalten bleiben."),
+ M("zucht","Warum lebten Menschen und Wölfe schon vor vielen Jahrtausenden zusammen?",["Das Zusammenleben hatte für beide Seiten Vorteile","Weil die Wölfe gefangen und eingesperrt wurden","Weil Wölfe kein Fleisch mehr fanden","Weil Menschen Angst vor Hunden hatten"],"Die Menschen waren damals nicht sesshaft. Mensch und Wolf hatten beide Vorteile vom Zusammenleben."),
+ M("zucht","Was ist das Ziel eines Züchters, der nur Hunde mit langen Ohren miteinander paart?",["Eine Rasse, bei der alle Hunde lange Ohren haben","Hunde, die besser hören können, weil sie es üben","Hunde, die schneller lernen","Möglichst viele verschiedene Ohrenformen"],"Der Züchter verstärkt ein Merkmal so lange, bis es sich verfestigt hat."),
+ T("zucht","Wie heißt der wilde Vorfahre des Haushundes?",["Wolf","Wölfe"],"Alle Hunderassen stammen vom Wolf ab."),
+ T("zucht","Wenn der Mensch Tiere gezielt auswählt und miteinander paart, nennt man das …",["Züchtung","Zucht","züchten"],"Züchtung: ein vom Menschen gelenkter Prozess."),
+ T("zucht","Hunde, die alle bestimmte typische Merkmale haben (z. B. Dackel), gehören zu einer …",["Rasse","Hunderasse"],"Durch Züchtung sind mehr als 400 Hunderassen entstanden."),
+ T("zucht","Geschwister ähneln sich, unterscheiden sich aber leicht. Diese Unterschiede nennt man Vielfalt oder …",["Variabilität","Variation"],"Variabilität = Vielfalt. Ohne diese Unterschiede könnte der Züchter nichts auswählen."),
+ T("zucht","Wo sind vererbbare Merkmale wie die Fellfarbe gespeichert? In der …",["Erbinformation","Erbinformationen","Erbgut"],"Erlerntes wie „Sitz“ steht nicht in der Erbinformation und wird deshalb nicht vererbt."),
+ O("zucht","Beschreibe, wie ein Züchter vorgeht, wenn er Hunde mit besonders langen Ohren züchten möchte.",[K("Er wählt Hunde mit langen Ohren aus",["auswahl","ausgewahlt","aussuch","ausgesucht","suchtsich","wahlt","nimmt"]),K("Er paart sie miteinander",["paar","fortpflanz","kreuz"]),K("Aus den Welpen wählt er wieder die mit den längsten Ohren",["welpen","nachkommen","jungen","kinder","wieder","langsten"]),K("Das wiederholt er über viele Generationen",["generation","wiederhol","immerwieder","jahre","jahrzehnt","mehrmals","oft"])],3,"Der Züchter wählt einen Rüden und eine Hündin mit besonders langen Ohren aus und paart sie. Von den Welpen nimmt er wieder den mit den längsten Ohren und paart ihn mit einem langohrigen Hund aus einer anderen Familie. Das wiederholt er über viele Generationen, bis alle Hunde lange Ohren haben."),
+ O("zucht","Erkläre, warum ein Hund, der „Sitz“ gelernt hat, dieses Verhalten nicht an seine Welpen vererbt.",[K("„Sitz“ ist erlerntes (antrainiertes) Verhalten",["lern","trainier","beigebracht","geubt","dressur","erzieh"]),K("Vererbt werden nur Merkmale aus der Erbinformation",["erbinformation","nichtvererb","gene","erbgut","angeboren","nichtweitergegeben","vererb"])],2,"„Sitz machen“ ist erlerntes Verhalten, es wurde dem Hund antrainiert. Vererbt werden nur Merkmale, die in der Erbinformation gespeichert sind, wie Fellfarbe oder Körpergröße. Die Welpen müssen „Sitz“ selbst lernen."),
+ O("zucht","Erkläre am Beispiel von Welpen, was man unter Vielfalt (Variabilität) versteht.",[K("Die Welpen ähneln sich und ihren Eltern",["ahnel","ahnlich","gleich","eltern"]),K("Sie unterscheiden sich aber leicht (z. B. Größe, Fellfarbe, Ohren)",["unterschied","unterscheid","anders","verschieden","abweich"])],2,"Alle Welpen einer Hündin ähneln sich und ihren Eltern. Trotzdem unterscheiden sie sich leicht voneinander, zum Beispiel in der Größe, der Fellfarbe oder der Länge der Ohren. Das nennt man Vielfalt oder Variabilität."),
+ O("zucht","Nenne drei Merkmale, die bei Hunden vererbt werden.",[K("Fellfarbe",["farbe"]),K("Körpergröße",["grosse","gross","klein"]),K("Ohrenform",["ohr"]),K("Schwanzform",["schwanz"]),K("Beinlänge",["bein"]),KR("Fellart (lang, kurz, lockig)",/fellart|langesfell|kurzesfell|lock|langhaar|kurzhaar|felllang|fellkurz|felllange/)],3,"Zum Beispiel Fellfarbe, Körpergröße, Ohrenform, Schwanzform oder Beinlänge."),
+ O("zucht","Erkläre, wie aus dem Wolf so unterschiedliche Hunderassen wie der kleine Dackel und die riesige Dogge entstehen konnten.",[K("Der Mensch hat Tiere mit gewünschten Merkmalen ausgewählt und gepaart (Züchtung)",["zucht","auswahl","wahlt","ausgesucht","ausgewahlt","paar"]),K("über viele Generationen bzw. tausende Jahre",["generation","jahr","lange","wiederhol"]),K("mit unterschiedlichen Zielen (klein, groß, kurze Beine …)",["klein","gross","kurz","bein","unterschiedlich","verschieden","ziel"])],2,"Menschen haben über viele Generationen immer wieder Hunde mit bestimmten Merkmalen ausgewählt und miteinander gepaart. Die einen wollten kleine Hunde mit kurzen Beinen, die anderen große, kräftige Hunde. So entstanden aus dem Wolf in etwa 10 000 Jahren sehr unterschiedliche Rassen."),
+ O("zucht","Warum konnten Hunde mit kurzen Beinen beim Menschen überleben, Wölfe mit kurzen Beinen in der Wildnis aber kaum?",[K("Beim Menschen bekamen die Hunde Futter und Schutz",["futter","gefuttert","mensch","sorgt","versorgt","schutz","fressen"]),K("In der Wildnis wären sie bei der Jagd zu langsam",["jagd","jag","langsam","beute","schnell","hunger","verhunger"])],2,"In der Wildnis muss ein Wolf schnell sein, um Beute zu fangen. Mit kurzen Beinen wäre er zu langsam und würde verhungern. Beim Menschen bekamen die Hunde Futter und Schutz, deshalb konnten Eigenschaften wie kurze Beine erhalten bleiben."),
+ OR("zucht","Bringe die Schritte der Züchtung in die richtige Reihenfolge (Ziel: lange Ohren).",["Der Züchter wählt einen Rüden und eine Hündin mit langen Ohren aus.","Er paart die beiden Hunde miteinander.","Die Welpen ähneln den Eltern, unterscheiden sich aber leicht voneinander.","Er paart den Welpen mit den längsten Ohren mit einem langohrigen Hund aus einer anderen Familie.","Das wiederholt er über viele Generationen, bis sich das Merkmal verfestigt hat: eine neue Rasse."],"Auswählen, paaren, wieder auswählen und wiederholen. Merke: Auswählen – Paaren – Wiederholen."),
+ MA("zucht","Wird das Merkmal vererbt oder ist es erlernt? Ordne zu.",[["Fellfarbe","vererbt"],["Körpergröße","vererbt"],["Ohrenform","vererbt"],["Schwanzform","vererbt"],["„Sitz“ machen","erlernt"],["Pfötchen geben","erlernt"],["An der Leine laufen","erlernt"]],"Merkmale aus der Erbinformation werden vererbt. Antrainiertes Verhalten müssen die Welpen selbst lernen.",5),
+ MU("zucht","Welche Merkmale können die Eltern an ihre Welpen vererben? Wähle alle richtigen aus.",["Fellfarbe","Körpergröße","Ohrenform","Schwanzform"],["„Sitz“ machen","Pfötchen geben","Den eigenen Namen kennen"],"Erlerntes Verhalten wird nicht vererbt, nur Merkmale aus der Erbinformation.",3,2)
+]};
+
+/* ---------- Fragen mit Skizzen ---------- */
+function kzIconQs(){const names=Object.values(KZ).map(k=>k.n);
+ return Object.values(KZ).map(k=>mc("leb","Welches Kennzeichen von Lebewesen zeigt die Skizze?",[k.n].concat(pick(names.filter(n=>n!==k.n),3)),k.n,k.n+": "+k.d,{vis:{type:"icon",n:k.ic},s:"vis"}));}
+function smIconQs(){const names=Object.values(SM).map(k=>k.n);
+ return Object.values(SM).map(k=>mc("saeug","Welches Merkmal der Säugetiere zeigt die Skizze?",[k.n].concat(pick(names.filter(n=>n!==k.n),3)),k.n,k.n+": "+k.d,{vis:{type:"icon",n:k.ic},s:"vis"}));}
+function skullQs(){const out=[],G=Object.keys(TG);
+ G.forEach(g=>{
+  const pl=g!=="reiss";
+  out.push(mc("zahn",pl?"Wie heißen die gelb markierten Zähne?":"Wie heißt der gelb markierte Zahn?",G.map(x=>TG[x]),TG[g],`${TG[g]}: ${TFN[g]}.`,{vis:{type:"skull",hl:g},s:"vis"}));
+  out.push(mc("zahn",pl?"Welche Aufgabe haben die gelb markierten Zähne?":"Welche Aufgabe hat der gelb markierte Zahn?",G.map(x=>TFN[x]),TFN[g],`Das ${pl?"sind die":"ist der"} ${TG[g]}.`,{vis:{type:"skull",hl:g},s:"vis"}));
+  out.push({topic:"zahn",k:"click",p:`Tippe in der Skizze auf ${pl?"die":"den"} ${TG[g]}.`,vis:{type:"skull"},target:g,names:TG,x:`${TG[g]}: ${TFN[g]}.`});
+  out.push(T("zahn",`Wie heißen die Zähne mit der Nummer ${TNUM[g]}?`,g==="sch"?["Schneidezähne","Schneidezahn"]:g==="fang"?["Fangzähne","Fangzahn","Eckzahn","Eckzähne"]:g==="back"?["Backenzähne","Backenzahn"]:["Reißzahn","Reißzähne"],`Nummer ${TNUM[g]}: ${TG[g]}. Aufgabe: ${TFN[g]}.`,{vis:{type:"skull",colored:true,numbers:true},s:"vis"}));
+ });
+ return out;}
+function litterVals(trait,goal){for(let t=0;t<200;t++){let v;
+  if(trait==="ear")v=Array.from({length:4},()=>4+rnd(31));
+  else if(trait==="leg")v=Array.from({length:4},()=>8+rnd(22));
+  else v=Array.from({length:4},()=>+(0.44+Math.random()*0.3).toFixed(2));
+  const sorted=v.slice().sort((a,b)=>a-b);const gap=trait==="size"?0.09:trait==="ear"?9:6;
+  const ok=goal==="max"?sorted[3]-sorted[2]>=gap:sorted[1]-sorted[0]>=gap;
+  if(ok&&new Set(v).size===4)return v;}
+ return trait==="size"?[0.48,0.56,0.72,0.45]:[8,14,30,19];}
+function litterQs(){const L=[
+  ["ear","max","Ein Züchter möchte Hunde mit möglichst langen Ohren züchten. Welchen Welpen wählt er für die nächste Generation aus? Tippe ihn an."],
+  ["ear","min","Ein Züchter möchte Hunde mit kurzen Ohren züchten. Welchen Welpen wählt er aus? Tippe ihn an."],
+  ["leg","max","Ein Züchter möchte Hunde mit langen Beinen züchten. Welchen Welpen wählt er aus? Tippe ihn an."],
+  ["leg","min","Ein Züchter möchte Hunde mit kurzen Beinen (wie beim Dackel) züchten. Welchen Welpen wählt er aus? Tippe ihn an."],
+  ["size","max","Ein Züchter möchte möglichst große Hunde züchten. Welchen Welpen wählt er aus? Tippe ihn an."]];
+ return L.map(([trait,goal,p])=>{const vals=litterVals(trait,goal);const best=goal==="max"?Math.max(...vals):Math.min(...vals);const t="ABCD"[vals.indexOf(best)];
+  return {topic:"zucht",k:"click",p,vis:{type:"litter",trait,vals},target:t,names:{A:"Welpe A",B:"Welpe B",C:"Welpe C",D:"Welpe D"},x:"Der Züchter wählt immer das Tier aus, bei dem das gewünschte Merkmal am stärksten ausgeprägt ist. Dass die Welpen sich unterscheiden (Vielfalt), macht die Auswahl erst möglich."};});}
+function breedQs(){const S={1:"Zwei Hunde werden miteinander gepaart. Ihre Welpen ähneln ihnen, sind aber unterschiedlich.",2:"Der Welpe mit den längsten Ohren wird mit einem langohrigen Hund aus einer anderen Familie gepaart.",3:"Die Auswahl wird über viele Generationen wiederholt, bis alle Hunde lange Ohren haben: eine neue Rasse."};
+ const wrong="Die Welpen lernen, ihre Ohren zu strecken.";
+ const out=[1,2,3].map(n=>mc("zucht",`In der Abbildung ist Schritt ${n} gelb markiert. Was passiert in diesem Schritt?`,[S[1],S[2],S[3],wrong],S[n],"Schritt 1: paaren. Schritt 2: das Tier mit dem stärksten Merkmal auswählen und mit einem passenden Partner paaren. Schritt 3: über viele Generationen wiederholen.",{vis:{type:"breed",step:n},s:"vis"}));
+ out.push(M("zucht","Schau dir die Welpen in der Abbildung an. Warum kann der Züchter überhaupt auswählen?",["Weil die Welpen sich leicht unterscheiden (Vielfalt)","Weil alle Welpen genau gleich sind","Weil die Welpen schon Tricks können","Weil die Eltern sehr lange Ohren haben"],"Ohne Vielfalt (Variabilität) gäbe es nichts zum Auswählen.",{vis:{type:"breed"},s:"vis"}));
+ out.push(M("zucht","Was zeigt die unterste Reihe der Abbildung?",["Das Merkmal hat sich verfestigt, alle Hunde haben lange Ohren: eine neue Rasse","Die Eltern der ersten Generation","Wölfe in der Wildnis","Welpen, die noch wachsen müssen"],"Nach vielen Generationen der Auswahl zeigen alle Hunde das Merkmal.",{vis:{type:"breed"},s:"vis"}));
+ return out;}
+
+const TOPICS=[
+ {id:"leb",name:"Kennzeichen von Lebewesen",sub:"Roboterhund, Ronda, lebende Steine",src:"Buch S. 14/15 (M1, M2)",pool:()=>fresh(BANK.leb).concat(kzIconQs())},
+ {id:"zahn",name:"Das Hundegebiss",sub:"Namen und Aufgaben der Zähne",src:"Buch S. 27 (M4)",flag:"Auf dem Zettel: Name der Zähne",pool:()=>fresh(BANK.zahn).concat(skullQs())},
+ {id:"saeug",name:"Kennzeichen der Säugetiere",sub:"Fell, Lunge, Körpertemperatur, säugen, lebend gebärend",src:"Mappe · Buch S. 31 (M3)",pool:()=>fresh(BANK.saeug).concat(smIconQs())},
+ {id:"zucht",name:"Züchtung",sub:"Vom Wolf zur Hunderasse",src:"Arbeitsblatt · Buch S. 31/32",pool:()=>fresh(BANK.zucht).concat(litterQs(),breedQs())}
+];
+
+/* =====================================================================
+   ABLAUF
+   ===================================================================== */
+const app=$("#app");let ST=null;
+function sampleTopic(t,n){const pool=t.pool();const by={};pool.forEach(q=>{const k=q.s||q.k;(by[k]=by[k]||[]).push(q);});
+ const kinds=shuffle(Object.keys(by));const sh={};kinds.forEach(k=>sh[k]=shuffle(by[k]));const out=[];let i=0;
+ while(out.length<n&&kinds.some(k=>sh[k].length)){const k=kinds[i%kinds.length];if(sh[k].length)out.push(sh[k].pop());i++;}
+ return shuffle(out);}
+function startTopic(id){const t=TOPICS.find(x=>x.id===id);begin(t.name,id,sampleTopic(t,10));}
+function startExam(){let qs=[];TOPICS.forEach(t=>{qs=qs.concat(sampleTopic(t,5));});begin("Probe-Klassenarbeit","exam",shuffle(qs));}
+function startWrong(){const s=store.get();const list=(s.wrong||[]).slice(-15);if(list.length)begin("Fehler üben","wrong",shuffle(list));}
+function begin(title,id,qs){ST={title,id,qs,i:0,score:0,log:[]};renderQ();window.scrollTo(0,0);}
+
+const iconTile=(svg)=>svg.replace("<svg ",'<svg aria-hidden="true" ');
+function renderHome(){
+ ST=null;const s=store.get();const best=s.best||{};const nw=(s.wrong||[]).length;
+ app.innerHTML=`
+ <header class="head"><span class="eyebrow">Biologie · Klasse 5 · Klassenarbeit am 10.11.</span><h1>Hunde-<span>Check</span></h1>
+  <p>Üben für die Bio-Klassenarbeit: Kennzeichen von Lebewesen, das Hundegebiss, Kennzeichen der Säugetiere und Züchtung. Mit Skizzen zum Antippen, Auswahlfragen und Fragen, bei denen du in eigenen Worten antwortest.</p></header>
+ <section class="hero"><h2>Probe-Klassenarbeit</h2><p>20 gemischte Fragen, je 5 aus jedem der vier Themen auf deinem Zettel.</p>
+  <div class="row"><button class="btn inv" id="exam">Probe-Klassenarbeit starten</button>${nw?`<button class="btn ghost oninv" id="wrong">Fehler üben (${nw})</button>`:""}</div></section>
+ <section class="sec"><h3>Einzelne Themen üben</h3><div class="tiles">
+ ${TOPICS.map(t=>{const b=best[t.id];return `<button class="tile" data-t="${t.id}"><b>${esc(t.name)}</b><small>${esc(t.sub)}</small><span class="src">${esc(t.src)}</span>${t.flag?`<span class="q">${esc(t.flag)}</span>`:""}
+   <div class="meter"><i style="width:${b||0}%"></i></div><div class="best"><span>10 Fragen</span><span>${b!=null?"Bestes Ergebnis: "+b+" %":"noch nicht geübt"}</span></div></button>`;}).join("")}
+ </div></section>
+ <section class="sec"><h3>Lernen und ausprobieren</h3><div class="tiles">
+  <button class="tile plain" id="cheat">${iconTile(skullSVG({colored:true}))}<div><b>Spickzettel</b><small>Alles Wichtige mit Skizzen auf einen Blick, zum Wiederholen vor dem Üben.</small></div></button>
+  <button class="tile plain" id="sim">${iconTile(svgWrap("0 0 110 80",dogG({x:8,y:4,s:.9,ear:30})))}<div><b>Züchte selbst!</b><small>Wähle aus jedem Wurf die passenden Eltern und züchte über mehrere Generationen eine Rasse mit langen Ohren.</small></div></button>
+ </div></section>
+ <p class="foot">Grundlage: Fotos von Schulbuch (S. 14, 27, 31, 32), Mappe und Arbeitsblättern. Die Seite S. 15 (M2) war nicht dabei: Die Kennzeichen von Lebewesen folgen der üblichen Liste (Bewegung, Reizbarkeit, Stoffwechsel, Wachstum, Entwicklung, Fortpflanzung, Aufbau aus Zellen). Vergleiche sie mit deinem Buch. Bei Antworten in eigenen Worten prüft die Seite Stichwörter. Wenn deine Antwort dasselbe meint, kannst du sie selbst als richtig werten.</p>`;
+ $("#exam").onclick=startExam;if(nw)$("#wrong").onclick=startWrong;
+ app.querySelectorAll(".tile[data-t]").forEach(b=>b.onclick=()=>startTopic(b.dataset.t));
+ $("#cheat").onclick=renderCheat;$("#sim").onclick=()=>renderSim(true);
+ window.scrollTo(0,0);
+}
+
+const KINDNAME={mc:"Auswahl",text:"Begriff",open:"Eigene Worte",click:"Antippen",match:"Zuordnen",order:"Reihenfolge",multi:"Mehrere richtig"};
+function renderQ(){
+ const q=ST.qs[ST.i];const n=ST.qs.length;ST.done=false;ST.sel=null;ST.seq=[];ST.msel=new Set();
+ app.innerHTML=`<div class="qbar"><button class="x" id="quit">✕ Beenden</button><div class="prog"><span>${esc(ST.title)} · Frage ${ST.i+1} von ${n} · ${ST.score} richtig</span><div class="pbar"><i style="width:${ST.i/n*100}%"></i></div></div></div>
+ <article class="card"><div class="chips"><span class="chip">${esc((TOPICS.find(t=>t.id===q.topic)||{}).name||"")}</span><span class="chip">${KINDNAME[q.k]||""}</span></div>
+ <p class="prompt">${esc(q.p)}</p>${q.vis?`<div class="vis${q.vis.type==="icon"?" narrow":""}" id="vis">${visualSVG(q.vis,q.k==="click")}</div>`:""}<div id="ans"></div><div id="fb"></div></article>`;
+ $("#quit").onclick=renderHome;
+ const A=$("#ans");
+ if(q.k==="mc"){A.innerHTML=`<div class="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${"ABCD"[i]}</span><span>${esc(o)}</span></button>`).join("")}</div>`;
+  A.querySelectorAll(".opt").forEach(b=>b.onclick=()=>checkMC(+b.dataset.i));}
+ else if(q.k==="text"){A.innerHTML=`<form class="inrow" id="f"><input id="inp" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Antwort eingeben" aria-label="Antwort"><button class="btn" id="go">Prüfen</button></form>`;
+  $("#f").onsubmit=e=>{e.preventDefault();const v=$("#inp").value.trim();if(v)checkInput(v);};}
+ else if(q.k==="open"){A.innerHTML=`<form class="inrow" id="f"><textarea id="inp" placeholder="Antworte in ganzen Sätzen, so wie in der Klassenarbeit." aria-label="Deine Antwort"></textarea><button class="btn" id="go">Antwort prüfen</button></form>`;
+  $("#f").onsubmit=e=>{e.preventDefault();const v=$("#inp").value.trim();if(v.length>=3)checkOpen(v);};}
+ else if(q.k==="click"){A.innerHTML=`<div class="row"><button class="btn" id="go" disabled>Prüfen</button><span class="hint" id="clickhint">Tippe zuerst in die Skizze.</span></div>`;$("#go").onclick=checkClick;
+  $("#vis").querySelectorAll(".zone").forEach(z=>z.addEventListener("click",()=>{if(ST.done)return;ST.sel=z.dataset.z;
+   $("#vis").querySelectorAll(".zone").forEach(o=>o.classList.toggle("sel",o.dataset.z===ST.sel));$("#go").disabled=false;
+   $("#clickhint").textContent="Ausgewählt: "+(q.names[ST.sel]||ST.sel)+". Du kannst noch ändern.";}));}
+ else if(q.k==="match"){A.innerHTML=`<div class="match">${q.pairs.map((p,i)=>`<label class="mrow" data-i="${i}"><span>${esc(p[0])}</span><select data-i="${i}" aria-label="${esc(p[0])}"><option value="">– auswählen –</option>${q.rights.map(r=>`<option>${esc(r)}</option>`).join("")}</select></label>`).join("")}</div><div class="row"><button class="btn" id="go" disabled>Prüfen</button></div>`;
+  const sels=[...A.querySelectorAll("select")];sels.forEach(s=>s.onchange=()=>{$("#go").disabled=sels.some(x=>!x.value);});$("#go").onclick=checkMatch;}
+ else if(q.k==="order"){A.innerHTML=`<p class="hint" style="margin:0 0 8px">Tippe die Sätze in der richtigen Reihenfolge an. Nochmal tippen nimmt einen Satz zurück.</p><div class="opts" style="grid-template-columns:1fr">${q.shown.map((o,i)=>`<button class="opt" data-i="${i}"><span class="num"></span><span>${esc(o)}</span></button>`).join("")}</div><div class="row" style="margin-top:10px"><button class="btn" id="go" disabled>Prüfen</button><button class="btn ghost small" id="reset">Zurücksetzen</button></div>`;
+  const upd=()=>{A.querySelectorAll(".opt").forEach(b=>{const k=ST.seq.indexOf(+b.dataset.i);b.classList.toggle("on",k>=0);b.querySelector(".num").textContent=k>=0?k+1:"";});$("#go").disabled=ST.seq.length!==q.shown.length;};
+  A.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(ST.done)return;const i=+b.dataset.i;const k=ST.seq.indexOf(i);if(k>=0)ST.seq.splice(k,1);else ST.seq.push(i);upd();});
+  $("#reset").onclick=()=>{if(ST.done)return;ST.seq=[];upd();};$("#go").onclick=checkOrder;}
+ else if(q.k==="multi"){A.innerHTML=`<div class="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}" aria-pressed="false"><span class="box"></span><span>${esc(o)}</span></button>`).join("")}</div><div class="row" style="margin-top:10px"><button class="btn" id="go" disabled>Prüfen</button><span class="hint">Es können mehrere Antworten richtig sein.</span></div>`;
+  A.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(ST.done)return;const i=+b.dataset.i;if(ST.msel.has(i))ST.msel.delete(i);else ST.msel.add(i);const on=ST.msel.has(i);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.querySelector(".box").textContent=on?"✓":"";$("#go").disabled=!ST.msel.size;});
+  $("#go").onclick=checkMulti;}
+}
+
+const qkey=w=>JSON.stringify([w.p,w.vis||null,w.target||null,w.pairs?w.pairs.map(p=>p[0]):null]);
+function saveWrong(q,ok){const s=store.get();s.wrong=s.wrong||[];const k=qkey(q);
+ s.wrong=s.wrong.filter(w=>qkey(w)!==k);if(!ok)s.wrong.push(q);s.wrong=s.wrong.slice(-40);store.set(s);}
+function finish(ok,userTxt,corrTxt,note,extra){
+ const q=ST.qs[ST.i];ST.done=true;if(ok)ST.score++;const entry={q,ok,user:userTxt,corr:corrTxt};ST.log.push(entry);saveWrong(q,ok);
+ const last=ST.i===ST.qs.length-1;
+ $("#fb").innerHTML=`<div class="fb ${ok?"ok":"bad"}"><span class="verdict">${ok?"Richtig!":(q.k==="open"?"Noch nicht vollständig":"Leider falsch")}</span>
+  ${!ok&&corrTxt&&q.k!=="open"&&q.k!=="order"?`<p>Richtig ist: <b>${esc(corrTxt)}</b></p>`:""}${note?`<p>${esc(note)}</p>`:""}${extra||""}${q.x?`<p>${esc(q.x)}</p>`:""}
+  <div class="row" style="margin-top:4px"><button class="btn" id="next">${last?"Ergebnis ansehen":"Weiter"}</button>${!ok&&q.k==="open"?`<button class="linkbtn" id="override">Meine Antwort meint dasselbe – als richtig werten</button>`:""}</div></div>`;
+ const nb=$("#next");nb.onclick=()=>{if(last)renderResult();else{ST.i++;renderQ();window.scrollTo(0,0);}};nb.focus({preventScroll:true});
+ const ov=$("#override");if(ov)ov.onclick=()=>{entry.ok=true;ST.score++;saveWrong(q,true);const fb=$("#fb .fb");fb.className="fb ok";fb.querySelector(".verdict").textContent="Als richtig gewertet";ov.remove();};
+ $("#fb").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function checkMC(i){if(ST.done)return;const q=ST.qs[ST.i];const ok=i===q.a;
+ $("#ans").querySelectorAll(".opt").forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add("right");else if(j===i)b.classList.add("wrong");});
+ finish(ok,q.o[i],q.o[q.a]);}
+function checkInput(v){if(ST.done)return;const q=ST.qs[ST.i];let ok=false,note=null;
+ const cv=canon(v);const accs=q.acc.map(canon);if(accs.indexOf(cv)>=0)ok=true;else{const d=Math.min.apply(null,accs.map(a=>lev(cv,a)));const lim=cv.length>=8?2:cv.length>=4?1:0;if(d<=lim){ok=true;note=`Fast richtig geschrieben. Richtig heißt es: ${q.show}.`;}}
+ const inp=$("#inp");inp.classList.add(ok?"right":"wrong");inp.disabled=true;$("#go").disabled=true;
+ finish(ok,v,q.show,note);}
+function checkOpen(v){if(ST.done)return;const q=ST.qs[ST.i];const cv=canon(v);
+ const hits=q.keys.map(k=>k.re?new RegExp(k.re).test(cv):k.a.some(a=>{const ca=canon(a);return ca.length>0&&cv.indexOf(ca)>=0;}));
+ const n=hits.filter(Boolean).length;const ok=n>=q.need;
+ const inp=$("#inp");inp.classList.add(ok?"right":"wrong");inp.disabled=true;$("#go").disabled=true;
+ const need=q.need>=q.keys.length?"alle Punkte":q.need===1?"mindestens einen Punkt":`mindestens ${q.need} Punkte`;
+ const extra=`<p>Das gehört in eine gute Antwort (${need}):</p><ul class="keys">${q.keys.map((k,i)=>`<li class="${hits[i]?"hit":"miss"}"><b>${hits[i]?"✓":"○"}</b><span>${esc(k.l)}</span></li>`).join("")}</ul>
+  <div class="model"><span>Musterantwort</span>${esc(q.model)}</div>`;
+ finish(ok,v,ok?"":"siehe Musterantwort",null,extra);}
+function checkClick(){if(ST.done||!ST.sel)return;const q=ST.qs[ST.i];const ok=ST.sel===q.target;
+ $("#vis").querySelectorAll(".zone").forEach(z=>{z.classList.remove("sel");if(z.dataset.z===q.target)z.classList.add("good");else if(z.dataset.z===ST.sel)z.classList.add("badz");});
+ $("#go").disabled=true;const h=$("#clickhint");if(h)h.textContent="";
+ finish(ok,"angetippt: "+(q.names[ST.sel]||ST.sel),q.names[q.target]||q.target,ok?null:"Grün umrandet ist die richtige Stelle.");}
+function checkMatch(){if(ST.done)return;const q=ST.qs[ST.i];const rows=[...$("#ans").querySelectorAll(".mrow")];let all=true;const user=[];
+ rows.forEach((r,i)=>{const sel=r.querySelector("select");const ok=sel.value===q.pairs[i][1];if(!ok)all=false;user.push(q.pairs[i][0]+" → "+(sel.value||"–"));sel.disabled=true;r.classList.add(ok?"right":"wrong");
+  if(!ok)r.insertAdjacentHTML("beforeend",`<span class="fix">Richtig: ${esc(q.pairs[i][1])}</span>`);});
+ $("#go").disabled=true;finish(all,user.join("; "),all?"":q.pairs.map(p=>p[0]+" → "+p[1]).join("; "));}
+function checkOrder(){if(ST.done)return;const q=ST.qs[ST.i];const user=ST.seq.map(i=>q.shown[i]);const ok=user.join("|")===q.items.join("|");
+ $("#ans").querySelectorAll(".opt").forEach(b=>{b.disabled=true;const i=+b.dataset.i;const pos=ST.seq.indexOf(i);b.classList.add(q.items[pos]===q.shown[i]?"right":"wrong");});
+ $("#go").disabled=true;$("#reset").disabled=true;
+ finish(ok,user.map((t,i)=>(i+1)+". "+t).join(" "),ok?"":"siehe Reihenfolge unten",null,ok?"":`<p>Richtige Reihenfolge:</p><ol>${q.items.map(t=>`<li>${esc(t)}</li>`).join("")}</ol>`);}
+function checkMulti(){if(ST.done)return;const q=ST.qs[ST.i];const corr=new Set(q.a);const ok=corr.size===ST.msel.size&&[...corr].every(i=>ST.msel.has(i));
+ $("#ans").querySelectorAll(".opt").forEach(b=>{b.disabled=true;const i=+b.dataset.i;if(corr.has(i))b.classList.add(ST.msel.has(i)?"right":"missed");else if(ST.msel.has(i))b.classList.add("wrong");});
+ $("#go").disabled=true;
+ finish(ok,[...ST.msel].map(i=>q.o[i]).join(", "),q.a.map(i=>q.o[i]).join(", "),ok?null:"Gestrichelt grün umrandet: richtig, aber nicht ausgewählt.");}
+
+function renderResult(){
+ const n=ST.qs.length,sc=ST.log.filter(l=>l.ok).length,pct=Math.round(sc/n*100);const s=store.get();s.best=s.best||{};
+ if(TOPICS.some(t=>t.id===ST.id))s.best[ST.id]=Math.max(s.best[ST.id]||0,pct);store.set(s);
+ const msg=pct>=90?"Sehr stark. Das sitzt.":pct>=75?"Gut! Schau dir die Fehler unten noch einmal an.":pct>=50?"Ordentlich, aber da geht noch was. Übe die falschen Fragen gleich nochmal.":"Hier lohnt sich Üben. Schau in den Spickzettel und nimm dir die Themen einzeln vor.";
+ const wrong=ST.log.filter(l=>!l.ok);
+ app.innerHTML=`<header class="head"><span class="eyebrow">${esc(ST.title)}</span><div class="big">${pct} %<small> · ${sc} von ${n} richtig</small></div><p style="font-family:var(--f-hand);font-size:22px;color:var(--pen);margin:0">${esc(msg)}</p></header>
+ <div class="row">${wrong.length?`<button class="btn" id="redo">Fehler gleich üben (${wrong.length})</button>`:""}<button class="btn ghost" id="again">Neue Runde</button><button class="btn ghost" id="home">Zur Übersicht</button></div>
+ <section class="sec"><h3>Alle Fragen</h3><ol class="rlist">${ST.log.map(l=>`<li class="${l.ok?"r":"w"}"><span class="m">${l.ok?"✓":"✗"}</span><div><p>${esc(l.q.p)}</p>${l.ok?"":`<p class="muted">Deine Antwort: ${esc(l.user||"–")}${l.q.k==="open"||l.q.k==="order"?"":" · Richtig: <b>"+esc(l.corr||"")+"</b>"}</p>${l.q.k==="open"?`<p class="muted">Musterantwort: ${esc(l.q.model)}</p>`:""}${l.q.k==="order"?`<p class="muted">Richtig: ${esc(l.q.items.map((t,i)=>(i+1)+". "+t).join(" "))}</p>`:""}`}</div></li>`).join("")}</ol></section>`;
+ $("#home").onclick=renderHome;
+ $("#again").onclick=()=>{if(ST.id==="exam")startExam();else if(ST.id==="wrong")startWrong();else startTopic(ST.id);};
+ if(wrong.length)$("#redo").onclick=()=>begin("Fehler üben","wrong",shuffle(wrong.map(l=>l.q)));
+ window.scrollTo(0,0);
+}
+
+/* =====================================================================
+   SPICKZETTEL
+   ===================================================================== */
+function renderCheat(){
+ const icCard=(m)=>`<div class="ic">${ICONS[m.ic]()}<b>${esc(m.n)}</b><span>${esc(m.d)}</span></div>`;
+ const col={sch:"var(--t-sch)",fang:"var(--t-fang)",back:"var(--t-back)",reiss:"var(--t-reiss)"};
+ app.innerHTML=`<div class="qbar"><button class="x" id="quit">✕ Zurück</button><div class="prog"><span>Spickzettel · alle vier Themen</span></div></div>
+ <article class="card cheat"><span class="eyebrow">Thema 1 · Buch S. 14/15</span><h2>Kennzeichen von Lebewesen</h2>
+  <p style="margin:0">Etwas ist nur dann ein Lebewesen, wenn es <b>alle</b> Kennzeichen zeigt. Der Roboterhund bewegt sich und reagiert auf Geräusche, wächst aber nicht, pflanzt sich nicht fort, hat keinen Stoffwechsel und besteht nicht aus Zellen.</p>
+  <span class="merk">Merksatz: ${esc(MERKSATZ)}</span>
+  <div class="icgrid">${Object.values(KZ).map(icCard).join("")}</div>
+  <p class="hint" style="margin:0">Lebende Steine sind Pflanzen: Sie wachsen, nehmen Wasser auf, blühen und bilden Samen.</p></article>
+ <article class="card cheat"><span class="eyebrow">Thema 2 · Buch S. 27</span><h2>Das Hundegebiss: ein Raubtiergebiss</h2>
+  <div class="vis">${skullSVG({colored:true,numbers:true})}</div>
+  <ul class="legend">${Object.keys(TG).map(g=>`<li><i style="background:${col[g]}">${TNUM[g]}</i><span><b>${TG[g]}</b>: ${TFN[g]}${g==="reiss"?" (besonders kräftiger Backenzahn, in jeder Zahnreihe einer)":g==="fang"?" (lang und spitz)":""}</span></li>`).join("")}</ul>
+  <span class="merk">Von vorne nach hinten: schaben – festhalten – zerreißen – Knochen knacken</span></article>
+ <article class="card cheat"><span class="eyebrow">Thema 3 · Mappe · Buch S. 31</span><h2>Kennzeichen der Säugetiere</h2>
+  <div class="icgrid">${Object.values(SM).map(icCard).join("")}</div>
+  <p style="margin:0">Fortpflanzung: Hündin und Rüde paaren sich, <b>innere Befruchtung</b> (Spermienzelle + Eizelle verschmelzen im Körper der Hündin), etwa <b>60 Tage</b> Schwangerschaft, bis zu zehn Welpen. Welpen kommen blind und taub zur Welt: <b>Nesthocker</b>. Der Hund hat eine Wirbelsäule: Er ist auch ein <b>Wirbeltier</b>.</p></article>
+ <article class="card cheat"><span class="eyebrow">Thema 4 · Arbeitsblatt · Buch S. 31/32</span><h2>Züchtung</h2>
+  <div class="vis">${breedSVG({})}</div>
+  <ol class="steps"><li>Zwei Hunde mit dem gewünschten Merkmal auswählen und paaren.</li><li>Die Welpen ähneln den Eltern, sind aber leicht verschieden (<b>Vielfalt, Variabilität</b>).</li><li>Den Welpen mit dem stärksten Merkmal mit einem passenden Hund aus einer anderen Familie paaren.</li><li>Über <b>viele Generationen</b> wiederholen, bis sich das Merkmal <b>verfestigt</b>: eine neue <b>Rasse</b>.</li></ol>
+  <span class="merk">Auswählen – Paaren – Wiederholen</span>
+  <p style="margin:0">Vorfahre aller Hunde ist der <b>Wolf</b>. Vererbt werden Merkmale aus der <b>Erbinformation</b> (Fellfarbe, Körpergröße, Ohren- und Schwanzform). <b>Erlerntes</b> wie „Sitz“ wird <b>nicht vererbt</b>. Heute gibt es mehr als 400 Hunderassen, entstanden in etwa 10 000 Jahren.</p></article>
+ <div class="row"><button class="btn" id="exam">Jetzt die Probe-Klassenarbeit machen</button><button class="btn ghost" id="home">Zur Übersicht</button></div>`;
+ $("#quit").onclick=renderHome;$("#home").onclick=renderHome;$("#exam").onclick=startExam;window.scrollTo(0,0);
+}
+
+/* =====================================================================
+   ZÜCHTUNGS-SIMULATOR
+   ===================================================================== */
+const SIMGOAL=26;let SIM=null;
+function litter(mean){const sx=shuffle(["Rüde","Rüde","Rüde","Hündin","Hündin","Hündin"]);
+ return sx.map(sex=>({sex,ear:Math.max(3,Math.min(38,Math.round(mean+(Math.random()*2-1)*6)))}));}
+const avg=a=>a.reduce((s,x)=>s+x,0)/a.length;
+function renderSim(reset){
+ if(reset||!SIM){const p=litter(8);SIM={gen:1,pups:p,sel:{},hist:[avg(p.map(d=>d.ear))]};}
+ const pups=SIM.pups,a=avg(pups.map(d=>d.ear)),done=a>=SIMGOAL;
+ const cw=110,chh=104;let g="";
+ pups.forEach((d,i)=>{const cx=(i%3)*cw,cy=Math.floor(i/3)*chh;const chosen=SIM.sel[d.sex]===i;
+  g+=`<rect class="zone${chosen?" pick":""}" data-i="${i}" x="${cx+3}" y="${cy+3}" width="${cw-6}" height="${chh-6}" rx="10"/>`;
+  g+=`<g style="pointer-events:none">${dogG({x:cx+16,y:cy+8,s:.72,ear:d.ear})}<text class="sk-tb" x="${cx+cw/2}" y="${cy+88}" text-anchor="middle">${d.sex}</text><text class="sk-ts" x="${cx+cw/2}" y="${cy+99}" text-anchor="middle">Ohrlänge ${d.ear}</text></g>`;});
+ const H=SIM.hist,slot=Math.min(40,296/Math.max(H.length,6)),bw=slot-4;let ch=`<line class="goalln" x1="30" x2="330" y1="${100-SIMGOAL*2.4}" y2="${100-SIMGOAL*2.4}"/><text class="sk-ts" x="332" y="${100-SIMGOAL*2.4+3}" text-anchor="end" dy="-6">Ziel</text>`;
+ H.forEach((v,i)=>{const h=v*2.4;ch+=`<rect class="bar${v>=SIMGOAL?" goal":""}" x="${f1(34+i*slot)}" y="${f1(100-h)}" width="${f1(bw)}" height="${f1(h)}" rx="3"/><text class="sk-ts" x="${f1(34+i*slot+bw/2)}" y="112" text-anchor="middle">${i+1}</text>`;});
+ ch+=`<line class="sk-ground" x1="30" x2="330" y1="100" y2="100"/><text class="sk-ts" x="2" y="12">Ø Ohrlänge</text>`;
+ app.innerHTML=`<div class="qbar"><button class="x" id="quit">✕ Zurück</button><div class="prog"><span>Züchte selbst · Ziel: Rasse mit langen Ohren</span></div></div>
+ <article class="card"><h2 style="font-size:22px">Züchte Hunde mit langen Ohren</h2>
+  <p style="margin:0">Das ist der Wurf von Generation ${SIM.gen}. Wähle <b>einen Rüden</b> und <b>eine Hündin</b> als Eltern für den nächsten Wurf. Schaffst du es, dass die Welpen im Durchschnitt eine Ohrlänge von ${SIMGOAL} erreichen?</p>
+  <div class="simstat"><div><b>${SIM.gen}</b><span>Generation</span></div><div><b>${a.toFixed(1)}</b><span>Ø Ohrlänge</span></div><div><b>${Math.max(...pups.map(d=>d.ear))}</b><span>längste Ohren</span></div></div>
+  <div class="vis" id="simvis">${svgWrap(`0 0 ${3*cw} ${2*chh}`,g,"Wurf mit sechs Welpen")}</div>
+  ${done?`<div class="win"><b>Geschafft in ${SIM.gen-1} Generationen!</b>Fast alle Welpen haben jetzt lange Ohren. Das Merkmal hat sich verfestigt: Du hast eine neue Rasse gezüchtet. Genau so sind aus dem Wolf über viele Generationen die Hunderassen entstanden.</div>`:""}
+  <div class="row"><button class="btn" id="mate" ${SIM.sel["Rüde"]!=null&&SIM.sel["Hündin"]!=null&&!done?"":"disabled"}>Paaren und nächsten Wurf ansehen</button><button class="btn ghost small" id="rand" ${done?"disabled":""}>Zufällig paaren</button><button class="btn ghost small" id="restart">Neu starten</button></div>
+  <p class="hint" style="margin:0">Beobachte: Die Geschwister ähneln sich, sind aber nie ganz gleich (Vielfalt). Wenn du zufällig paarst, ändern sich die Ohren kaum. Erst die gezielte Auswahl über mehrere Generationen bringt das Ziel näher.</p>
+  <div class="vis"><svg viewBox="0 0 340 118" role="img" aria-label="Durchschnittliche Ohrlänge je Generation">${ch}</svg><div class="cap">Durchschnittliche Ohrlänge der Welpen in jeder Generation</div></div>
+ </article>`;
+ $("#quit").onclick=renderHome;$("#restart").onclick=()=>renderSim(true);
+ $("#simvis").querySelectorAll(".zone").forEach(z=>z.addEventListener("click",()=>{if(done)return;const i=+z.dataset.i;const d=pups[i];SIM.sel[d.sex]=SIM.sel[d.sex]===i?null:i;renderSim(false);}));
+ const mate=(m,f)=>{const mean=(pups[m].ear+pups[f].ear)/2;SIM.pups=litter(mean);SIM.gen++;SIM.sel={};SIM.hist.push(avg(SIM.pups.map(d=>d.ear)));renderSim(false);};
+ $("#mate").onclick=()=>mate(SIM.sel["Rüde"],SIM.sel["Hündin"]);
+ $("#rand").onclick=()=>{const ms=pups.map((d,i)=>d.sex==="Rüde"?i:-1).filter(i=>i>=0),fs=pups.map((d,i)=>d.sex==="Hündin"?i:-1).filter(i=>i>=0);mate(ms[rnd(ms.length)],fs[rnd(fs.length)]);};
+}
+
+renderHome();
+</script>
+</body>
+</html>
